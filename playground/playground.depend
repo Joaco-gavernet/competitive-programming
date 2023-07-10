@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1688929507 source:c:\users\cocog\onedrive\documents\icpc\playground\d.cpp
+	<bits/stdc++.h>
+	<stdio.h>
+
+1353751060 source:c:\users\cocog\onedrive\documents\icpc\playground\main.cpp
+	<iostream>
+
+1688853651 source:c:\users\cocog\onedrive\documents\icpc\playground\a.cpp
+	<bits/stdc++.h>
+
+1688910995 source:c:\users\cocog\onedrive\documents\icpc\playground\b.cpp
+	<bits/stdc++.h>
+	<stdio.h>
+
+1688914544 source:c:\users\cocog\onedrive\documents\icpc\playground\c.cpp
+	<bits/stdc++.h>
+	<stdio.h>
+
