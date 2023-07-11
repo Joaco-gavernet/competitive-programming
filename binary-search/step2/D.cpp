@@ -34,12 +34,10 @@ const int MAXN = (int)(2e5+5);
 
 int m, n;
 vector< vector<int> > a;
-vector<int> aux;
 vector<int> results;
 
 bool good(int x) {
     int total = 0;
-    aux.resize(n);
     results.resize(n);
 
     forn(i,n) {
@@ -52,11 +50,10 @@ bool good(int x) {
 		cont = z*(x/bloque) + (x % bloque)/t;
 		
 		dbg(x, i, cont);
-        aux[i] = cont;
+        results[i] = cont;
         total += cont;
     }
     
-    if (total >= m) forn(i,n) results[i] = aux[i];
     return total >= m;
 }
 
@@ -73,9 +70,8 @@ int main() {
     int l = 0;
     int r = 1e5;
 
-    forn (i, 60) {
+    while (r > l + 1) {
         int middle = (l + r) / 2;
-		dbg(i, middle);
         if (good(middle)) {
             r = middle;
         } else {
