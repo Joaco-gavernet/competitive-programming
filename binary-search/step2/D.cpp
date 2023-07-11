@@ -34,40 +34,29 @@ const int MAXN = (int)(2e5+5);
 
 int m, n;
 vector< vector<int> > a;
+vector<int> aux;
 vector<int> results;
 
 bool good(int x) {
-    int t,z,y;
     int total = 0;
+    aux.resize(n);
     results.resize(n);
 
     forn(i,n) {
-        t = a[i][0];
-        z = a[i][1];
-        y = a[i][2];
+        int t = a[i][0];
+        int z = a[i][1];
+        int y = a[i][2];
         int cont = 0;
-
-        forn(j,x) {
-            if (t != 0) {
-                t--;
-                if (t == 0) {
-                    cont++; // ballon finished
-                    if (x == 6) cout << "j " << j << " cont: " << cont << "\n";
-                }
-            } else {
-                if (cont % z == 0) {
-                    y--;
-                    if (y == 0) {
-                        t = a[i][0];
-                        y = a[i][2];
-                    }
-                }
-            }
-        }
-        results[i] = cont;
+                
+		int bloque = z*t + y;
+		cont = z*(x/bloque) + (x % bloque)/t;
+		
+		dbg(x, i, cont);
+        aux[i] = cont;
         total += cont;
     }
-
+    
+    if (total >= m) forn(i,n) results[i] = aux[i];
     return total >= m;
 }
 
@@ -86,7 +75,7 @@ int main() {
 
     forn (i, 60) {
         int middle = (l + r) / 2;
-        dbg(l, r);
+		dbg(i, middle);
         if (good(middle)) {
             r = middle;
         } else {
