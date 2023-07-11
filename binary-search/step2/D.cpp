@@ -34,11 +34,10 @@ const int MAXN = (int)(2e5+5);
 
 int m, n;
 vector< vector<int> > a;
-vector<int> results;
+vector<int> results(MAXN);
 
 bool good(int x) {
     int total = 0;
-    results.resize(n);
 
     forn(i,n) {
         int t = a[i][0];
@@ -68,7 +67,7 @@ int main() {
     }
 
     int l = 0;
-    int r = 1e5;
+    int r = 1e7;
 
     while (r > l + 1) {
         int middle = (l + r) / 2;
