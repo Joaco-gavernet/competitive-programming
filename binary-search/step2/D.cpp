@@ -32,34 +32,46 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 
-int m, n;
-vector< vector<int> > a;
-vector<int> results(MAXN);
+ll m, n;
+vector< vector<ll> > a(MAXN);
+vector<ll> aux(MAXN);
+vector<ll> results(MAXN);
 
-bool good(int x) {
-    int total = 0;
+bool good(ll x) {
+    ll total = 0;
 
     forn(i,n) {
-        int t = a[i][0];
-        int z = a[i][1];
-        int y = a[i][2];
-        int cont = 0;
+        ll t = a[i][0];
+        ll z = a[i][1];
+        ll y = a[i][2];
+        ll cont = 0;
                 
-		int bloque = z*t + y;
+		ll bloque = z*t + y;
 		cont = z*(x/bloque) + (x % bloque)/t;
 		
 		dbg(x, i, cont);
-        results[i] = cont;
+        aux[i] = cont;
         total += cont;
     }
-    
+    if (total == m) {
+		forn(i,n) results[i] = aux[i];
+		forn(i,n) {
+			ll resta = min((total-m), results[i]);
+			results[i] -= resta;
+			total -= resta;
+		}
+    }
     return total >= m;
 }
 
 int main() {
 
     cin >> m >> n;
-    a.resize(n);
+    if (m == 0) {
+		cout << "0" << "\n";
+		forn(i, n) cout << "0 ";
+		return 0;
+	}
 
     forn (i,n) {
         a[i].resize(3);
