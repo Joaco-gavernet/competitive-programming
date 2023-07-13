@@ -31,70 +31,26 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+typedef long double ld;
 
-ll m, n;
-vector< vector<ll> > a(MAXN);
-vector<ll> aux(MAXN);
-vector<ll> results(MAXN);
-
-bool good(ll x) {
-    ll total = 0;
-
-    forn(i,n) {
-        ll t = a[i][0];
-        ll z = a[i][1];
-        ll y = a[i][2];
-        ll cont = 0;
-        
-		ll bloque = z*t + y;
-		cont = z*(x/bloque);
-		ll sobran = x % bloque;
-		if(sobran >= z * t) cont += z;
-		else cont += sobran/t;
-		
-		dbg(x, i, cont);
-        aux[i] = cont;
-        total += cont;
-    }
-    if (total >= m) {
-		forn(i,n) results[i] = aux[i];
-		forn(i,n) {
-			ll resta = min((total-m), results[i]);
-			results[i] -= resta;
-			total -= resta;
-		}
-    }
-    return total >= m;
+bool good(ld x, ld c) {
+	return ((x*x + sqrtl(x)) - c) <= 1e-10;
 }
 
 int main() {
-
-    cin >> m >> n;
-    if (m == 0) {
-		cout << "0" << "\n";
-		forn(i, n) cout << "0 ";
-		return 0;
+	ld c, l = 0, r = 1e6;
+	cin >> c;
+	
+	forn(i,100) {
+		long double m = (l + r) / 2;
+		if (good(m, c)) {
+			l = m;
+		} else {
+			r = m;
+		}
 	}
-
-    forn (i,n) {
-        a[i].resize(3);
-        cin >> a[i][0] >> a[i][1] >> a[i][2];
-    }
-
-    int l = -1;
-    int r = 1e7;
-
-    while (r > l + 1) {
-        int middle = (l + r) / 2;
-        if (good(middle)) {
-            r = middle;
-        } else {
-            l = middle;
-        }
-    }
-
-    cout << r << "\n";
-    forn(i, n) cout << results[i] << " ";
-
-    return 0;
+	
+	cout << fixed << setprecision(10) << r;
+	
+	return 0;
 }
