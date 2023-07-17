@@ -1,4 +1,4 @@
 # competitive-programming
-Este repositorio recopila mi poco conocimiento sobre programación competitiva. 
+Este repositorio recopila mi limitado conocimiento sobre programación competitiva. 
 
 ¿Nueva pasión?
