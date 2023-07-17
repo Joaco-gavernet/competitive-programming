@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
+//freopen("input.txt", "r", stdin);
+//freopen("output.txt", "w", stdout);
 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
@@ -43,28 +45,51 @@ int main(){
 	forn(i,3) cin >> p[i];
 	cin >> rubles;
 	
-	for (char u : recipe) {
-		if (u == 'B') needed[0]++;
-		if (u == 'S') needed[1]++;
-		if (u == 'C') needed[2]++;
+	forn(i,recipe.length()) {
+		if (recipe[i] == 'B') needed[0]++;
+		else if (recipe[i] == 'S') needed[1]++;
+		else if (recipe[i] == 'C') needed[2]++;
 	}
 	
-	ll l = 0;
-	ll r = 1e13;
+	// step 1: initialization of burguers
+	ll burguers = 0;
+	ll a = 0,b = 0,c = 0;
+	if (needed[0] != 0 && n[0] % needed[0] == 0) // pair breads
+		a = n[0] / needed[0];
+	if (needed[1] != 0 && n[1] % needed[1] == 0) // pair sausage
+		b = n[1] / needed[1];
+	if (needed[2] != 0 && n[2] % needed[2] == 0) // pair cheese
+		c = n[2] / needed[2];
 	
-	while (r > l + 1) {
-		ll m = (l + r)/2;
-		ll cost = 0;
-		cost += max(0LL, (needed[0]*m - n[0])) * p[0];
-		cost += max(0LL, (needed[1]*m - n[1])) * p[1];
-		cost += max(0LL, (needed[2]*m - n[2])) * p[2];
-		
-		if (cost <= rubles) l = m;
-		else r = m;
+	if (a != 0 && b != 0 && c != 0) {
+		ll homeBurguers = min({a,b,c});
+		burguers += (ll)homeBurguers;
+		forn(i,3) n[i] -= homeBurguers * needed[i];
 	}
 	
-	cout << l << "\n";
-		
+	// step 2: completion
+	forn(i,3) {
+		if (n[i] < needed[i]) {
+			ll difference = needed[i] - n[i]; // items needed
+			if (rubles < (needed[i] - n[i]) * p[i]) break; // if there isn't enough to buy
+			else {
+				rubles -= (needed[i] - n[i]) * p[i];
+				n[i] += difference;
+			}
+		}
+	}
+	if (n[0] >= needed[0] && n[1] >= needed[1] && n[2] >= needed[2]) burguers++;
+	
+	// step 3: block finishing
+	if (rubles > 0) {
+		ll block = 0;
+		forn(i,3) block += needed[i] * p[i];
+		burguers += rubles/block;
+	}
+	
+	// print answer
+	cout << burguers << "\n";
+	
 	return 0;
 }
 
