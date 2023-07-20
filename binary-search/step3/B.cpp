@@ -29,7 +29,7 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e5+5);
+const ll MAXN = (ll)(1e14);
 
 
 int main(){
@@ -38,35 +38,27 @@ int main(){
   int n, k; cin >> n >> k;
   vector<int> nums(n,0); forn(i,n) cin >> nums[i];
   
-  int l = 0;
-  int r = MAXN;  
-  int minMaxSum = MAXN;
+  ll l = 0;
+  ll r = MAXN;
   
   while (r > l + 1) {
-    int m = (l+r)/2;
-    int segments = 1;
-    int maxSum = 0;
+    ll m = (l+r)/2;
+    ll segments = 1;
+    ll actSum = 0;
+    int i = 0;
+    bool f = false;
     dbg(l,m,r);
-    
-    int actSum = 0;
-    forn (i,n) {
-      if (nums[i] >= m) {
-	minMaxSum = nums[i];
-	segments = k;
-	dbg(i,nums[i],m);
-	break;
-      }
-      if (actSum + nums[i] <= m) {
-	actSum += nums[i];
-      } else {
-	segments++;
-	if (i + 1 < n) i--;
-	maxSum = max(actSum,maxSum);
+    while (i < n && f == false) {
+      if (nums[i] > m) f = true;
+      if (actSum + nums[i] > m) {
 	actSum = 0;
+	segments++;
       }
+      actSum += nums[i];
+      i++;
     }
     
-    if (segments == k && maxSum < minMaxSum) l = m, minMaxSum = maxSum;
+    if (segments > k or f) l = m;
     else r = m;
   }
   cout << l << "\n";
