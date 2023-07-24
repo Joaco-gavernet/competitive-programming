@@ -34,7 +34,8 @@ const int MAXN = (int)(2e5+5);
 
 int main(){
   FIN;
-	
-	
+  
+  
+  
   return 0;
 }
