@@ -29,7 +29,7 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const ll MAXN = (ll)(2e13+5);
+const ll MAXN = (ll)(2e9+5);
 
 
 int main(){

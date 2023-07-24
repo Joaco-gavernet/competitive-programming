@@ -29,30 +29,38 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const ll MAXN = (ll)(2e10+5);
+const int MAXN = (int)(2e5+5);
 
+/* 
+ * -> ababba
+ * 
+ * 6 $ababba
+ * 5 a$ababb
+ * 0 ababba$
+ * 2 abba$ab
+ * 4 ba$abab
+ * 1 babba$a
+ * 3 bba$aba
+*/ 
 
 int main(){
   FIN;
+  string s; cin >> s;
+  int n = s.length();
+  vector<int> p(n), c(n);
   
-  ll n, x; cin >> n >> x;
-  vector<ll> v(n); forn(i,n) cin >> v[i];
-  sort(v.begin(),v.end());
-  
-  ll l = 0;
-  ll r = n - 1;
-  ll tot = 0;
-  
-  while (r - l > 0) {
-    if (v[l] + v[r] <= x) {
-      tot++;
-      l++;
-      r--;
-    } else if (v[r] <= x) tot++,r--;
-    else r--;
+  {
+    // k = 0
+    vector<pair<char,int>> a(n);
+    for (int i = 0; i < n; i++) a[i] = {s[i], i};
+    sort(a.begin(),a.end());
+    
+    for (int i = 0; i < n; i++) p[i] = a[i].second;
+    a[p[0]] = 0;
+    for (int i = 1; i < n; i++) {
+      
+    }
   }
-  if (l == r and v[l] <= x) tot++;
-  cout << tot << "\n";
   
   return 0;
 }

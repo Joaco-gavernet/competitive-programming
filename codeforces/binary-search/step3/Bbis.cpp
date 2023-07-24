@@ -2,7 +2,7 @@
 using namespace std;
 //freopen("input.txt", "r", stdin);
 //freopen("output.txt", "w", stdout);
-
+ 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
 template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
@@ -15,7 +15,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #else
 #define dbg(...)
 #endif
-
+ 
 typedef long long ll;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
@@ -29,30 +29,47 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const ll MAXN = (ll)(2e10+5);
-
-
+const ll MAXN = (ll)(1e14);
+ 
+ 
 int main(){
   FIN;
   
-  ll n, x; cin >> n >> x;
-  vector<ll> v(n); forn(i,n) cin >> v[i];
-  sort(v.begin(),v.end());
+  int n, k; cin >> n >> k;
+  vector<int> nums(n,0); forn(i,n) cin >> nums[i];
   
   ll l = 0;
-  ll r = n - 1;
-  ll tot = 0;
+  ll r = MAXN;  
+  ll minMaxSum = MAXN;
   
-  while (r - l > 0) {
-    if (v[l] + v[r] <= x) {
-      tot++;
-      l++;
-      r--;
-    } else if (v[r] <= x) tot++,r--;
-    else r--;
+  while (r > l + 1) {
+    ll m = (l+r)/2;
+    ll segments = 1;
+    ll maxSum = 0;
+    dbg(l,m,r);
+    
+    ll actSum = 0;
+    forn (i,n) {
+      if (nums[i] >= m) {
+	minMaxSum = nums[i];
+	segments = k;
+	dbg(i,nums[i],m);
+	break;
+      }
+      if (actSum + nums[i] <= m) {
+	actSum += nums[i];
+      } else {
+	segments++;
+	if (i + 1 < n) i--;
+	maxSum = max(actSum,maxSum);
+	actSum = 0;
+      }
+    }
+    
+    if (segments == k && maxSum < minMaxSum) l = m, minMaxSum = maxSum;
+    else r = m;
   }
-  if (l == r and v[l] <= x) tot++;
-  cout << tot << "\n";
+  cout << l << "\n";
   
   return 0;
 }
