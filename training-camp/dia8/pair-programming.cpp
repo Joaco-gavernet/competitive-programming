@@ -29,25 +29,58 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e5+5);
 
 
 int main(){
   FIN;
   
-  int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  int t; cin >> t;
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
-  
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
+  forn(h,t) {
+    
+    int k,n,m; cin >> k >> n >> m;
+    vector<int> j1(n);
+    vector<int> j2(m);
+    vector<int> res;
+    bool ok = true;
+    
+    forn(i,n) cin >> j1[i];
+    forn(i,m) cin >> j2[i];
+    
+    int i_j1 = 0, i_j2 = 0;
+    
+    while (i_j1 < n or i_j2 < m) {
+
+      while (i_j1 < n and j1[i_j1] <= k) {
+	if (j1[i_j1] == 0) k++;
+	res.pb(j1[i_j1]);
+	i_j1++;
+      }
+      
+      if (i_j2 < m and j2[i_j2] > k) {
+	ok = false;
+	break;
+      }
+
+      while (i_j2 < m and j2[i_j2] <= k) {
+	if (j2[i_j2] == 0) k++;
+	res.pb(j2[i_j2]);
+	i_j2++;
+      }
+      
+      if (i_j1 < n and j1[i_j1] > k) {
+	ok = false;
+	break;
+      }
+    }
+    
+    if (ok == false) cout << "-1";
+    else forn(i,(n+m)) cout << res[i] << " ";
+    cout << "\n";
   }
-  cout << dp[n] << "\n";
+  
+  
   
   return 0;
 }
-

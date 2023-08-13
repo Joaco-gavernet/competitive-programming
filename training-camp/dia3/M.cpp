@@ -29,25 +29,22 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e5+5);
 
 
 int main(){
   FIN;
   
-  int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  int a,b,c;
+  cin >> a >> b >> c;
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
+  int average = (a + b + c)/3;  
+  int tot =0;
+  tot += abs(a-average);
+  tot += abs(b-average);
+  tot += abs(c-average);
   
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
-  }
-  cout << dp[n] << "\n";
+  cout << tot << "\n";
   
   return 0;
 }
-

@@ -29,25 +29,55 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e5+5);
 
 
 int main(){
   FIN;
   
-  int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  ll n; cin >> n;
+  vector<pair<ll,ll>> v;
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
-  
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
+  ll t,s,act;
+  ll tot = n;             // variable to count repetitions
+  forn(i,n) {
+    cin >> t >> s;
+    if (t == 2) {
+      tot--;
+      t = -1;
+    }
+    
+    forn(j,s) {
+      cin >> act;
+      v.pb({act,t});
+    }
   }
-  cout << dp[n] << "\n";
+
+  sort(v.begin(),v.end());
+  dbg(tot,v);
+  
+  ll reference = v[0].first;
+  ll answer = 0;
+  ll i = 0, reps = 0;
+  while (i < (ll)v.size()) {
+    if (v[i].second == -1) {
+      while (i < (ll)v.size() and reference == v[i].first) i++;
+      if (i == (ll)v.size()) i--;
+      reference = v[i].first;
+    } else {
+      if (reps == 0) reps = 1;
+      if (v[i].first == reference) reps++;
+      else {
+	reference = v[i].first;
+	reps = 0;
+      }
+    }
+    
+    if (reps == tot) answer++;
+    dbg(i,reference,reps,answer);
+    i++;
+  }
+  cout << answer << "\n";
   
   return 0;
 }
-

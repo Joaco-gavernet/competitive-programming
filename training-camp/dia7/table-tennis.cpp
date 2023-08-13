@@ -29,25 +29,59 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e12+5);
 
 
 int main(){
   FIN;
   
-  int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  ll k,j1,j2,n; cin >> n >> k >> j1;
+  ll ka = k;
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
-  
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
+  while (cin >> j2 and ka > 0) {
+    dbg(ka,j1,j2);
+    if (j1 > j2) ka--;
+    else {
+      j1 = j2;
+      ka = k-1;
+    }
+    
   }
-  cout << dp[n] << "\n";
+  
+  cout << j1 << "\n"; 
+  
+  
   
   return 0;
 }
 
+
+
+  //~ ll n,streak; cin >> n >> streak;
+
+
+  //~ vector<ll> p(2*n); forn(i,n) cin >> p[i];
+  //~ forn(i,n) p[n+i] = p[i];
+
+  //~ ll l = 0;
+  //~ ll r = 1;  
+
+  //~ if (streak >= n-1) p[l] = *max_element(p.begin(),p.end());
+  //~ else {
+    //~ ll k = streak;
+    //~ while (k) {
+      //~ k = streak;
+      //~ while (k and p[l] > p[r]) {
+	//~ r++;
+	//~ k--;
+      //~ }
+
+      //~ if (k) {
+	//~ l=r;
+	//~ r = l+1;
+      //~ }
+    //~ }
+  //~ }
+  
+  //~ cout << p[l] << "\n";
+  

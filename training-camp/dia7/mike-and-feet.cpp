@@ -29,25 +29,61 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e5+5);
 
 
 int main(){
   FIN;
   
   int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  vector<int> v(n); forn(i,n) cin >> v[i];
+  vector<int> ans(n,0);
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
+  set<int> apariciones;
+  apariciones.insert(-1);
+  apariciones.insert(n);
   
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
+  multiset<int> intervalos;
+  intervalos.insert((n+1));
+  int max = *max_element(v.begin(),v.end());
+  ans[0] = max;
+  
+  vector<vector<int>> num_pos(max+1);
+  
+  forn(i,n) num_pos[v[i]].pb((int)i);
+  
+  for (int i = 1; i < max+1; i++) {
+    forn(j,num_pos[i].size()) {
+      apariciones.insert((int)num_pos[i][j]);
+      
+      // opcion 1:
+      //~ auto prev = *(--apariciones.lower_bound((int)i));
+      //~ auto beg = apariciones.lower_bound((int)i);
+      //~ auto fin = apariciones.upper_bound((int)i);
+      //~ dbg(prev,*beg,*fin);
+      
+      // opcion 2:
+      auto it = apariciones.find((int)num_pos[i][j]);
+      auto l_it = prev(it);
+      auto r_it = next(it);
+      
+      // actualizacion de intervalos
+      int viejo = *r_it - *l_it;
+      intervalos.erase(viejo);
+
+      int n1 = *r_it - *it;
+      int n2 = *it - *l_it;	
+      intervalos.insert(n1);
+      intervalos.insert(n2);
+    }
+    
+    for (int j = *intervalos.rbegin()-1; j < n and ans[j] == 0; j++)
+      ans[j] = i;
   }
-  cout << dp[n] << "\n";
+  
+  forn(i,n) cout << ans[i] << " ";
+  
+  
   
   return 0;
 }
-

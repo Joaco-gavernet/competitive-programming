@@ -29,25 +29,39 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e5+5);
 
 
 int main(){
   FIN;
   
-  int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  ll t; cin >> t;
+  string two; 
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
-  
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
+  while (cin >> two) {
+    pair<int,int> counters = {0,0};
+    
+    string res = "NO";
+    
+    int len = (int)two.size();
+    if (len >= 2 and two[len-1] == 'B') {      
+      
+      for (int i = 0; i < len; i++) {
+	if (two[i] == 'A') counters.first++;
+	else counters.second++;
+
+	if (counters.first >= counters.second) res = "YES";
+	else {
+	  res = "NO";
+	  break;
+	}
+      }
+      
+    }
+    
+    cout << res << "\n";
   }
-  cout << dp[n] << "\n";
+  
   
   return 0;
 }
-

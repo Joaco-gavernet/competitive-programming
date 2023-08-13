@@ -29,25 +29,43 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
-
+const int MAXN = (int)(2e5+5);
 
 int main(){
   FIN;
   
   int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  vector<pair<pair<ll,ll>,ll>> vec(n);
+  ll l,r;
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
-  
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
+  forn(i,n) {
+    cin >> l >> r;
+    vec[i].first = {l,r};
+    vec[i].second = i+1;
   }
-  cout << dp[n] << "\n";
+  
+  sort(vec.begin(),vec.end());
+  dbg(vec);
+  
+  int i;
+  for (i = 1; i < n; i++) {
+    pair<ll,ll> v_prev;
+    if (i > 1) v_prev = vec[i - 2].first;
+    auto v_ant = vec[i - 1].first;
+    auto v_act = vec[i].first;
+    
+    if (v_ant.first == v_act.first and v_ant.second <= v_act.second) {
+      cout << vec[i - 1].second;
+      break;
+    } 
+    else if (i > 1 and v_ant.first <= v_prev.second and v_act.first <= v_ant.second) {
+      cout << vec[i - 1].second;
+      break;
+    } 
+    
+  }
+  if (i == n) cout << -1 << "\n";
+  
   
   return 0;
 }
-

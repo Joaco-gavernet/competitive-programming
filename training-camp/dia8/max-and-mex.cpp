@@ -29,25 +29,53 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e5+5);
 
-
-int main(){
-  FIN;
-  
-  int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
-  
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
-  
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
-  }
-  cout << dp[n] << "\n";
-  
-  return 0;
+int mex(set<int> s) {
+    int mex = 0;
+    for(int i : s){
+        if (i == mex){
+            mex++;
+        } else {
+            break;
+        }
+    }
+    return mex;
 }
 
+int main() {
+  FIN;
+  
+  set<int> s;
+  int t,n,k,m;
+  cin >> t;
+  for (int i = 0; i < t; i++){
+    s.clear();
+    cin >> n >> k;
+    for (int j = 0; j < n; j++){
+	cin >> m;
+	s.insert(m);
+    }
+    int b = mex(s);
+    int a = 0;
+    
+    for (int j = 0; j < k; j++){
+	int op;
+	a = *max_element(s.begin(),s.end());
+	
+	op = (a+b)/2;
+	if ((a+b)%2 == 1) op++;
+	s.insert(op);
+	if (op == b) b = mex(s);
+	if (b > a) break;
+	if (op != b and op <= a) break;
+    }
+    
+    int res = (int)s.size();;
+    if (b > a) res = k + n;
+    
+    cout << res << "\n";
+  }
+
+  return 0;
+}

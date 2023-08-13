@@ -29,25 +29,40 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e4+5);
+const int MAXN = (int)(2e5+5);
 
+bool second(pair<int,int> a, pair<int,int> b) {
+  bool result = false;
+  if (a.second != b.second) {
+    result = a.second > b.second;
+  } else {
+    result = a.first > b.first;
+  }
+  return result;
+}
 
 int main(){
   FIN;
   
   int n; cin >> n;
-  vector<int> pieces(3); forn(i,3) cin >> pieces[i];
-  vector<int> dp(n+1,-MAXN);
+  vector<pair<int,int>> v(n);
+  forn(i,n) cin >> v[i].first >> v[i].second;
   
-  forn(i,3) if (pieces[i] <= n) dp[pieces[i]] = 1;
-  
-  for (int i = 0; i <= n; i++) {
-    forn(j,3) 
-      if (i-pieces[j] >= 0 and dp[i] < dp[i-pieces[j]] + 1)
-	dp[i] = dp[i-pieces[j]] + 1;
+  sort(v.begin(),v.end(),second);
+  ll reps = 1, tot = 0;
+  ll i = 0;
+  while (i < n and v[i].second != 0) {
+    reps += v[i].second;
+    tot += v[i].first;
+    i++;
+    reps--;
   }
-  cout << dp[n] << "\n";
+  while (i<n and reps > 0) {
+    tot += v[i].first;
+    reps--;
+    i++;
+  }
+  cout << tot << "\n";
   
   return 0;
 }
-
