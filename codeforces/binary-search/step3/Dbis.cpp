@@ -2,7 +2,7 @@
 using namespace std;
 //freopen("input.txt", "r", stdin);
 //freopen("output.txt", "w", stdout);
-
+ 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
 template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
@@ -15,7 +15,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #else
 #define dbg(...)
 #endif
-
+ 
 typedef long long ll;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
@@ -30,8 +30,8 @@ typedef long long ll;
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const ll MAXN = (ll)(2e9+5);
-
-
+ 
+ 
 int main(){
   FIN;
   
@@ -46,31 +46,31 @@ int main(){
   
   ll distance;
   vector <ll> ans;
-  ll l = -1, r = (ll)1e9+1;
+  ll l = -1, r = MAXN;
   while (r > l + 1) {
     ll med = l + (r-l)/2;
     vector<ll> dp(n,d+1);      // vector to save the minimum distances
     vector<ll> hijo(n);
     
-    dp[n-1] = 0;
-    for (ll i = (n-1); i >= 0; i--) {
+    dp[0] = 0;
+    for (int i = 0; i < n; i++) {
       for (auto u : v[i]) {
-	if (u.second <= med and dp[i] > dp[u.first] + 1) {
-	  dp[i] = dp[u.first] + 1;
+	if (u.second <= med and dp[u.first] > dp[i] + 1) {
+	  dp[u.first] = dp[i] + 1;
 	  hijo[i] = u.first;
 	}
       }
     }
     
-    if (dp[0] > d) l = med;
+    if (dp[n-1] > d) l = med;
     else {
       r = med;
       ans = hijo;
-      distance = dp[0];
+      distance = dp[n-1];
     }
   }
-
-  if (r == (ll)1e9+1) cout << "-1";
+ 
+  if (r == MAXN) cout << "-1";
   else {
     cout << distance << "\n";
     cout << "1";
