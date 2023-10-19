@@ -26,54 +26,58 @@ const int MOD = 1e9+7;  // const int MOD = 998244353;
 const int MAXN  = 2e5+5;
 
 int main(){  
-    FIN;
+  FIN;
 
-    ll n,m; cin >> n >> m;
+  ll n,m; cin >> n >> m;
 
-    vector<ll> p(n); forn(i,n) cin >> p[i];
-    vector<ll> d(m); forn(i,m) cin >> d[i];
-    sort(d.begin(),d.end());
+  vector<ll> p(n); forn(i,n) cin >> p[i];
+  vector<ll> d(m+1); forr(i,1,m+1) cin >> d[i];
+  sort(d.begin(),d.end());
+  
+  ll k = 0; 
+  multiset<ll> multi;
+  forn (i,n) {
+    multi.insert(k);
+    if (k < m+1 and d[k] < (i+1)*100) k++;
+  }
+  
+  ll maxTot = 0;
+  
+  forn(l,(m+1)) { // se recorren los intervalos buscando resultado optimo      
+    ll a = l;
+    ll b = a+1;
+    //~ DBG(a);
     
-    vector<ll> intervals(m+1);
-    ll k = 0; 
-    forn (i,n) {
-      intervals[k] += p[i];
-      if (k < m and d[k] < (i+1)*100) k++;
+    ll dif = 0;
+    if (b == 1) dif = d[1];
+    else if (a == m) dif = 100*(n-1) - d[m];
+    else dif = (d[(b<m) ? b : m] - d[a] + 1) / 2;
+    //~ DBG(dif);
+    
+    ll tot = (ll)(dif+99)/100;
+    ll maxAct = 0;
+    //~ DBG(tot);
+    
+    if (a != 0 and d[a] % 100 == 0) a++;
+    forn(i,(a + tot < n) ? tot : n-a) maxAct += p[a+i];
+    
+    if (tot < b-a) {
+      ll act = 0;
+      forn(i,b-a) {
+	act -= p[a+i];
+	act += p[a+tot+i];
+	maxAct = (maxAct < act) ? act : maxAct;
+      }
     }
-    forn(i,m+1) cout << intervals[i] << "\n";
     
-    auto it = max_element(intervals.begin(),intervals.end());
-    //~ // cout << (it - intervals.begin()) << "\n";
-    
-    ll point = (it - intervals.begin());
-    ll x = (point == 0) ? 0 : point-1;
-    ll y = point;
-    ll coorX = d[x];
-    ll coorY = d[y];
-    double dif = double(coorY - coorX)/200;
-    ll tot = dif + 1;
-    //~ // cout << dif << " " << tot << "\n";
-    
-    ll dX = (coorX+99)/100; // 1
-    ll dY = (coorY+99)/100; // 3
-    if (dY > m) dY = m;
-    cout << dX << dY;
-    
-    ll act = 0;
-    
-    forn(i,tot) act += p[dX+i];
-    ll best = act;
-    
-    forn(i,(m-tot)) {
-      act -= p[i];
-      act += p[i+tot];
-      if (act > best) best = act;
-    }
-    cout << best << "\n";
-    
-    
+    maxTot = (maxTot < maxAct) ? maxAct : maxTot;
+    //~ DBG(maxAct);
+  }
+  cout << maxTot << "\n";
+  //~ DBG(maxTot);
+  
 
-    return 0;
+  return 0;
 }
 
 
