@@ -31,50 +31,37 @@ int main(){
   ll n,m; cin >> n >> m;
 
   vector<ll> p(n); forn(i,n) cin >> p[i];
-  vector<ll> d(m+1); forr(i,1,m+1) cin >> d[i];
+  vector<ll> d(m+1); 
+  forr(i,1,m+1) cin >> d[i];
   sort(d.begin(),d.end());
-  
-  ll k = 0; 
-  multiset<ll> multi;
-  forn (i,n) {
-    multi.insert(k);
-    if (k < m+1 and d[k] < (i+1)*100) k++;
-  }
   
   ll maxTot = 0;
   
-  forn(l,(m+1)) { // se recorren los intervalos buscando resultado optimo      
-    ll a = l;
+  forn(a,(m+1)) { // se recorren los intervalos buscando resultado optimo      
     ll b = a+1;
-    //~ DBG(a);
+    ll houses = d[b]-d[a]+99 / 100;
     
     ll dif = 0;
     if (b == 1) dif = d[1];
     else if (a == m) dif = 100*(n-1) - d[m];
-    else dif = (d[(b<m) ? b : m] - d[a] + 1) / 2;
-    //~ DBG(dif);
+    else dif = (d[b] - d[a] + 1) / 2;
     
     ll tot = (ll)(dif+99)/100;
-    ll maxAct = 0;
-    //~ DBG(tot);
-    
+
+    ll act = 0;
     if (a != 0 and d[a] % 100 == 0) a++;
-    forn(i,(a + tot < n) ? tot : n-a) maxAct += p[a+i];
+    forn(i,(a + tot < n) ? tot : n-a) act += p[a+i];
+    ll maxAct = act;
     
-    if (tot < b-a) {
-      ll act = 0;
-      forn(i,b-a) {
-	act -= p[a+i];
-	act += p[a+tot+i];
-	maxAct = (maxAct < act) ? act : maxAct;
-      }
+    forn(i,houses-tot) {
+      act -= p[a+i];
+      act += p[a+tot+i];
+      maxAct = max(maxAct,act);
     }
     
-    maxTot = (maxTot < maxAct) ? maxAct : maxTot;
-    //~ DBG(maxAct);
+    maxTot = max(maxTot,maxAct);
   }
   cout << maxTot << "\n";
-  //~ DBG(maxTot);
   
 
   return 0;
