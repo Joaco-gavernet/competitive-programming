@@ -23,15 +23,15 @@ typedef vector<ii> vii; typedef vector<bool> vb;
 #define esta(x,c) ((c).find(x) != (c).end())
 const int INF = 1<<30; // const ll INF = (1LL<<60);
 const int MOD = 1e9+7;  // const int MOD = 998244353;
-const int MAXN  = 2e5+5;
- 
+const int MAXN  = 2e5;
+
 int main(){  
   FIN;
   
   int n,m; cin >> n >> m;
-
+ 
   vector<int> p(n); forn(i,n) cin >> p[i];
-  vector<bool> v(n);
+  vector<bool> v(n); 
   vector<int> d(m); 
   forn(i,m) {
     cin >> d[i];
@@ -43,18 +43,18 @@ int main(){
   int ans = 0;
   
   // primer intervalo
-  for (int x=0; x<(d[0]+99)/100; x++) act += p[x];
+  for (int x=0; x<(int)((d[0]+99)/100); x++) act += p[x];
   ans = max(ans,act); 
  
   // ultimo intervalo
   act = 0;
-  for (int x=(d[m-1]+100)/100; x<n; x++) act += p[x];
+  for (int x=(int)((d[m-1]+100)/100); x<n; x++) act += p[x];
   ans = max(ans,act); 
  
   // intervalos entre heladerias
   forr(i,0,(m-1)) {
-    int dif = (d[i+1] - d[i]) / 2;
-    int houses = (dif + 100) / 100;
+    int dif = (d[i+1]-d[i])/2;
+    int houses = (dif+100)/100;
     int a = (d[i]+100)/100;
     int b = (d[i+1]+100)/100;
     
@@ -79,3 +79,6 @@ int main(){
   
   return 0;
 }
+
+
+
