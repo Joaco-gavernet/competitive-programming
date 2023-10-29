@@ -46,14 +46,12 @@ int main(){
       
       if (s[i] == s[SZ(s)-i-1]) {
 	if (s[i] == 0) {
-	  s.insert(SZ(s)-i+1,"01");
-	  v.pb(SZ(s)-i+1);
+	  s.insert(SZ(s)-int(i)+1,"01");
+	  v.pb(SZ(s)-int(i)-1);
 	} else {
-	  s.insert(SZ(s)-i,"01");
-	  v.pb(SZ(s)-i);
+	  s.insert(SZ(s)-int(i),"01");
+	  v.pb(SZ(s)-int(i)-2);
 	}
-	//~ DBG(s);
-	//~ DBG(v[SZ(v)-1]);
 	i--;
 	res++;
       };
