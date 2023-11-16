@@ -31,44 +31,35 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
-//rotate Left
-void r_left(int *a,int n) 
-{ 
-  int tmp=a[0];
-  memmove(a,a+1,sizeof(int)*(n-1));
-  a[n-1]=tmp;
-} 
-//rotate right
-void r_right(int *a,int n) 
-{ 
-    int tmp=a[n-1];
-    memmove(a+1,a,sizeof(int)*(n-1));
-    a[0]=tmp;
- } 
+vector< vector<ll> > g; // graph represented as an adjacency list
+vector <bool> visto(MAXN,false);
+
+ll dfs(ll v, ll k) {
+  //~ visto[v] = true;
+  DBG(v);
+  for (ll u : g[v]) if (!visto[u] and k > 0) return dfs(u,k-1);
+  return k;
+}
 
 int main(){
   FIN;
   int t; cin >> t;
   
   forn(_,t) {
-    int n, k; cin >> n >> k;
-    vector<int> v(n); forn(i,n) cin >> v[i];
-    int ops = 0; // total available ops 
-    int rots = 0; // current rotations to right
+    ll n, k; cin >> n >> k;
+    g.resize(n);
+    vector<ll> v(n); forn(i,n) cin >> v[i];
     
-    //~ DBG("pre");
-    r_left(&v[0],n); rots++;
-    while (rots < n) {
-      DBG(rots);
-      if (v[rots] == rots) ops++,rots=0;
-      
-      r_left(&v[0],n); rots++;
+    forn(i,n) {
+      if (v[i] <= n) {
+	g[v[i]-1].pb((i-v[i]+n) % n);
+      }
     }
     
-    
-    if (ops == k) cout << "YES\n";
+    ll rest = dfs(ll(0),k);
+    if (rest == 0) cout << "YES\n";
     else cout << "NO\n";
-    
+    RAYA;
   }
   
   return 0;
