@@ -34,10 +34,18 @@ const int MAXN = (int)(2e5+5);
 vector< vector<ll> > g; // graph represented as an adjacency list
 vector <bool> visto(MAXN,false);
 
+ll n;
+
 ll dfs(ll v, ll k) {
-  //~ visto[v] = true;
-  DBG(v);
-  for (ll u : g[v]) if (!visto[u] and k > 0) return dfs(u,k-1);
+  visto[v] = true;
+  
+  if (k == 0) return 0;
+  for (ll u : g[v]) {
+    if (visto[u]) k = 0;
+    else k = dfs(u,k-1);
+  }
+
+  visto[v] = false;
   return k;
 }
 
@@ -46,20 +54,25 @@ int main(){
   int t; cin >> t;
   
   forn(_,t) {
-    ll n, k; cin >> n >> k;
+    ll k; cin >> n >> k;
     g.resize(n);
+    visto.assign(visto.size(), false);
+    
     vector<ll> v(n); forn(i,n) cin >> v[i];
     
     forn(i,n) {
       if (v[i] <= n) {
-	g[v[i]-1].pb((i-v[i]+n) % n);
+	g[(i+1+n)%n].pb((i+1-v[i]+n)%n);
       }
     }
     
-    ll rest = dfs(ll(0),k);
+    //~ forn(i,n) DBG(g[i]);
+    
+    ll rest = dfs(0,k);
     if (rest == 0) cout << "YES\n";
     else cout << "NO\n";
-    RAYA;
+    //~ RAYA;
+    g.clear();
   }
   
   return 0;
