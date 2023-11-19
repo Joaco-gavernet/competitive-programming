@@ -31,6 +31,9 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+bool f(int a, int b) {
+  return abs(b-a) % 2 == 1;
+}
 
 int main(){
   FIN;
@@ -38,24 +41,32 @@ int main(){
   
   forn(_,t) {
     int n; cin >> n;
-    vector<int> v(n); forn(i,n) cin >> v[i];
-    vector<int> pSum(n); // prefix sum array considering parity
+    vector<int> v(n+1); forr(i,1,n+1) cin >> v[i];
+    vector<int> pSum(n+1); // prefix sum array considering parity
     
-    forr(i,1,n) {
-      if (v[i-1] + v[i] % 2 == 1) pSum[i] = pSum[i-1] + v[i];
+    int ans = -MAXN;
+    
+    pSum[1] = v[1];
+    forr(i,2,n+1) {
+      if (f(v[i],v[i-1])) pSum[i] = pSum[i-1] + v[i];
       else pSum[i] = v[i];
     }
+    //~ dbg(v);
+    //~ dbg(pSum);
     
     // two pointers
-    int l = -1;
-    int r = 0;
-    while (r < n) {
-      if (pSum[r] - pSum[l] > 0) {
-	
-      }
-    }
+    int l = 0;
+    int r = 1;
     
-    cout << pSum[r] - pSum[l] << '\n';
+    do {
+      if (f(v[r-1],v[r]) == 0) l = 0;
+      //~ dbg(l,r,ans,pSum[r]-pSum[l]);
+      ans = max(ans,pSum[r]-pSum[l]);
+      if (pSum[r]-pSum[l] < 0) l = r;
+      r++;
+    } while (r < n + 1);
+  
+    cout << ans << '\n';
   }
   
   
