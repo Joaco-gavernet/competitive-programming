@@ -36,7 +36,6 @@ int main(){
     cin >> y >> x;
     ll tot = 0;
     tot += (y < x) ? ((x-1)*(x-1)) : ((y-1)*(y-1));
-    if (x == 1 and y == 1) tot = 1;
     //~ DBG(tot);
     
     if (y <= x) {
