@@ -44,35 +44,30 @@ int main(){
     ll n; cin >> n;
 
     vector<int> v(n); forn(i,n) cin >> v[i];
-    //~ dbg(v);
     
     // divisors
     vector<ll> d; 
     forr(i,1,(n/2)+1) if (n % i == 0) d.pb(i);
-    d.pb(n);
-    //~ dbg(d); 
     
-    // queries<tot,max,min>
-    vector<Triplet> q(d.size());
+    // queries<min,max>
+    vector<pair<ll,ll>> q(d.size());
     
-    forn(i,n) {
-      forn(k,d.size()) {
+    forn(k,d.size()) {
+      ll tot = 0;
+      forn(i,n) {
+	tot += v[i];
 	if ((i+1)%d[k] == 0) {
-	  if (q[k].max < q[k].tot) q[k].max = q[k].tot;
-	  if (q[k].min > q[k].tot or q[k].min == 0) q[k].min = q[k].tot;
-	  q[k].tot = 0;
+	  if (q[k].first == 0) q[k].first = tot;
+	  q[k].first = min(q[k].first,tot);
+	  q[k].second = max(q[k].second,tot);
+	  tot = 0;
 	}
-	q[k].tot += v[i];
       }
     }
     
-    //~ forn(i,d.size()) dbg(q[i].tot,q[i].max,q[i].min);
-    
     ll res = 0;
-    forn(i,d.size()) if (q[i].max - q[i].min > res) res = q[i].max - q[i].min;
+    forn(i,d.size()) res = max(q[i].second-q[i].first,res);
     cout << res << '\n';
-    
-    RAYA;
   }
   
   
