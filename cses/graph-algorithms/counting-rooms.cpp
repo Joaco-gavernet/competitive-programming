@@ -29,7 +29,7 @@ typedef long long ll;
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e5+5);
+const int MAXN = (int)(2e6+5);
 
 vector<vector<int>> g; // graph represented as an adjacency list
 vector<bool> visto(MAXN,true);
@@ -43,21 +43,28 @@ int main(){
   FIN;
   
   int n,m; cin >> n >> m;
-  vector<vector<char>> mat(n); // mat - original rooms
-  forn(i,n) mat[i].resize(m);
-  forn(i,n) forn(j,m) cin >> mat[i][j];
+  char* ant = (char*)calloc(m,sizeof(char)); 
+  char* act = (char*)calloc(m,sizeof(char));
   
   //~ dbg(n,m);
   g.resize(n*m); // g - constructed graph
+  
   forn(i,n) {
     forn(j,m) {
-      if (mat[i][j] == '.') {
-	//~ if (i == 1 and j == 9) dbg(i > 1 and mat[i-1][j] == '.');
-	if (j > 0 and mat[i][j-1] == '.') g[i*m+j].pb(i*m+j-1);
-	if (i > 0 and mat[i-1][j] == '.') g[i*m+j].pb((i-1)*m+j);
-	if (j+1 < m and mat[i][j+1] == '.') g[i*m+j].pb(i*m+j+1);
-	if (i+1 < n and mat[i+1][j] == '.') g[i*m+j].pb((i+1)*m+j);
+      cin >> act[j];
+      if (act[j] == '.') {
+	if (j > 0 and act[j-1] != '#') {
+	  g[i*m+j].pb(i*m+j-1);
+	  g[i*m+j-1].pb(i*m+j);
+	}
+	if (i > 0 and ant[j] != '#') {
+	  g[i*m+j].pb((i-1)*m+j);
+	  g[(i-1)*m+j].pb(i*m+j);
+	}
 	visto[i*m+j] = 0;
+	free(ant);
+	ant = act;
+	act = (char*)calloc(m,sizeof(char));
       }
     }
   }
@@ -68,7 +75,6 @@ int main(){
   int tot = 0;
   forn(i,(n*m)) {
     if (visto[i] == 0) {
-      //~ dbg(i,tot);
       dfs(i);
       tot++;
     }
