@@ -37,8 +37,8 @@ const int MAXN = (int)(2e5+5);
 
 int solve(int n, int k, bool one) {
   if (n == 1) return 1;
-  else if (n%2==0 and 2*k <= n) return 2*k;
-  else if (n%2==1 and 2*k-1 <= n) return 2*k-1;
+  else if (one == true and 2*k <= n) return 2*k;
+  else if (one == false and 2*k-1 <= n) return 2*k-1;
   else {
     if (one == true) {
       if (n%2==0) return 2*solve(n/2+(n&1),k-n/2,one)-1;
