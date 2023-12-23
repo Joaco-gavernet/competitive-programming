@@ -36,18 +36,28 @@ const int MAXN = (int)(2e5+5);
 
 
 int solve(int n, int k, bool one) {
-  if (n == 1) return 1;
-  else if (one == true and 2*k <= n) return 2*k;
-  else if (one == false and 2*k-1 <= n) return 2*k-1;
+  int res = 0;
+  
+  if (one == true and 2*k <= n) // check base case for even
+    res = 2*k; 
+  else if (one == false and 2*k-1 <= n) // check base case for odd
+    res = 2*k-1;
   else {
-    if (one == true) {
-      if (n%2==0) return 2*solve(n/2+(n&1),k-n/2,one)-1;
-      else return 2*solve(n/2+(n&1),k-n/2,!one)-1;
+    // set newN and newK next step in recursion
+    int newN = n/2+(n&1);
+    if (n%2 == 1 and one == false) newN -= 1;
+    int newK = k-(n-newN);
+    
+    // consider n even (keep order) or odd (alternate order)
+    if (n%2==0) {
+      if (one == true) res = 2*solve(newN,newK,one)-1;
+      else res = 2*solve(newN,newK,one);
     } else {
-      if (n%2==0) return 2*solve(n/2+(n&1),k-n/2,one);
-      else return 2*solve(n/2+(n&1),k-n/2,!one);
+      if (one == true) res = 2*solve(newN,newK,!one)-1;
+      else res = 2*solve(newN,newK,!one);
     }
   }
+  return res;
 }
 
 
@@ -59,11 +69,8 @@ int main(){
 
   forn(i,t) {
     cin >> a >> b;
-    dbg(a,b);
     
     cout << solve(a,b,true) << '\n';
-    
-    RAYA;
   }
   
   return 0;
