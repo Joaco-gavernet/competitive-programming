@@ -41,34 +41,28 @@ int main(){
     // a = base
     // b = exponent
     ll a, b; cin >> a >> b;
-    //~ dbg(a,b);
 
-    // step 1: memoization with dp vector
+    // step 1: construction and memoization with dp vector
     vector<ll> v = {1,a};
     ll k = a;
     forn(_,log2(b)) {
       k = op(k,k);
       v.pb(k);
     }
-    //~ dbg(v);
     
     // step 2: use dp vector
     ll bis = b;
     ll ans = 1;
     while (floor(log2(bis)) > 0) {
-      ll m = log2(bis);
-      k = op(v[m],v[m]);
-      ans = op(ans,k);
-      //~ dbg(bis,m,ans);
-      
-      bis -= pow(2,m);
+      ll m = log2(bis); // find exponent odd "m" in base "a"
+      ans = op(ans,op(v[m],v[m])); // use precalculated values in "v"
+      bis -= pow(2,m); // substract what was calculated from "bis" ("b") 
     }
-    //~ dbg(bis);
     
+    // step 3: consider if b is odd
     if (bis == 1) ans = op(ans,a);
     
     cout << ans << '\n';
-    //~ RAYA;
   }
   
   return 0;
