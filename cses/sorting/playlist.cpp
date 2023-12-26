@@ -41,7 +41,6 @@ int main(){
   last.reserve(1024); // reserve space beforehand
   last.max_load_factor(0.25); // change probability of collision for efficiency
   forn(i,n) cin >> v[i];
-  //~ dbg(v);
   
   int ans = 1;
   int act = 0;
@@ -49,10 +48,8 @@ int main(){
   forn(i,n) {
     act = min(int(i+1-last[v[i]]),act);
     if (last[v[i]] == 0 or (int(i+1-last[v[i]]) > act)) act++;
-    //~ dbg(act,v[i],last[v[i]]);
 
     last[v[i]] = i+1;
-    
     ans = max(act,ans);
   }
   
