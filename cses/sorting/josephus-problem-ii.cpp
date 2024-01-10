@@ -31,6 +31,10 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+// Difference between set and ordered set: 
+// 1. find_by_order(k): iterator
+// 2. order_of_key(k): integer
+
 // Importing header files
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
