@@ -31,30 +31,32 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+// Importing header files
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+ 
+// Declaring Ordered Set
+typedef tree<int, null_type, less<int>, rb_tree_tag,
+        tree_order_statistics_node_update>
+    pbds;
 
 int main(){
   FIN;
   
   int n,k; cin >> n >> k;
-  vector<bool> v(n);
+  pbds josep;
+  forr(i,1,n+1) josep.insert(i);
   
-  int jp = k%n;
-  int i = 0, q = 0;
-  
-  while (q < n) {
-    while (i < n) {
-      if (v[i] == 0) {
-	if (jp > 0) jp--;
-	else {
-	  cout << i+1 << ' ';
-	  v[i] = 1; q++;
-	  jp = k % max(1,(n-q));
-	}
-      }
-      i++;
-    }
-    i = 0;
+  int pos = 0;
+  while (josep.size() > 1) {
+    pos = (pos+k) % int(josep.size());
+    cout << *(josep.find_by_order(pos)) << ' ';
+    josep.erase(*(josep.find_by_order(pos)));
+    pos %= (int)josep.size();
   }
+  cout<<*(josep.find_by_order(0))<<endl;
+
 
   return 0;
 }
