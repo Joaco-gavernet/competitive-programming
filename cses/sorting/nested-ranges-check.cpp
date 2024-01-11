@@ -34,6 +34,7 @@ typedef array<int,3> triple;
 
 #define f first
 #define s second
+#define endl '\n'
 
 bool inc(pair<pair<int,int>,int> a, pair<pair<int,int>,int> b) {
   if (a.f.f == b.f.f) return a.f.s > b.f.s;
@@ -59,11 +60,10 @@ int main(){
   vector<int> b(n);
   
   // solving for b
-  sort(all(v),inc);
-  dbg(v);
+  sort(all(v),inc); // sort: a.first < b.first and a.second > b.second
   int top = 0;
   for (auto p : v) {
-    if (p.f.s <= top) b[p.s]++;
+    if (p.f.s <= top) b[p.s]++; // increment contained ranges
     top = max(p.f.s,top);
   }
   
@@ -71,11 +71,10 @@ int main(){
   sort(all(v),[](pair<pair<int,int>,int> x, pair<pair<int,int>,int> y) {
     if (x.f.f == y.f.f) return x.f.s < y.f.s;
     return x.f.f > y.f.f; 
-  });
-  dbg(v);
+  }); // sort: a.first > b.first and a.second < b.second
   int down = INF;
   for (auto p : v) {
-    if (p.f.s >= down) a[p.s]++; 
+    if (p.f.s >= down) a[p.s]++; // increment container ranges
     down = min(p.f.s,down);
   }
   
