@@ -38,15 +38,20 @@ bool f(pair<int,int> a, pair<int,int> b) {
 int main(){
   FIN;
   
+  // 3
+  // 1 4
+  // 3 6
+  // 5 8
+  
   int n; cin >> n;
   vector<pair<int,int>> v(n); 
   forn(i,n) cin >> v[i].first >> v[i].second;
   sort(all(v),f);
   
-  int tot = 1, z = 0;
+  int tot = 1;
   forr(i,1,n) 
-    if (v[z].second <= v[i].first) tot++, z = i;
-  cout << tot << '\n';
+    if (v[i-1].second <= v[i].first) tot++;
+  cout << tot << '\n';	
   
   return 0;
 }
