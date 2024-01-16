@@ -42,13 +42,10 @@ int main(){
   vector<pair<int,int>> v(n); 
   forn(i,n) cin >> v[i].first >> v[i].second;
   sort(all(v),f);
-  //~ dbg(v);
   
   int tot = 1;
-  int z = 0;
-  forr(i,1,n) {
-    if (v[i].first >= v[z].second) tot++, z = i;
-  }
+  forr(i,1,n) 
+    if (v[i-1].second <= v[i].first) tot++;
   cout << tot << '\n';
   
   return 0;
