@@ -32,25 +32,28 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 bool f(pair<int,int> a, pair<int,int> b) {
-  return a.second < b.second;
+  return (a.second == b.second) ? a.first < b.first : a.second < b.second;
 }
 
 int main(){
   FIN;
   
-  // 3
-  // 1 4
-  // 3 6
-  // 5 8
-  
-  int n; cin >> n;
+  int n, k; cin >> n >> k;
   vector<pair<int,int>> v(n); 
   forn(i,n) cin >> v[i].first >> v[i].second;
-  sort(all(v),f);
+  sort(all(v),f); // sort(begin(v),end(v);
   
-  int tot = 1;
-  forr(i,1,n) 
-    if (v[i-1].second <= v[i].first) tot++;
+  multiset<int> q; 
+  forn(i,k) q.insert(0);
+  int tot = 0;
+  forn(i,n) {
+    auto j = q.upper_bound(v[i].first);
+    if (j != q.begin()) {
+      q.erase(--j);
+      q.insert(v[i].second);
+      tot++;
+    }
+  }
   cout << tot << '\n';	
   
   return 0;
