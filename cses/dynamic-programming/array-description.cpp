@@ -39,8 +39,10 @@ int main(){
   vector<ll> v(n); forn(i,n) cin >> v[i];
   vector<vector<ll>> dp(n, vector<ll>(m+2));
   
-  if (v[0] != 0) dp[0][v[0]] = 1;
-  else forr(i,1,m+1) dp[0][i] = 1;
+  if (v[0] != 0) 
+    dp[0][v[0]] = 1;
+  else 
+    forr(i,1,m+1) dp[0][i] = 1;
   
   forr(i,1,n) {
     if (i < n and v[i] != 0) {
@@ -54,16 +56,10 @@ int main(){
     }
   }
   
-  //~ forn(i,n) dbg(dp[i]);
-  //~ forr(i,n-2,n) dbg(dp[i]);
-  
-  if (v[n-1] != 0) {
-    dbg("aca");
+  if (v[n-1] != 0) 
     cout << dp[n-1][v[n-1]]%MOD << '\n';
-  }
-  else {
+  else 
     cout << accumulate(all(dp[n-1]),0LL)%MOD << '\n';
-  }
   
   return 0;
 }
