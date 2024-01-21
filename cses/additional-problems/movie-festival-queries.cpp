@@ -31,7 +31,7 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const ll LOG = 20;
 const int MAXN = (int)(1e6+5);
-#define pi pair<ll,ll>
+#define pi pair<int,int>
 
 bool f(pi a, pi b) {
   return (a.second == b.second) ? a.first < b.first : a.second < b.second;
@@ -44,30 +44,26 @@ int log2(int x) {
 int main(){
   FIN;
   
-  vector<vector<ll>> t(MAXN, vector<ll>(LOG,INF)); // sparse table
+  vector<vector<int>> t(MAXN, vector<int>(LOG,INF)); // sparse table
   int n,q; cin >> n >> q;
   vector<pi> v(n); 
-  ll top = -MAXN;
   forn(i,n) {
     cin >> v[i].first >> v[i].second;
     t[v[i].first][0] = min(t[v[i].first][0],v[i].second);
-    top = max(top,v[i].second);
   }
   sort(all(v),f);
   
   // preprocessing sparse table
-  for (ll i = top-2; i >= 0; i--) {
+  for (ll i = MAXN-2; i >= 0; i--) {
     t[i][0] = min(t[i+1][0], t[i][0]);
   }
   for(int j = 1; j < LOG; j++) {
-    forn(i,n) {
+    forn(i,MAXN) {
       if (t[i][j-1] == INF) t[i][j] = INF;
       else t[i][j] = t[t[i][j-1]][j-1];
     }
   }
-  
-  //~ forn(i,top-2) dbg(t[i]);
-  
+    
   // solving queries online in O(log2(n)) 
   while (q--) {
     ll l,r; cin >> l >> r;
