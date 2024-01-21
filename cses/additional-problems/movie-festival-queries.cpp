@@ -30,13 +30,15 @@ typedef long long ll;
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const ll LOG = 20;
-
-//~ const int MAXN = (int)(200);
-const int MAXN = (int)(2e6+5);
+const int MAXN = (int)(1e6+5);
 #define pi pair<ll,ll>
 
 bool f(pi a, pi b) {
   return (a.second == b.second) ? a.first < b.first : a.second < b.second;
+}
+
+int log2(int x) {
+  return sizeof(int)*8 - 1 - __builtin_clz(x);
 }
 
 int main(){
@@ -57,17 +59,24 @@ int main(){
   for (ll i = top-2; i >= 0; i--) {
     t[i][0] = min(t[i+1][0], t[i][0]);
   }
+  for(int j = 1; j < LOG; j++) {
+    forn(i,n) {
+      if (t[i][j-1] == INF) t[i][j] = INF;
+      else t[i][j] = t[t[i][j-1]][j-1];
+    }
+  }
+  
+  //~ forn(i,top-2) dbg(t[i]);
   
   // solving queries online in O(log2(n)) 
   while (q--) {
     ll l,r; cin >> l >> r;
-    ll pos = l, cont = 0;
     
-    while (pos <= r) {
-      if (t[pos][0] <= r) cont++, pos = t[pos][0];
-      else break;
+    ll ans = 0;
+    for (ll j = LOG-1; j >= 0; j--) {
+      if (t[l][j] <= r) ans += (1<<j), l = t[l][j];
     }
-    cout << cont << '\n';
+    cout << ans << '\n';
   }
   
   
