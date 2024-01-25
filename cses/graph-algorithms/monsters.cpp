@@ -18,7 +18,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 
 typedef long long ll;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
-#define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
+#define forr(i, a, b) for(int i = (a); i < (int) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define mp make_pair
@@ -28,105 +28,98 @@ typedef long long ll;
 #define esta(x,c) ((c).find(x) != (c).end())
 #define RAYA cerr << "===============================" << endl
 const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1LL<<50); // (1LL<<60)
+const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
-#define tipo ll
-//~ tipo INF = (tipo)(1e18+7);
-
-int n,m;
-vector<int> monsters;
-vector<string> a; 
-vector<vector<int>> g; // graph represented as an adjacency list
-
-struct nodo {  
-  bool visto;
-  ll from; 
-  int time;
-  char c = 'x';
-};
-vector<nodo> ans; 
-
-bool cond(ll y, ll x) {
-  return (a[y][x] == '.' or a[y][x] == 'A' or a[y][x] == 'M');
+//~ const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1};
+char fx(int dx) { return (dx == 1) ? 'R' : 'L'; }
+char fy(int dy) { return (dy == 1) ? 'U' : 'D'; }
+char f(int dx, int dy) {
+  if (dx != 0) return fx(dx);
+  else return fy(dy);
 }
 
-bool border(int u) {
-  if ((u%m) == 0 or (u%m) == m-1) return true;
-  if ((u/m) == 0 or (u/m) == n-1) return true;
+struct nodo {  
+  int dist = INF;
+  pair<int,int> from = {INF,INF}; 
+  char c = 'x';
+};
+
+bool border(int a, int b, int n, int m) { // reivse ??????????
+  if (a == 0 or b == 0) return true;
+  if (a == n-1 or b == m-1) return true;
   return false;
 }
 
-int BFS(int start) {
-  queue<pair<int,char>> q; 
-  for (int i: monsters) q.push({i,'M'}), ans[i] = {true, i, 0};
-  q.push({start,'A'});
+bool is_valid(int x, int y, vector<string> &t, vector<vector<nodo>> &ans) {
+  int n = t.size(), m = t[0].size();
+  if (x < 0 or x >= n or y < 0 or y >= m) return false;
+  if (ans[x][y].dist != INF and ans[x][y].dist == true) return false;
+  if (t[x][y] != '.') return false;
+  return true;
+}
+
+//~ struct dup { int x,y; }
+struct tup { int x,y,c; };
+
+pair<int,int> BFS(vector<string> &tablero, vector<vector<nodo>> &ans) {
+  int n = tablero.size(), m = tablero[0].size();
+  deque<tup> q;
   
-  ans[start] = {true, start, 0};
-  
-  while(!q.empty()) {
-    auto [v,t] = q.front(); q.pop();
-    if (t == 'A' and border(v)) return v;
-    
-    for (int u : g[v]) {
-      if (ans[u].visto) continue;
-      
-      ans[u] = {true, v, ans[v].time+1};
-      if (u == v-1) ans[u].c = 'L';
-      else if (u == v+1) ans[u].c = 'R';
-      else if (u < v) ans[u].c = 'U';
-      else ans[u].c = 'D';
-      
-      q.push({u,t});
+  // adding monsters and finally myself to queue
+  forn(i,n) forn(j,m) {
+    if (tablero[i][j] == 'M') {
+      q.push_front({i,j,'M'});
+      ans[i][j].dist = 0;
+    } else if (tablero[i][j] == 'A') {
+      q.push_back({i,j,'A'});
+      ans[i][j].dist = 0;
     }
   }
-  return -1;
+  
+  while (q.size()) { 
+    auto [x,y,c] = q.front(); q.pop_front();
+    for (int dx : {-1,0,1}) {
+      for (int dy : {-1,0,1}) {
+	if (abs(dx)+abs(dy) != 1) continue;
+	if (is_valid(x+dx, y+dy, tablero, ans)) {
+	  if (c == 'A' and border(x,y,n,m)) return {x,y};
+	  q.push_back({x+dx, y+dy, c});
+	  ans[x+dx][y+dy] = {ans[x][y].dist+1,{x,y},f(dx,dy)};
+	  if (x == 1 and y == 5) dbg(x+dx,y+dy,ans[x+dx][y+dy].from);
+	}
+      }
+    }
+  }
+  return {-1,-1};
 }
 
 int main(){
   FIN;
   
-  cin >> n >> m;
-  a.resize(n);
-  forn(i,n) cin >> a[i];
+  int n,m; cin >> n >> m;
+  vector<string> tablero(n); forn(i,n) cin >> tablero[i];
   
-  // build graph from input
-  g.resize(n*m);
-  int init = -1;
-  forn(y,n) {
-    forn(x,m) {
-      if (a[y][x] != '#') {
-	if (a[y][x] == 'A') init = y*m+x;
-	if (a[y][x] == 'M') monsters.pb(y*m+x);
-	
-	if (x-1 >= 0 and cond(y,x-1)) g[y*m+x].pb(y*m+x-1);
-	if (x+1 < m and cond(y,x+1)) g[y*m+x].pb(y*m+x+1);
-	if (y-1 >= 0 and cond(y-1,x)) g[y*m+x].pb((y-1)*m+x);
-	if (y+1 < n and cond(y+1,x)) g[y*m+x].pb((y+1)*m+x);
-      }
-    }
-  }
-  
-  ans.resize(n*m); 
-  forn(i,n*m) ans[i].visto = false; // simplify with constructor?
-  
-  int last = BFS(init); // to find optimum path to win
+  vector<vector<nodo>> ans(n, vector<nodo>(m));
+  auto [x,y] = BFS(tablero,ans);
   
   
   // build solution
-  if (last == -1) cout << "NO\n";
+  if (x == -1) cout << "NO\n";
   else {
     cout << "YES\n";
-    string res;
-    while (last != init) {
-      res += ans[last].c;
-      last = ans[last].from;
-    }
-    cout << res.size() << '\n';
-    reverse(all(res));
-    cout << res << '\n';
+    forn(i,n) forn(j,m) dbg(i,j,ans[i][j].from);
+    
+    //~ string res;
+    //~ while (x != INF) {
+      //~ dbg(x,y);
+      //~ res += ans[x][y].c;
+      //~ tie(x,y) = ans[x][y].from;
+    //~ }
+    //~ cout << res.size() << '\n';
+    //~ reverse(all(res));
+    //~ cout << res << '\n';
   }
-
   
   
   return 0;
