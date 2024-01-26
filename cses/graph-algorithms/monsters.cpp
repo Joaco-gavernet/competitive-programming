@@ -32,15 +32,13 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 //~ const int dx[4] = {1,0,-1,0}, dy[4] = {0,1,0,-1};
-char fx(int dx) { return (dx == 1) ? 'R' : 'L'; }
-char fy(int dy) { return (dy == 1) ? 'U' : 'D'; }
 char f(int dx, int dy) {
-  if (dx != 0) return fx(dx);
-  else return fy(dy);
+  if (dy == 0) return (dx == 1) ? 'D' : 'U'; 
+  else return (dy == 1) ? 'R' : 'L';
 }
 
-struct nodo {  
-  int dist = INF;
+struct nodo {
+  bool visto = false;
   pair<int,int> from = {INF,INF}; 
   char c = 'x';
 };
@@ -54,7 +52,7 @@ bool border(int a, int b, int n, int m) { // reivse ??????????
 bool is_valid(int x, int y, vector<string> &t, vector<vector<nodo>> &ans) {
   int n = t.size(), m = t[0].size();
   if (x < 0 or x >= n or y < 0 or y >= m) return false;
-  if (ans[x][y].dist != INF and ans[x][y].dist == true) return false;
+  if (ans[x][y].visto) return false;
   if (t[x][y] != '.') return false;
   return true;
 }
@@ -66,27 +64,30 @@ pair<int,int> BFS(vector<string> &tablero, vector<vector<nodo>> &ans) {
   int n = tablero.size(), m = tablero[0].size();
   deque<tup> q;
   
-  // adding monsters and finally myself to queue
+  // multisourcing: adding monsters and finally myself to queue
   forn(i,n) forn(j,m) {
     if (tablero[i][j] == 'M') {
       q.push_front({i,j,'M'});
-      ans[i][j].dist = 0;
+      ans[i][j].visto = 1;
     } else if (tablero[i][j] == 'A') {
       q.push_back({i,j,'A'});
-      ans[i][j].dist = 0;
+      ans[i][j].visto = 1;
     }
   }
   
   while (q.size()) { 
-    auto [x,y,c] = q.front(); q.pop_front();
+    tup i = q.front(); q.pop_front();
+    int x = i.x, y = i.y; char c = i.c;
+    if (c == 'A' and border(x,y,n,m)) return {x,y};
+    
     for (int dx : {-1,0,1}) {
       for (int dy : {-1,0,1}) {
 	if (abs(dx)+abs(dy) != 1) continue;
 	if (is_valid(x+dx, y+dy, tablero, ans)) {
-	  if (c == 'A' and border(x,y,n,m)) return {x,y};
 	  q.push_back({x+dx, y+dy, c});
-	  ans[x+dx][y+dy] = {ans[x][y].dist+1,{x,y},f(dx,dy)};
-	  if (x == 1 and y == 5) dbg(x+dx,y+dy,ans[x+dx][y+dy].from);
+	  ans[x+dx][y+dy].visto = 1; 
+	  ans[x+dx][y+dy].from = {x,y}; 
+	  ans[x+dx][y+dy].c = f(dx,dy);
 	}
       }
     }
@@ -103,22 +104,20 @@ int main(){
   vector<vector<nodo>> ans(n, vector<nodo>(m));
   auto [x,y] = BFS(tablero,ans);
   
-  
   // build solution
   if (x == -1) cout << "NO\n";
   else {
     cout << "YES\n";
-    forn(i,n) forn(j,m) dbg(i,j,ans[i][j].from);
     
-    //~ string res;
-    //~ while (x != INF) {
-      //~ dbg(x,y);
-      //~ res += ans[x][y].c;
-      //~ tie(x,y) = ans[x][y].from;
-    //~ }
-    //~ cout << res.size() << '\n';
-    //~ reverse(all(res));
-    //~ cout << res << '\n';
+    string res;
+    while (x != INF) {
+      if (ans[x][y].c == 'x') break;
+      res += ans[x][y].c;
+      tie(x,y) = ans[x][y].from;
+    }
+    cout << res.size() << '\n';
+    reverse(all(res));
+    cout << res << '\n';
   }
   
   
