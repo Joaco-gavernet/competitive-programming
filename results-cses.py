@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
+import numpy as np
+from datetime import datetime
 
 login_data = {
     "nick": "Chusma",
@@ -30,7 +32,7 @@ df_all = pd.DataFrame()
 with requests.Session() as s:
     url = "https://cses.fi/login"
     r = s.get(url)
-    soup = BeautifulSoup(r.content)
+    soup = BeautifulSoup(r.content, features="lxml")
     login_data["csrf_token"] = soup.find("input", attrs={"name": "csrf_token"})["value"]
     r = s.post(url, data=login_data)
 
@@ -61,7 +63,13 @@ with requests.Session() as s:
 
 
 df_all.loc["Total"] = df_all.apply(lambda x: x.value_counts()["AC"])
-df_all = df_all.loc[["Total"] + df.index.to_list()[:-1]]
-df_all.to_excel("Resultados_CSES.xlsx")
+df_all = df_all.reset_index().apply(np.roll, shift=1).set_index("index")
+with pd.ExcelWriter(
+    "Resultados_CSES.xlsx", engine="openpyxl", mode="a", if_sheet_exists="replace"
+) as writer:
+    hoy = datetime.now()
+    sheet = f"{hoy.year}-{hoy.month}-{hoy.day}"
+    df_all.to_excel(writer, sheet_name=sheet)
+    df_all.to_excel(writer, sheet_name="data")
 
 print(df_all)
