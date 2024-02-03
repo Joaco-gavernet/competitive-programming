@@ -90,31 +90,22 @@ struct SCC {
 #define f first
 #define s second
 
-bitset<MAXN> visto;
-
-// Topological sort
-// Complexity: O(n+m)
+// Topological sort O(n+m)
 vi tsort(vector<vi> &g, int n){  // lexicographically smallest topological sort
-    vi r; priority_queue<ll> q;
-    vi d(2*n);
-    forn(i, n) for(ll j: g[i]) d[j]++;
-    forn(i, n) if(!d[i]) q.push(-i);
-    while(!q.empty()){
-        ll x=-q.top(); q.pop(); 
-        if (visto[x] == 1) r.pb(x);
-        for(ll j: g[x]){
-            d[j]--;
-            if(!d[j]) q.push(-j);
-        }
+  bitset<MAXN> visto;
+  vi r; priority_queue<ll> q;
+  vi d(2*n);
+  forn(i, n) for(ll j: g[i]) d[j]++;
+  forn(i, n) if(!d[i]) q.push(-i);
+  while(!q.empty()){
+    ll x=-q.top(); q.pop(); 
+    visto[x] = 1; r.pb(x);
+    for(ll j: g[x]){
+      d[j]--;
+      if(!d[j]) q.push(-j);
     }
-    return r;  // if not DAG it will have less than n elements
-}
-
-void dfs(int v, vector<vi> &g) {
-  visto[v] = true;
-  for(int c: g[v]) {
-      if (visto[c] == 0) dfs(c,g);
   }
+  return r;  // if not DAG it will have less than n elements
 }
 
 
@@ -123,8 +114,9 @@ int main(){
 
   // Steps for solution: 
   // 1. SCCs share a common profit and could be seen as a unique node.
-  // 2. After simplifying nodes in SCCs, build alternative graph. 
-  // 3. Find answer with Dynamic-Programming.
+  // 2. After simplifying nodes in SCCs, build alternative DAG.  
+  // 3. Find topological order for processing. 
+  // 4. Solve maximum with Dynamic-Programming.
 
   int n,m; cin >> n >> m;
   w.resize(n);
@@ -154,22 +146,15 @@ int main(){
   }
 
   vector<ll> dp(nn);
-  dfs(0,ng);
   vi tp = tsort(ng,nn);
-  dbg("fin.");
-  dbg(nw);
-  forn(i,nn) dbg(ng[i]);
   forn(i,nn) dp[i] = nw[i];
-  dbg(dp);
 
   ll tot = 0;
   for(int i: tp) { // push dp
     for(int x: ng[i]) {
-      dbg(dp[i] + nw[x]); // check ????????????
       dp[x] = max(dp[x], dp[i] + nw[x]);
     }
     tot = max(tot,dp[i]);
-    dbg(dp);
   }
 
   cout << tot << '\n';
