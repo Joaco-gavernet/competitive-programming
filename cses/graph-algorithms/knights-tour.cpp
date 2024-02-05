@@ -32,62 +32,67 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 
+const int top = 64;
+vector<vector<int>> g(top);
+vector<int> jumps(top), ans(top);
+
 int dx[] = {1,2,2,1,-1,-2,-2,-1};
 int dy[] = {2,1,-1,-2,-2,-1,1,2};
+
+#define xi (x+dx[z])
+#define yi (y+dy[z])
+
+bool f(int &a, int &b) { return jumps[a] < jumps[b]; }
+
+bool dfs(int v, int t) {
+  if (t == 64) {
+    ans[v] = t;
+    return true;
+  }
+  ans[v] = t;
+  bool ret = false;
+  for (int u: g[v]) {
+    if (ans[u] == 0) ret = dfs(u, t+1);
+    if (ret == true) break;
+  }
+  if (ret == false) ans[v] = 0;
+  return ret;
+}
 
 int main() {
   FIN;
 
-  int x,y; cin >> x >> y;
-  x--; y--;
-  dbg(x,y);
-
-  vector<vector<int>> jumps(8, vector<int>(8));
-  vector<vector<int>> ans(8, vector<int>(8));
+  int x,y; cin >> x >> y; x--; y--;
 
   // initialize jumps
-  forn(i,8) {    // y
-    forn(j,8) {  // x
+  forn(y,8) {    
+    forn(x,8) { 
       forn(z,8) {
-        if (i+dx[z] < 0 or i+dx[z] >= 8) continue;
-        if (j+dy[z] < 0 or j+dy[z] >= 8) continue;
-        if (i+dx[z] == x and j+dy[z] == y) continue;
-        jumps[i][j]++;
+        if (xi < 0 or xi >= 8) continue;
+        if (yi < 0 or yi >= 8) continue;
+
+        g[y*8+x].pb(yi*8+xi);
+        jumps[y*8+x]++;
       }
     }
   }
-  
-  // solve 
-  int tot = 1;
-  int mx, my, mj;
-  while (1) {
-    dbg(x,y);
-    mj = INF; 
-    ans[y][x] = tot;
-    forn(z,8) { // check all possible jumps from x,y
-      if (x+dx[z] < 0 or x+dx[z] >= 8) continue;
-      if (y+dy[z] < 0 or y+dy[z] >= 8) continue;
-      if (ans[y+dy[z]][x+dx[z]] != 0) continue;
 
-      if (jumps[y+dy[z]][x+dx[z]] < mj) {
-        mx = x+dx[z];
-        my = y+dy[z];
-        mj = jumps[y+dy[z]][x+dx[z]];
-      }
-    }
-    jumps[my][mx]--;
-    tot++; 
-    dbg(mx,my);
-    x = mx; y = my;
-    if (tot > 64) break;
+  // sort reachable nodes such that if i < j, then jumps[i] < jumps[j]
+  for (vector<int> &v: g) sort(all(v),f);
+
+  // find possible path from 0th -> 63th
+  bool ret = false;
+  forn(z,8) { 
+    if (xi < 0 or xi >= 8) continue;
+    if (yi < 0 or yi >= 8) continue;
+    ret = dfs(y*8+x, 1);
+    if (ret == true) break;
   }
 
-  for(auto y: ans) {
-    for(int x: y) cout << x << ' ';
-    cout << '\n';
+  forn(i,64) {
+    cout << ans[i] << ' ';
+    if ((i+1)%8 == 0) cout << '\n';
   }
-
-
 
   return 0;
 }
