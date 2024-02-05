@@ -47,6 +47,7 @@ struct max_flow { // Edmonds-Karp, O(VE^2)
   void add_edge(int x, int y, tipo z){
     g[x].pb(y), g[y].pb(x);
     cap[x][y] += z;
+    cap[y][x] += z;
   }
   tipo bfs(int s, int t, vector<int> &parent){
     fill(all(parent), -1);
@@ -91,10 +92,7 @@ struct max_flow { // Edmonds-Karp, O(VE^2)
   }
 
   set<pair<int, int>> get_min_cut(int s, int t) {
-    // cambiar ans a set<pair<int, int>> si no se quiere usar remove dups
     set<pair<int, int>> ans;
-    // for(auto &x: g) remove_dups(x);
-
     get_max_flow(s, t); // si ya se corrio afuera, comentar
 
     vector<int> parent(n);
@@ -121,12 +119,6 @@ int main(){
   while (m--) {
     int a,b; cin >> a >> b;
     s.add_edge(--a,--b,1);
-  }
-
-  vector<vector<int>> g = s.g;
-  forn(i,n) {
-    DBG(i);
-    for(int u: g[i]) DBG(u);
   }
 
   set<pair<int,int>> ans = s.get_min_cut(0,n-1); 
