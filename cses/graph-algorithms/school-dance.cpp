@@ -27,125 +27,82 @@ typedef long long ll;
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define esta(x,c) ((c).find(x) != (c).end())
 #define RAYA cerr << "===============================" << endl
+#define SZ(x) int((x).size())
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
-typedef int tipo; // el tipo en que se mide el flow
+typedef int tipo;
 typedef vector<int> vi;
 
-struct max_flow { // Edmonds-Karp, O(VE^2)
-  int n;
-  vector<vector<int>> g;
-  vector<vector<tipo>> cap; 
-  // si n es grande (>5000), hay que usar un map de capacidades
+/**
+ * Fast bipartite matching algorithm. 
+ * Graph g should be a list of neighbors of the left partition, and $btoa$ should be a vector full of -1's of the same size as the right partition. Returns the size of the matching. 
+ * btoa[i] will be the match for vertex i on the right side, or -1 if it's not matched.
+ *
+ * Usage: vi btoa(m, -1); hopcroftKarp(g, btoa);
+ * Time: O(\sqrt{V}E)
+ */
+bool dfs(int a, int L, vector<vi> &g, vi &btoa, vi &A, vi &B) {
+    if(A[a] != L) return 0;
+    A[a] = -1;
+    for(auto b: g[a]) if(B[b] == L + 1) {
+        B[b] = 0;
+        if (btoa[b] == -1 || dfs(btoa[b], L+1, g, btoa, A, B))
+            return btoa[b] = a, 1;
+    }
+    return 0;
+}
 
-  max_flow(int n): n(n){
-    g.resize(n), cap.resize(n, vi(n)); 
-  }
-  void add_edge(int x, int y, tipo z){
-    g[x].pb(y);
-    cap[x][y] += z;
-  }
-  tipo bfs(int s, int t, vector<int> &parent){
-    fill(all(parent), -1);
-    queue<pair<int, tipo>> q; q.push({s, INF});
-    parent[s] = s;
-
-    while(!q.empty()){
-      // int cur = q.front().first; 
-      // tipo flow = q.front().second; q.pop();
-      auto [cur, flow] = q.front(); q.pop();
-
-      for(int next: g[cur]){
-        if(parent[next] == -1 && cap[cur][next]) {
-          parent[next] = cur; 
-          tipo new_flow = min(flow, cap[cur][next]);
-          if(next == t) return new_flow;
-          q.push({next,new_flow});
+int hopcroftKarp(vector<vi> &g, vi &btoa) { // bipartite matching rapido
+    int res = 0;
+    vi A(SZ(g)), B(SZ(btoa)), cur, next;
+    for(;;) {
+        fill(all(A), 0); fill(all(B), 0);
+        /// Find the starting nodes for BFS (i.e. layer 0).
+        cur.clear();
+        for(auto a : btoa) if(a != -1) A[a] = -1;
+        forn(a, SZ(g)) if(A[a] == 0) cur.pb(a);
+        /// Find all layers using bfs.
+        for(int lay = 1;; lay++) {
+            bool islast = 0;
+            next.clear();
+            for(auto a: cur) for(auto b: g[a]) {
+                if (btoa[b] == -1) {
+                    B[b] = lay; islast = 1;
+                } else if (btoa[b] != a && !B[b]) {
+                    B[b] = lay; next.pb(btoa[b]);
+                }
+            }
+            if(islast) break;
+            if(next.empty()) return res;
+            for(auto a : next) A[a] = lay;
+            cur.swap(next);
         }
-      }
+        /// Use DFS to scan for augmenting paths.
+        forn(a, SZ(g)) res += dfs(a, 0, g, btoa, A, B);
     }
-    return 0; // no encontre aug paths
-  }
-
-  tipo get_max_flow(int s, int t){
-    tipo flow = 0, new_flow;
-    vector<int> parent(n);
-
-    while((new_flow = bfs(s, t, parent))){
-      flow += new_flow;
-      int cur = t;
-      vector<int> q;
-      q.pb(cur); 
-      while(cur != s){
-        int prev = parent[cur];
-        cap[prev][cur] -= new_flow;
-        cap[cur][prev] += new_flow;
-        cur = prev;
-        q.pb(cur);
-      }
-      reverse(all(q));
-      dbg(q);
-    }
-    return flow;
-  }
-
-  void remove_dups(vector<int> &a){
-    sort(all(a)); a.erase(unique(all(a)), a.end());
-  }
-
-  vector<pair<int, int>> get_min_cut(int s, int t) {
-    // cambiar ans a set<pair<int, int>> 
-    // si no se quiere usar remove dups
-    vector<pair<int, int>> ans;
-    for(auto &x: g) remove_dups(x);
-
-    get_max_flow(s, t); // si ya se corrio afuera, comentar
-    forn(i,cap.size()) dbg(i,cap[i]); // check residual graph 
-
-    vector<int> parent(n);
-    bfs(s, t, parent); // hago bfs en el grafo residual final
-    dbg(parent);
-    forr(v,0,n){
-      for(auto u: g[v]){
-        if(parent[v] != -1 && parent[u] == -1){
-          ans.pb({v, u});
-        }
-      }
-    }
-    return ans;
-  }
-};
-
-
-int main(){
-  FIN;
-
-  int n,m,k; cin >> n >> m >> k;
-  max_flow mx(2+n+m);
-
-  // a = men
-  // b = women
-  while (k--) {
-    int a,b; cin >> a >> b; 
-    b += n;
-    mx.add_edge(a,b,1);
-  }
-
-  forr(a,1,n+1) mx.add_edge(0,a,1);
-  forr(b,n+1,n+m+1) mx.add_edge(b,n+m+1,1);
-
-  vector<vector<int>> g = mx.g;
-  forn(i,g.size()) dbg(i,g[i]);
-  
-  vector<pair<int,int>> ans = mx.get_min_cut(0,n+m+1);
-  cout << ans.size() << '\n';
-  for (auto p: ans) cout << p.first << ' ' << p.second << '\n';
-  
-  
-  return 0;
 }
 
 
+int main() {
+  FIN;
 
+  int n,m,k; cin >> n >> m >> k;
+  vector<vi> g(n); 
+  vi match(m,-1);
+
+  while (k--) {
+    int a,b; cin >> a >> b;
+    a--; b--;
+    g[a].pb(b);
+  }
+
+  int tot = hopcroftKarp(g,match);
+  cout << tot << '\n';
+  forn(i,m) if (match[i] != -1) cout << match[i] +1 << ' ' << i +1 << '\n';
+
+
+
+  return 0;
+}
