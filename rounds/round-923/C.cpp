@@ -31,14 +31,6 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
  
-unsigned int countSetBits(unsigned int n) {
-    unsigned int count = 0;
-    while (n) {
-        count += n & 1;
-        n >>= 1;
-    }
-    return count;
-}
  
  
 int main(){
@@ -47,36 +39,31 @@ int main(){
   int t; cin >> t;
   while (t--) {
     int n,m,K,k; cin >> n >> m >> K;
+    set<int> a;
+    set<int> b;
+    forn(_,n) cin >> k, a.insert(k);
+    forn(_,m) cin >> k, b.insert(k);
     k = K/2;
-    bitset<MAXN> M = (1<<K)-1;
-    // dbg(M.to_ulong());
 
-    bitset<MAXN> a;
-    bitset<MAXN> b;
-    int act;
-    forn(i,n) {
-      cin >> act;
-      act--;
-      a |= (1<<act);
-    }
-    forn(i,m) {
-      cin >> act;
-      act--;
-      b |= (1<<act);
-    }
+    int as = 0, bs = 0, both = 0;
 
-    // check if all elements from 1..k are present within both arrays
-    bitset<MAXN> r = a | b;
-    r &= M;
-    if (r.to_ulong() == M.to_ulong()) {
-      // check if each array holds at least half of the elements
-      if (countSetBits((a&M).to_ulong()) >= k and countSetBits((b&M).to_ulong()) >= k) 
-        cout << "YES\n";
-      else cout << "NO\n";
-    } else cout << "NO\n";
+    string ans = "NO\n";
+    forr(i,1,K+1) {
+      dbg(a.count(i), b.count(i));
+      if (a.count(i) == 0 and b.count(i) == 0) goto fin;
+      else if (a.count(i) == 1 and b.count(i) == 1) both++;
+      else if (a.count(i)) as++;
+      else if (b.count(i)) bs++;
+    }
+    dbg(as,bs,both);
+
+    dbg(k);
+    if (as >= k and bs >= k) ans = "YES\n";
+    else if (as >= k and bs + both >= k) ans = "YES\n";
+    else if (bs >= k and as + both >= k) ans = "YES\n";
+    else if (as < k and bs < k and k-as <= both and k-as-bs <= both-k+as) ans = "YES\n";
+    fin: cout << ans;
   }
-
-
 
   return 0;
 }
