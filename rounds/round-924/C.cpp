@@ -35,7 +35,20 @@ const int MAXN = (int)(2e5+5);
 int main(){
   FIN;
   
-  
-  
+  int t; cin >> t;
+
+  int n,p,cte; 
+  while (t--) {
+    int ans = 0;
+    cin >> n >> p;
+    cte = n-p;
+    for (int k = p; (2*k - 2) <= cte; k++) {
+      if (cte % (2*k-2) == 0) ans++; 
+      else if ((n+p) % (2*k-2) == 0) ans++;
+    }
+    cout << ans << '\n';
+  }
+
+
   return 0;
 }

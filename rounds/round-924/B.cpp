@@ -34,6 +34,26 @@ const int MAXN = (int)(2e5+5);
 
 int main(){
   FIN;
+
+  int t; cin >> t;
+
+  int n, x;
+  while (t--) {
+    int ans, tot;
+    set<int> s;
+    
+    cin >> n;
+    vector<int> v(n); 
+    forn(i,n) cin >> v[i], tot += v[i];
+    sort(all(v));
+
+    int prom = tot/n;
+    forn(i,n) {
+      if (s.count(v[i]) == 0) ans++;
+      s.insert(v[i]);
+    }
+    cout << ans << '\n';
+  }
   
   
   

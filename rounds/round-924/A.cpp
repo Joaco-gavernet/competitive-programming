@@ -34,6 +34,18 @@ const int MAXN = (int)(2e5+5);
 
 int main(){
   FIN;
+
+  int t; cin >> t;
+
+  ll w,h;
+  while (t--) {
+    cin >> w >> h;
+    if (w<h) swap(w,h);
+
+    // h < w
+    if (h%2 == 0 or (w%2==0 and w/2 != h)) cout << "YES\n";
+    else cout << "NO\n";
+  }
   
   
   
