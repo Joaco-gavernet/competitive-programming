@@ -20,81 +20,67 @@ typedef long long ll;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
-#define pb push_back
-#define mp make_pair
-#define all(c) (c).begin(),(c).end()
-#define DBG(x) cerr << #x << " = " << (x) << endl
-#define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
-#define esta(x,c) ((c).find(x) != (c).end())
-#define RAYA cerr << "===============================" << endl
-const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1LL<<60); // (1LL<<60)
-const int MAXN = (int)(2e5+5);
-
 
 typedef ll tipo;
-
 struct segtree {
   int tam;
   tipo NEUT = INF;
   vector<tipo> t;
   tipo op(tipo a, tipo b) { return min(a,b); }
 
-  void build(vector<ll> v, int n) {
+  void build(vector<tipo> v, int n) {
     tam = sizeof(int) *8 -__builtin_clz(n); tam = 1<<tam;
-    t.resize(2*tam, NEUT); forn(i,n) t[tam+i] = v[i];
-    for (int i = tam-1; i; i--) t[i] = op(t[i<<1], t[i<<1|1]);
+    t.resize(2*tam,NEUT); forn(i,n) t[tam+i] = v[i];
+    for(int i = tam-1; i >0; i--) t[i] = op(t[i<<1],t[i<<1|1]);
+    dbg(t);
   }
 
-  void update(int p, ll x) {
-    t[p +tam] = x +p;
-    for (p += tam; p > 1; p>>=1) t[p>>1] = op(t[p],t[p^1]);
+  void update(int p, tipo value) {
+    for (t[p += tam] = value; p > 1; p >>=1) t[p>>1] = op(t[p], t[p^1]);
+    dbg(t);
   }
 
   tipo query(int l, int r) {
-    tipo ans = NEUT;
-    for (l +=tam, r +=tam; l <= r; l>>=1, r>>=1) {
-      if (l&1) ans = op(ans,t[l++]);
-      if (!(r&1)) ans = op(ans,t[r--]);
+    tipo res = NEUT;
+    for (l += tam, r += tam; l <= r; l >>= 1, r >>= 1) {
+      if (l&1) res = op(res,t[l++]);
+      if (!(r&1)) res = op(res,t[r--]);
     }
-    return ans;
+    return res;
   }
 };
 
-
-int main(){
+int main() {
   FIN;
-
+  
   int n,q; cin >> n >> q;
-  const int N = n+1;
-  vector<ll> pd(N), pu(N); 
-  forr(j,1,N) {
-    cin >> pd[j]; 
-    pu[j] = pd[j] +j; 
-    pd[j] -= j; 
+  vector<tipo> p(n), pd(n), pu(n); 
+  forn(i,n) {
+    cin >> p[i];
+    pd[i] = p[i] -(i+1);
+    pu[i] = p[i] +(i+1);
   }
 
   segtree down, up;
-  down.build(pd,N);
-  up.build(pu,N);
+  down.build(pd,n);
+  up.build(pu,n);
 
+  int op;
   while (q--) {
-    int op; cin >> op;
-    switch(op) {
-      case 1:
-        int p; ll x; cin >> p >> x;
-        down.update(p,x); 
-        up.update(p,x);
-        break;
-      case 2:
-        int k; cin >> k;
-        tipo minDown = down.query(1,k);
-        tipo minUp = up.query(k,n);
-        ll fin = min(minDown +k, minUp -k);
-        cout << fin << '\n';
-        break;
+    cin >> op;
+    if (op == 1) {
+      int k,x; cin >> k >> x;
+      k--;
+      down.update(k,x -(k+1));
+      up.update(k,x +(k+1));
+    } else {
+      int p; cin >> p;
+      p--;
+      cout << min(down.query(0,p) +(p+1), up.query(p,n-1) -(p+1)) << '\n';
     }
   }
+
 
   return 0;
 }
