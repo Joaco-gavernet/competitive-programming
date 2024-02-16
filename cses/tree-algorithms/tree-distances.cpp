@@ -35,11 +35,6 @@ typedef vector<ll> vi;
 typedef vector<bool> vb;
 
 void dfs(vector<vi> &g, vector<vi> &dp, int v, int prev) {
-  if (g[v].size() == 1 and prev == g[v][0]) { // its a leaf
-    dp[v][0] = dp[v][1] = 0; // check ??????????
-    return;
-  }
-
   for (int u: g[v]) {
     if (u != prev) {
       dfs(g,dp,u,v);
