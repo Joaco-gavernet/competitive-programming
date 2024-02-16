@@ -52,17 +52,11 @@ void dfs(vector<vi> &g, vector<vi> &dp, int v, int prev) {
 }
 
 void dfs2(vector<vi> &g, vector<vi> &dp, vi &best, int v, int prev) {
-  if (prev == -1) best[v] = dp[v][0];
-  else {
+  if (prev != -1) {
     dp[v][1] = max(dp[v][1], dp[prev][1] +1);
-    if (best[prev] == dp[v][0] +1) 
-      best[v] = max(dp[prev][1] +1, dp[v][0]);
-    else 
-      best[v] = max(best[prev] +1, dp[v][0]);
-  }
-
-  dbg(v,best);
-
+    if (best[prev] == dp[v][0] +1) best[v] = max(dp[prev][1] +1, dp[v][0]);
+    else best[v] = max(best[prev] +1, dp[v][0]);
+  } else best[v] = dp[v][0];
   for (int u: g[v]) if (u != prev) dfs2(g,dp,best,u,v);
 }
 
@@ -83,7 +77,6 @@ int main(){
   // dp[x][0] = "max length path from x in any direction. "
   // dp[x][1] = "max length path from x in another direction. "
   dfs(g,dp,0,-1);
-  forn(i,n) dbg(i,dp[i]);
 
   vi best(n,-1);
   dfs2(g,dp,best,0,-1);
