@@ -50,7 +50,7 @@ void dfs(vector<vi> &g, vector<pi> &dp, int v = 0, int prev = -1) {
 
 void dfs2(vector<vi> &g, vector<pi> &dp, vi &ans, int v = 0, int prev = -1) {
   if (prev == -1) ans[v] = dp[v].dist;
-  else ans[v] = ans[prev] +g.size() -(2ll)*dp[v].nodes; 
+  else ans[v] = ans[prev] +g.size() -2*dp[v].nodes; 
 
   for (int u: g[v]) if (u != prev) dfs2(g,dp,ans,u,v);
 }
@@ -73,12 +73,11 @@ int main(){
   // dp[x].first = "amount of nodes in subtree rooted at x. "
   // dp[x].second = "total distance in subtree rooted at x. "
   dfs(g,dp);
-  forn(i,n) dbg(i,dp[i]);
 
   vi ans(n,-1);
   dfs2(g,dp,ans);
 
-  for(int h: ans) cout << h << ' ';
+  for(auto h: ans) cout << h << ' ';
   cout << '\n';
 
   return 0;
