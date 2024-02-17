@@ -33,6 +33,11 @@ const int MAXN = (int)(2e5+5);
 
 typedef vector<vector<ll>> Matrix;
 
+Matrix ones(int n) {
+  Matrix r(n,vector<ll>(n));
+  forn(i,n)r[i][i]=1;
+  return r;
+}
 Matrix operator*(Matrix &a, Matrix &b) {
   int n=a.size(),m=b[0].size(),z=a[0].size();
   Matrix r(n,vector<ll>(m));
