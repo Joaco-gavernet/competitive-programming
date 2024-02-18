@@ -36,13 +36,13 @@ Tiempo de build: O(nlogn)
 Memoria: O(nlogn)
 Tiempo por query: O(logn)
 */
-const int MAXN = 200005, LOG = 20;  
+const int MAXN = 2e5+5, LOG = 20;  
 
 struct LCA {
   int n, root;  
   vector<vector<int>> g;
   int jmp[MAXN][LOG], depth[MAXN]; // jmp[i][j] tiene el 2^j-esimo ancestro de i
-  
+
   void lca_dfs(int x) {
     for(int u : g[x]) {
       if(u == jmp[x][0]) continue;
@@ -55,11 +55,10 @@ struct LCA {
     depth[root] = 0;
     memset(jmp,-1,sizeof(jmp)); jmp[root][0] = root;
     lca_dfs(root);
-    forr(k, 1, LOG){ 
-      forn(i, n){
-        if(jmp[i][k-1]<0) jmp[i][k] = -1;
-        else jmp[i][k] = jmp[jmp[i][k-1]][k-1];
-      }
+    forr(k, 1, LOG){ forn(i, n){
+      if(jmp[i][k-1]<0) jmp[i][k] = -1;
+      else jmp[i][k] = jmp[jmp[i][k-1]][k-1];
+    }
     }
   }
 
@@ -92,14 +91,13 @@ int main(){
     g[b].pb(a);
   }
 
-  LCA s(n,g,0); // TODO: fix crash when declaring struct LCA
+  // TODO: fix crash when declaring struct LCA
+  LCA s(n,g,0);   
 
-  /*
   while (q--) {
     int l,r; cin >> l >> r;
     cout << s.dist(--l,--r) << '\n';
   }
-  */
 
   return 0;
 }
