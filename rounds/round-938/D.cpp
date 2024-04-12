@@ -35,36 +35,6 @@ const int MAXN = (int)(2e5+5);
 int main(){
   FIN;
   
-  int t; cin >> t;
-  while (t--) {
-    ll n,k; cin >> n >> k;
-    ll tot = 0;
-    vector<int> v(n); forn(i,n) cin >> v[i], tot += v[i];
-
-    if (ll(k) >= tot) {
-      cout << n << '\n';
-      RAYA;
-      continue;
-
-    } else {
-
-      int l = 0, r = n-1;
-      ll first = (k+1)/2, second = k/2;
-      while (first > 0) {
-        if (first >= v[l]) first -= v[l++];
-        else first -= v[l];
-      }
-
-      while (second > 0) {
-        if (second >= v[r]) second -= v[r--];
-        else second -= v[r];
-      }
-
-      cout << n - (r-l+1) << '\n';
-    }
-
-    RAYA;
-  }
   
   
   return 0;
