@@ -39,14 +39,13 @@ int main(){
   while (t--) {
     int n,c,d; cin >> n >> c >> d;
 
-    unordered_map<int,int> vals;
+    map<int,int> vals;
     int minval = MAXN;
     forn(i,n) forn(j,n) {
       int act; cin >> act;
       minval = min(minval,act);
       vals[act]++;
     }
-    dbg(n,c,d);
 
     vector<vector<int>> m(n, vector<int>(n,0));
     m[0][0] = minval;
@@ -55,8 +54,6 @@ int main(){
     bool result = true;
     forn(i,n-1) {
       forn(j,n-1) {
-        dbg(i,j);
-
         if (m[i+1][j] != m[i][j] +c) {
           if (vals[m[i][j] +c]) {
             vals[m[i][j] +c]--; 
@@ -76,13 +73,11 @@ int main(){
       if (result == false) break;
     }
 
-    forn(i,n) dbg(m[i]);
     if (vals[m[n-1][n-2] +d] == 0) result = false;
     else if (vals[m[n-2][n-1] +c] == 0) result = false;
 
     if (result == true) cout << "YES\n";
     else cout << "NO\n";
-    RAYA;
   }
   
   
