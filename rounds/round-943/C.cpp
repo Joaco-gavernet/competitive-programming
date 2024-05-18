@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
+// ((prev + act) mod prev) = act for 0 ≤ act < prev.
 
 int main() {
 	int t; cin >> t;
@@ -11,14 +11,12 @@ int main() {
 		int n; cin >> n;
 		n--;
 
-		int prev, act = -1;
-		ans.push_back(3);
+		int prev = 1000, act;
+		ans.push_back(1000);
 		while (n--) {
-			prev = act;
 			cin >> act;
-			if (prev == -1) prev = act +3;
-			else prev += act;
-			ans.push_back(prev);
+			ans.push_back(act += prev);
+			prev = act;
 		}
 
 		for (int i = 0; i < ans.size(); i++) cout << ans[i] << ' ';
