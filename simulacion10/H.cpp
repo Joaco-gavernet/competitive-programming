@@ -46,14 +46,32 @@ int main(){
   
   vector<int> palabra(10005,0);
   string ans="! ";
-  
+
   forr(i,1,8){
     cout << "? " << s[i] << endl; 
-    // recibo respuesta
-    fflush(stdout);
+    cout << flush;
+
+    int enterNumber;
+    string line;
+    getline(cin, line);
+    istringstream iss(line);
+    while (iss >> enterNumber) {
+      DBG(enterNumber);
+      palabra[enterNumber] += sumas[i];
+    }
+
+    /*
+    int act;
+    while (cin >> act) {
+      DBG(act);
+      palabra[act] += sumas[i];
+    }
+    */
+
+    /* 
     string act;
     getline(cin,act);
-    
+
     int prev = 0;
     forn(j,act.size()) {
       if (act[j] == ' ') {
@@ -65,16 +83,16 @@ int main(){
     if(act.size()!=0){
       int entero = stoi(act.substr(prev,act.size()-prev));
       palabra[entero] += sumas[i];
-    }
+    }  
+    */
   }
-  
-  int i=1;
+
+  int i=0;
   while((palabra[i]>0)&&(i<10001)){
     ans=ans+m[palabra[i++]];
   }
-   fflush(stdout);
   cout << ans << endl;
-  
-  
+
+
   return 0;
 }

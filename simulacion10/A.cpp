@@ -84,26 +84,29 @@ int main(){
   cin >> a >> b;
   a--; b--;
   int c=gcd(a,b);
-  //cout << c << endl;
+
   vi primos=criba(1e7);
   vi divisores=find_divisors(c,primos);
-  //cout << c << endl;
-  //for(auto u : divisores) cout << u << " ";
+
   int ans=2;
-  for(auto u : divisores){
+  for (auto u: divisores) {
     forr(i,1,u){
       if(i*i>=u) break;
       int k=u-i*i;
       int x=0,y=k;
       while(y-x>1){
 	int med=(x+y)/2;
-	if(med*med<k) x=med;
+	if (med*med<k) x=med;
 	else y=med;
       }
-      if(y*y==k and gcd(y,i)==1 and y!=i){cout << y << " " << i << " " << u << endl; ans+=2;}
+
+      if(y*y==k and gcd(y,i)==1 and y!=i) {
+	cout << y << " " << i << " " << u << endl; 
+	ans+=2;
+      }
     }
-    
   }
+
   if(a==b) ans/=2;
   cout << ans << "\n";
   return 0;
