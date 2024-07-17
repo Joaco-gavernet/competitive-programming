@@ -37,34 +37,48 @@ int main(){
 
   queue<ii> q;
   vector<vi> ways(n, vi(m,0));
+  int cont = 0;
+  
   forn(y,n) {
     forn(x,m) {
       if (v[y][x] == '*') continue;
+      cont++;
       forn(i,4) {
         if (y +dy[i] >= n or y +dy[i] < 0) continue;
         if (x +dx[i] >= m or x +dx[i] < 0) continue;
-        if (ways[y +dy[i]][x +dx[i]] = '.') ways[y][x]++;
+        if (v[y +dy[i]][x +dx[i]] == '.') ways[y][x]++;
       }
       if (ways[y][x] == 1) q.push({x,y});
     }
   }
+  if (cont == 0) {
+    for (string s: v) cout << s << '\n';
+    return 0;
+  }
+  DBG(cont);
 
-  if (q.size() == 0) {
+  if (q.size() == 0 or cont %2 == 1) {
     cout << "Not unique\n";
   } else {
     while (q.size() > 0) {
-      ii act = q.front(); q.pop();
-      int x = act.first;
-      int y = act.second;
-
+      auto [x,y] = q.front(); q.pop();
+      DBG(x);
+      DBG(y);
+      ways[y][x] = 0;
+      
       forn(i,4) {
         if (y +dy[i] >= n or y +dy[i] < 0) continue;
         if (x +dx[i] >= m or x +dx[i] < 0) continue;
-        if (v[y +dy[i]][x +dx[i]] = '.') {
-          if (ways[y +dy[i]][x +dx[i]]-- == 2) q.push({x +dx[i], y +dy[i]});
-          if (i == 0) v[y][x] = 'v', v[y +dy[i]][x +dx[i]] = '^';
+        if (v[y +dy[i]][x +dx[i]] == '.') {
+          forn(j,4){
+            if (y +dy[i] +dy[j] >= n or y +dy[i] +dy[j] < 0) continue;
+            if (x +dx[i] +dx[j] >= m or x +dx[i]+dx[j] < 0) continue;
+            if (ways[y +dy[i]+dy[j]][x +dx[i]+dx[j]]-- == 2) q.push({x +dx[i]+dx[j], y +dy[i]+dy[j]});
+          }
+
+          if (i == 0) v[y][x] = 'v', v[y +dy[i]][x +dx[i]] = '^';           
           else if (i == 1) v[y][x] = '<', v[y +dy[i]][x +dx[i]] = '>';
-          else if (i == 2) v[y][x] = '^', v[y +dy[i]][x +dx[i]] = 'V';
+          else if (i == 2) v[y][x] = '^', v[y +dy[i]][x +dx[i]] = 'v';
           else if (i == 3) v[y][x] = '>', v[y +dy[i]][x +dx[i]] = '<';
         }
       }
