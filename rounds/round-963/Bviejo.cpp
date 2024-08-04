@@ -39,34 +39,30 @@ int main(){
   while (t--) {
     int n; cin >> n;
 
-    ll mx = -1;
-    vector<ll> pares;
+    ll mimpar = -1;
+    multiset<ll> pares;
 
     forn(i,n) {
       ll act; cin >> act;
-      if (act %2 == 0) pares.pb(act);
-      else if (act > mx) mx = act;
+      if (act %2 == 0) pares.insert(act);
+      else mimpar = max(mimpar,act);
     }
 
-    ll ans = pares.size();
-    dbg(ans);
-    if (ans == 0 or ans == n) {
-      cout << "0\n";
-      continue;
-    }
 
-    sort(all(pares));
-    if (mx > *pares.rbegin()) {
-      cout << ans << '\n';
-      continue;
-    }
+    ll ans = 0;
+    if (pares.size() > 0 and pares.size() < n) {
+      while (mimpar < *pares.rbegin()) { // hay algun par mas grande que el maximo impar?
+        auto ptr = pares.lower_bound(mimpar); 
+        if (ptr != pares.begin()) { // si hay algun par < impar lo elimino y cuento la operacion
+          --ptr;
+          pares.erase(ptr);
+        }
 
-    for (ll p: pares) { 
-      if (mx < p) {
-        ans++; 
-        break;
+        mimpar += *ptr;
+        ans++;
+        dbg(ans,mimpar);
       }
-      else mx += p;
+      ans += pares.size();
     }
 
     cout << ans << endl;
