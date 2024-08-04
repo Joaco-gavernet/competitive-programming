@@ -41,23 +41,20 @@ int main(){
     ll ans = 0;
 
     forr(u,1,x +1) {
+      if (k%u > 0LL) continue;
       forr(v,1,y +1) {
+        if (k % (u*v) > 0LL) continue;
+
         // fixed u & v ----forces----> w
-        if (k % (u*v) > 0) continue;
         ll w = k/(u*v);
-        ll aux = 0;
         if (w > z) continue;
-        if (x > u) aux += x-u +1;
-        if (y > v) aux += y-v +1;
-        aux *= (z-w +1);
+
+        ll aux = (x-u +1) * (y-v +1) * (z-w +1);
         ans = max(ans,aux);
-        dbg(u,v,w);
-        dbg(ans);
       }
     }
 
     cout << ans << '\n';
-    RAYA;
   }
   
   
