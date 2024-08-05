@@ -31,10 +31,6 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
-bool cmp(pair<int,int> &a, pair<int,int> &b) {
-  if (a.first < b.first or (a.first == b.first and a.second > b.second)) return true;
-  else return false;
-}
 
 void solve() {
   int n,k; cin >> n >> k;
@@ -60,13 +56,10 @@ void solve() {
 
   // check db sequentially
   sort(all(db));
-  // dbg(ons);
-  // dbg(db);
   auto i = db.begin();
   while (ons < n and i < db.end()) {
     ons += (*i).second;
     if (ons < n) i++;
-    // dbg(ons);
   }
 
   if (ans == -1 and ons == n) ans = mx + (*i).first;
