@@ -17,6 +17,9 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #endif
 
 typedef long long ll;
+typedef pair<ll,ll> pi;
+typedef vector<bool> vb;
+typedef vector<ll> vi;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
