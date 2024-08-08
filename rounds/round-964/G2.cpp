@@ -42,13 +42,15 @@ int main(){
   while (t--) {
     int l = 1, r = MAXN;
     while (l < r-1) {
-      int mid = l + (r-l)/2;
-      cout << "? " << l << " " << mid << endl;
-      // cout.flush();
-      int ans; cin >> ans;
+      int mid1 = l + (r-l)/3;
+      int mid2 = l + (r-l)*2/3;
 
-      if (ans > l*mid) r = mid;
-      else l = mid;
+      cout << "? " << mid1 << " " << mid2 << endl;
+
+      int ans; cin >> ans;
+      if (ans == mid1*mid2) l = mid2;
+      else if (ans == mid1*(mid2 +1)) l = mid1, r = mid2; 
+      else r = mid1;
     }
     
     cout << "! " << r << endl;
