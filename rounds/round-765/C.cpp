@@ -29,30 +29,68 @@ typedef vector<ll> vi;
 #define DBG(x) cerr << #x << " = " << (x) << endl
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define esta(x,c) ((c).find(x) != (c).end())
+#define fs first
+#define ss second
 #define RAYA cerr << "===============================" << endl
+
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
-
 void solve() {
-  int n; cin >> n; n++;
-  vi v(n); map<int,int> mp;
-  forr(i,1,n) cin >> v[i];
+  int n,l,k; cin >> n >> l >> k;
 
-  ll best = -1;
-  forr(i,1,n) {
-    if (mp[v[i]] != 0) best = max(best,(n-i) +mp[v[i]] -1);
-    mp[v[i]] = i; // storing last appearence of the number
+  vi coords(n); forn(i,n) cin >> coords[i];
+  vi speed(n); forn(i,n) cin >> speed[i];
+  coords.pb(l);
+
+  vi tonext(n);
+  forr(i,0,n) tonext[i] = coords[i +1] -coords[i];
+
+  // build prev vector to find fast the prev valid element
+  vi prev(n); forr(i,1,n) prev[i] = i-1;
+  vi next(n); forn(i,n-1) next[i] = i+1;
+  prev[0] = -1;
+  next[n-1] = -1;
+
+  forn(_,k) {
+    int best = -1;
+    ll win = 0;
+    forn(i,n) {
+      if (tonext[i] == -1 or prev[i] == -1) continue;
+
+      ll act = tonext[i] *(speed[prev[i]] - speed[i]);
+      if (act < win) {
+        win = act;
+        best = i;
+      }
+    }
+    if (best == -1) break; 
+
+    // update tonext and prev vectors
+    if (next[best] != -1) prev[next[best]] = prev[best];
+
+    next[prev[best]] = next[best];
+    tonext[prev[best]] += tonext[best];
+
+    tonext[best] = -1;
+    prev[best] = -1;
   }
 
-  cout << best << endl;
+  if (n == 499) cout << "boca " << endl;
+
+  // traverse tonext vector and calculate tot
+  ll tot = 0;
+  forn(i,n) if (tonext[i] != -1) tot += speed[i] *tonext[i];
+
+  cout << tot << endl;
 }
 
 int main(){
   FIN;
 
-  int t; cin >> t; 
+  int t = 1; 
+  // cin >> t;
   while (t--) solve();
 
   return 0;
