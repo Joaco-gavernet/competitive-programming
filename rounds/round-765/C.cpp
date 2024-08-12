@@ -34,7 +34,7 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1<<30); // (1LL<<60)
+const ll INF = (ll)(1LL<<60); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 void solve() {
@@ -43,47 +43,25 @@ void solve() {
   vi coords(n); forn(i,n) cin >> coords[i];
   vi speed(n); forn(i,n) cin >> speed[i];
   coords.pb(l);
+  speed.pb(0);
 
-  vi tonext(n);
-  forr(i,0,n) tonext[i] = coords[i +1] -coords[i];
+  // dp[d][l] = "minimal possible time to drive up to l, by removing at most d signals"
+  vector<vi> dp(k +1, vi(n +1, INF));
+  dp[0][0] = 0;
 
-  // build prev vector to find fast the prev valid element
-  vi prev(n); forr(i,1,n) prev[i] = i-1;
-  vi next(n); forn(i,n-1) next[i] = i+1;
-  prev[0] = -1;
-  next[n-1] = -1;
-
-  forn(_,k) {
-    int best = -1;
-    ll win = 0;
-    forn(i,n) {
-      if (tonext[i] == -1 or prev[i] == -1) continue;
-
-      ll act = tonext[i] *(speed[prev[i]] - speed[i]);
-      if (act < win) {
-        win = act;
-        best = i;
+  for (int d = 0; d <= k; d++) {
+    for (int x = 1; x <= n; x++) {
+      for (int p = x -1; p >= 0; p--) {
+        int dd = d -(x -1 -p);
+        if (dd < 0) continue;
+        dp[d][x] = min(dp[d][x], dp[dd][p] + (coords[x] -coords[p]) *speed[p]);
       }
     }
-    if (best == -1) break; 
-
-    // update tonext and prev vectors
-    if (next[best] != -1) prev[next[best]] = prev[best];
-
-    next[prev[best]] = next[best];
-    tonext[prev[best]] += tonext[best];
-
-    tonext[best] = -1;
-    prev[best] = -1;
   }
 
-  if (n == 499) cout << "boca " << endl;
-
-  // traverse tonext vector and calculate tot
-  ll tot = 0;
-  forn(i,n) if (tonext[i] != -1) tot += speed[i] *tonext[i];
-
-  cout << tot << endl;
+  ll ans = INF;
+  forn(i, k+1) ans = min(ans, dp[i][n]);
+  cout << ans << endl;
 }
 
 int main(){
