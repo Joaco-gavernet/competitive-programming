@@ -39,62 +39,36 @@ const int MAXN = (int)(2e5+5);
 
 void solve() {
   int n; cin >> n;
-  vi done(n, false); 
-  vi a(n); 
-  vi start(n,0);
+  vb done(n, false); 
+  vi a(n), start(n);
   forn(i,n) {
     cin >> a[i];
     if (a[i] == 0) done[i] = true;
   }
 
   int ops = 0;
-  // 1) die completing 2 rows 2x2 squares
-  forn(i,n-1) {
+
+  // 1) dye completing 2 rows 2x2 squares or a[i] > 4 rows or isolated ones
+  forn(i,n) {
     if (done[i] == true) continue;
-    if (a[i] <= 2 and a[i +1] <= 2) {
-      ops++;
-      if (a[i] <= 2) done[i] = true;
-      if (a[i +1] <= 2) done[i +1] = true;
-    }
+    if (a[i] > 4) ops++, done[i] = true;
   }
-  dbg(ops);
-  dbg(done);
   
-  // 1') die resting convininent 2x2 squares
-  forn(i,n-1) {
-    if (done[i] == true) continue;
-    if (a[i] > 4 or a[i +1] > 4) continue;
-    if (a[i +1] == 0) continue;
-
-    if (a[i] <= 2 or (a[i+1] <= 2 and i > 1 and done[i-1] == false and start[i-1] > 0)) {
-      ops++;
-      if (a[i] <= 2) done[i] = true;
-      if (a[i +1] <= start[i +1] +2) done[i +1] = true;
-      start[i] = 2;
-      start[i +1] = 2;
-    }
-  }
-  dbg(ops);
-  dbg(done);
-  dbg(start);
-
-  // 2) complete possible squares
-  forn(i,n-1) {
-    if (done[i] == true) continue;
-
-    if (a[i] <= start[i] +2) {
+  // 2) dye resting convininent 2x2 squares
+  forr(i,0,n-1) {
+    if (done[i]) continue;
+    if (a[i] -start[i] <= 2) {
       ops++;
       done[i] = true;
-      if (a[i +1] <= start[i +1] +2) done[i +1] = true;
-      start[i] += 2;
-      start[i +1] += 2;
+      if (start[i] == start[i +1]) start[i +1] = 2;
+      else a[i +1] = 2;
+      if (a[i +1] <= start[i +1]) done[i +1] = true;
     }
   }
-  dbg(ops);
-  dbg(done);
 
-  // 3) die resting rows
-  forn(i,n) if (done[i] == false) ops++;
+  // 3) check lasting rows
+  forn(i,n) if (done[i] == false) done[i] = true, ops++;
+
 
   cout << ops << '\n';
 }

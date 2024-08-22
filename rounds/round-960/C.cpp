@@ -39,19 +39,46 @@ const int MAXN = (int)(2e5+5);
 
 void solve() {
   int n; cin >> n;
-  vi a(n); forn(i,n) cin >> a[i];
+  ll sum = 0;
+  vi a(n); forn(i,n) cin >> a[i], sum += a[i];
 
-  int sum = 0;
+  // build reference vector
+  vi b(n);
+  unordered_map<int,int> mp; // counter number of apprearences
+  ll mx = 0; // max Appearing Duplicate number
+  forn(i,n) if (a[i] != 0) {
+    mp[a[i]]++;
+    if (mp[a[i]] >= 2) mx = max(mx, a[i]);
+    b[i] = mx;
+  }
+  a = b;
+  forn(i,n) sum += b[i]; // sum after first operation 
+
+  // rebuild b array
+  forr(i,1,n) {
+    if (a[i -1] == a[i]) b[i] = a[i];
+    else b[i] = b[i-1];
+  }
+  a = b;
+  forn(i,n) sum += b[i]; // sum after second operation 
+
+  vi suffix(n);
+  suffix[n-1] = b[n-1];
+  for (int i = n-2; i >= 0; i--) suffix[i] = b[i] + suffix[i +1];
+  dbg(b);
+  dbg(suffix);
+
+  int l = 0, r = n-1;
+  while (l < n and b[l] == 0) l++;
+  while (l < r) sum += suffix[l] - suffix[r--];
 
   cout << sum << '\n';
 }
 
+
 int main(){
   FIN;
-  
   int t = 1; cin >> t;
   while (t--) solve();
-  
-  
   return 0;
 }
