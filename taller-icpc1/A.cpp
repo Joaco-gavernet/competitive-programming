@@ -37,28 +37,49 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+struct objeto {
+  ll a,b,c; 
+  objeto(ll _a, ll _b, ll _c) : a(_a), b(_b), c(_c) {}
+
+  ll eval(ll x) {
+    return x * (2*a*x*x + 3*b*x + 6*c);
+  }
+};
+
 void solve() {
-  int a,b,c,l,r; cin >> a >> b >> c >> l >> r;
-  
-  if ((a>0 and c<0) or (a<0 and c<0)) {
-    cout << "0\n";
-    return;
+  ll a,b,c,l,r; cin >> a >> b >> c >> l >> r;
+  ll num = 0;
+  ll den = 0;
+
+  objeto F(a,b,c);
+
+  // find zeros
+  ll det = b*b - 4*a*c;
+  if (det == 0 or det < 0) {
+    // one or none solution
+    num += F.eval(r) - F.eval(l);
+  } else {
+    // two solutions
+    ll xl = (-b -sqrtl(det)) / (2*a);
+    ll xr = (-b +sqrtl(det)) / (2*a);
+
+    if (l < xl) num += abs(F.eval(xl) - F.eval(l));
+    if (xr < r) num += abs(F.eval(r) - F.eval(xr));
+    num += abs(F.eval(max(l,xl)) - F.eval(min(r,xr)));
   }
 
+  if (num %6 == 0) num /= 6, den = 1;
+  else if (num %3 == 0) num /= 3, den = 2;
+  else if (num %2 == 0) num /= 2, den = 3;
 
-
-  int num = 0;
-  int den = 0;
-
-  cout << num << "/" << den << '\n';
+  if (num != 0) cout << num << "/" << den << '\n';
+  else cout << "0\n";
 }
 
 int main(){
   FIN;
-  
   int t = 1; cin >> t;
   while (t--) solve();
-  
-  
   return 0;
 }
+
