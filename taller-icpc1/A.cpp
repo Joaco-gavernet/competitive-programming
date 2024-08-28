@@ -37,6 +37,16 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+long long int_sqrt (long long x) {
+  long long ans = 0;
+  for (ll k = 1LL << 30; k != 0; k /= 2) {
+    if ((ans + k) * (ans + k) <= x) {
+      ans += k;
+    }
+  }
+  return ans;
+}
+
 struct objeto {
   ll a,b,c; 
   objeto(ll _a, ll _b, ll _c) : a(_a), b(_b), c(_c) {}
@@ -49,23 +59,22 @@ struct objeto {
 void solve() {
   ll a,b,c,l,r; cin >> a >> b >> c >> l >> r;
   ll num = 0;
-  ll den = 0;
+  ll den = 6;
 
   objeto F(a,b,c);
 
-  // find zeros
-  ll det = b*b - 4*a*c;
-  if (det == 0 or det < 0) {
-    // one or none solution
-    num += F.eval(r) - F.eval(l);
-  } else {
-    // two solutions
-    ll xl = (-b -sqrtl(det)) / (2*a);
-    ll xr = (-b +sqrtl(det)) / (2*a);
+  ll det = b*b - 4LL*a*c; // find zeros
+  if (det == 0 or det < 0) { // one or none solution
+    num += abs(F.eval(r) - F.eval(l));
+  } else { // two solutions
+    ll xl = (-b -int_sqrt(det)) / (2LL*a);
+    ll xr = (-b +int_sqrt(det)) / (2LL*a);
+    if (xl > xr) swap(xl, xr);
 
     if (l < xl) num += abs(F.eval(xl) - F.eval(l));
     if (xr < r) num += abs(F.eval(r) - F.eval(xr));
-    num += abs(F.eval(max(l,xl)) - F.eval(min(r,xr)));
+    if (xl <= r and l <= xr) num += abs(F.eval(min(r,xr)) - F.eval(max(l,xl)));
+    else num += abs(F.eval() - F.eval());
   }
 
   if (num %6 == 0) num /= 6, den = 1;
@@ -73,7 +82,7 @@ void solve() {
   else if (num %2 == 0) num /= 2, den = 3;
 
   if (num != 0) cout << num << "/" << den << '\n';
-  else cout << "0\n";
+  else cout << "0/1\n";
 }
 
 int main(){
