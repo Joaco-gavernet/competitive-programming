@@ -37,6 +37,7 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+// binary search like approach, not necessary in this case
 long long int_sqrt (long long x) {
   long long ans = 0;
   for (ll k = 1LL << 30; k != 0; k /= 2) {
@@ -67,14 +68,22 @@ void solve() {
   if (det == 0 or det < 0) { // one or none solution
     num += abs(F.eval(r) - F.eval(l));
   } else { // two solutions
-    ll xl = (-b -int_sqrt(det)) / (2LL*a);
-    ll xr = (-b +int_sqrt(det)) / (2LL*a);
-    if (xl > xr) swap(xl, xr);
+    ll xl = (-b -sqrt(det)) / (2LL*a);
+    ll xr = (-b +sqrt(det)) / (2LL*a);
 
-    if (l < xl) num += abs(F.eval(xl) - F.eval(l));
-    if (xr < r) num += abs(F.eval(r) - F.eval(xr));
-    if (xl <= r and l <= xr) num += abs(F.eval(min(r,xr)) - F.eval(max(l,xl)));
-    else num += abs(F.eval() - F.eval());
+    if (r <= xl or xr <= l or (xl <= l and r <= xr)) {
+      num += abs(F.eval(r) - F.eval(l));
+    } else if (xl <= r and r <= xr and l <= xl) {
+      num += abs(F.eval(xl) - F.eval(l));
+      num += abs(F.eval(r) - F.eval(xl));
+    } else if (l <= xl and xr <= r) {
+      num += abs(F.eval(xl) - F.eval(l));
+      num += abs(F.eval(xr) - F.eval(xl));
+      num += abs(F.eval(r) - F.eval(xr));
+    } else if (xl <= l and l <= xr and xr <= r) {
+      num += abs(F.eval(xr) - F.eval(l));
+      num += abs(F.eval(r) - F.eval(xr));
+    }
   }
 
   if (num %6 == 0) num /= 6, den = 1;
