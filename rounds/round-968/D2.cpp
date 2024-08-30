@@ -16,7 +16,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #define dbg(...)
 #endif
 
-typedef long long ll;
+typedef long long int ll;
 typedef pair<ll,ll> ii;
 typedef vector<bool> vb;
 typedef vector<ll> vi;
@@ -55,12 +55,24 @@ ii find(vi &v) {
   return {num, num2};
 }
 
+bool cmp(ii &a, ii &b) {
+  return a.fs > b.fs or (a.fs == b.fs and a.ss < b.ss);
+}
+
+void build(set<ll> &st, unordered_map<ll, ll> &dp, vector<ii> &mexes) {
+  // function to precompute for every i which is the best option
+  sort(all(mexes), cmp);
+  for (auto &[f,s] : mexes) {
+    st.insert(f);
+    dp[f] = max(max(dp[f], s), dp[s]);
+  }
+}
 
 void solve() {
   ll n,m; cin >> n >> m;
   vector<vi> g(n);
   vector<ii> mexes(n);
-  ll mex = 0;
+  ll mex = 0, mex2 = 0;
   forn(i,n) {
     int l; cin >> l;
     g[i].resize(l);
@@ -70,28 +82,43 @@ void solve() {
     g[i].erase(unique(all(g[i])),g[i].end());
 
     mexes[i] = find(g[i]);
-    mex = max(mex, mexes[i].ss);
+    mex = max(mex, mexes[i].fs);
+    mex2 = max(mex2, mexes[i].ss);
   }
   ll ans = 0;
 
-  // compute every possible x = 0..m
-  ll Q = min(m, mex);
-  Q++;
-  ans += Q*mex;
-  if (m > mex) {
+  // calculate f(i) for i = 0..m 
+  unordered_map<ll, ll> dp; // graph
+  set<ll> s;
+  build(s, dp, mexes);
+
+  vi reps; // vector to save repeated numbers
+  if (n > 1 and mexes[0].fs == mexes[1].fs) reps.pb(mexes[0].fs);
+  forr(i,1,n-1) {
+    if (i +1 >= n or i-1 < 0) continue;
+    if (mexes[i].fs == mexes[i+1].fs and mexes[i].fs != mexes[i-1].fs) 
+      reps.pb(mexes[i].fs);
+  }
+  for (auto i : reps) mex = max(mex, dp[i]);
+
+  forr(i,0,min(m, mex2) +1) {
+    // check if number dp state was edited
+    ll mi = max(i, mex);
+    if (esta(i,s)) mi = max(mi, dp[i]);
+    ans += mi;
+  }
+  if (m > mex2) {
     ans += m*(m+1)/2;
-    ans -= (Q-1)*Q/2;
+    ans -= (mex2+1)*mex2/2;
   }
 
   cout << ans << '\n';
+  // RAYA;
 }
 
 int main(){
   FIN;
-
   int t = 1; cin >> t;
   while (t--) solve();
-
-
   return 0;
 }
