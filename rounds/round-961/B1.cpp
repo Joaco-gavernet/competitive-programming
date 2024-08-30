@@ -40,34 +40,36 @@ const int MAXN = (int)(2e5+5);
 
 void solve() {
   ll n,m; cin >> n >> m;
-  multiset<ll> s; 
-  ll act;
+  multiset<ll> ms; 
+  set<ll> s;
   forn(i,n) {
-    cin >> act;
+    ll act; cin >> act;
     s.insert(act);
+    ms.insert(act);
   }
-
   auto ptr = s.upper_bound(m);
-  ll mx = -1;
   if (ptr == s.begin()) {
     cout << "0\n";
     return;
-  } else mx = *(--s.upper_bound(m));
+  } 
 
-  dbg(s);
-
+  ll mx = *(--ptr);
   ll prev = -1;
   for (auto x : s) {
+    ll tx = min((ll)ms.count(x), m/x);
+    mx = max(mx, tx*x);
+    
     if (prev == -1) {
       prev = x;
       continue;
     }
 
     if (prev +1 == x) {
-      ll tprev = min((ll)s.count(prev), m/prev);
-      ll tx = min((ll)s.count(x), m/x);
-      ll act = tprev*prev + tx*x;
-      mx = max(mx, (tprev*prev + tx*x <= m ? act : (tprev-1)*prev + (tx-1)*x));
+      ll tprev = min((ll)ms.count(prev), m/prev);
+      for (ll t = 0; t <= tx; t++) {
+        ll tt = min(tprev, (m-t*x)/prev);
+        mx = max(mx, t*x + tt*prev);
+      }
     }
     prev = x;
   }
@@ -77,10 +79,7 @@ void solve() {
 
 int main(){
   FIN;
-  
   int t = 1; cin >> t;
   while (t--) solve();
-  
-  
   return 0;
 }
