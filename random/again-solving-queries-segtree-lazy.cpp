@@ -40,139 +40,129 @@ const int MAXN = (int)(2e5+5);
 typedef long long tipo;
 const int NEUT = 0; // REMINDER !!! 
 
+bool zero(vi &v) {
+  for (auto i : v) if (i != 0) return false;
+  return true;
+}
+
 struct node {
+  tipo l, r, lazy_set, lazy_add;
   vi ans;
-  tipo l, r, lazy_sum = 0, lazy_val = 0;
-  bool upd = false;
-  node() {ans = vi(5,0); lazy_sum = lazy_val = 0; upd = false; l = r = -1;} // REMINDER !!! SET NEUT
-  node(tipo val, int pos) { 
-    ans = vi(5,0);
-    l = pos; r = pos; 
-  } // Set node
-  void set_lazy_sum(tipo x) { 
-    (lazy_sum += x) %= 5; 
-    upd = true;
+  bool upd; 
+  node() { ans = vi(5,0); upd = false; lazy_set = -1; lazy_add = 0; }
+  node(int pos) { ans = vi(5,0); upd = false; l = r = pos; lazy_set = -1; lazy_add = 0; }
+  void set_lazy(tipo _set, tipo _add) {
+    upd = true; 
+    if (_set == -1) { 
+      lazy_add += _add; // TODO: rethink if oversimplification of cases
+    } else {
+      lazy_set = _set;
+      lazy_add = 0;
+    }
   }
-  void set_lazy_val(tipo x) { lazy_val = x; upd = true;}
 };
 
 ostream &operator << (ostream &os, const node &p) { //Para imprimir
   return os << "(" << p.ans[0] << "," << p.ans[1] << "," << p.ans[2] << "," << p.ans[3] << "," << p.ans[4] << ")";
 }
 
-struct segtree_lazy {
-#define l(x) int(x<<1)
-#define r(x) int(x<<1|1)
-
+struct lazy {
+  #define l(x) int(x<<1)
+  #define r(x) int(x<<1|1)
   vector <node> t; int tam;
 
-  node op(node a, node b) {
+  node op(node a, node b) { //Operacion de query
     node aux; 
-    // Operacion de query
-    forn(i,5) aux.ans[i] += a.ans[i]; 
-    forn(i,5) aux.ans[i] += b.ans[i]; 
+    forn(i,5) aux.ans[i] += a.ans[i];
+    forn(i,5) aux.ans[i] += b.ans[i];
     aux.l = a.l; aux.r = b.r;
     return aux;
   }
 
-  void push(int p) {
-    node &cur = t[p];
-    if(cur.upd == true) { 
-      dbg(p, cur.lazy_val, cur.lazy_sum);
-      if (cur.lazy_val == 0) { 
-        // update tipo 1: shift array according lazy_sum value
-        vi aux(5,0); 
-        if (cur.lazy_sum == 0) aux[0] = 1;
-        forn(i,5) aux[i] = cur.ans[(i + cur.lazy_sum) %5];
-        cur.ans = aux; // Operacion update
-        if(cur.l < cur.r) {
-          t[l(p)].lazy_sum += cur.lazy_sum; t[l(p)].upd = true;
-          t[r(p)].lazy_sum += cur.lazy_sum; t[r(p)].upd = true;
-        }
-      } else { 
-        // update tipo 2
-        int delta = cur.r - cur.l +1;
-        // dbg(cur.l, cur.r, cur.lazy_val);
-        vi aux(5,0);
-        // dbg(delta);
-        forn(i,delta) aux[(cur.lazy_val +i) %5]++; // TODO: calculate efficiently in O(1) instead of O(delta)
-        cur.ans = aux;
+  void update_node(node &cur) {
+    if (cur.upd == false) return;
+    cur.upd = false;
 
-        if(cur.l < cur.r) {
-          t[l(p)].lazy_val = cur.lazy_val; t[l(p)].upd = true;
-          t[r(p)].lazy_val = (cur.lazy_val + (cur.r -cur.l +1)) %5; t[r(p)].upd = true;
-        }
+    int delta = cur.r-cur.l;
+    forn(i,5) cur.ans[i] += delta/5;
+    forn(i,delta%5) cur.ans[(cur.lazy_set+i)%5]++; // TODO: check
+
+    // shift current ans
+    vi aux(5,0);
+    forn(i,5) aux[(i +cur.lazy_add) %5] = cur.ans[i];
+    cur.ans = aux;
+  }
+
+  void reset_node(node &cur) {
+    cur.upd = false;
+    cur.ans = vi(5,0); 
+    cur.lazy_set = -1; 
+    cur.lazy_add = 0; 
+  }
+
+  void push(tipo p) {
+    if(t[p].upd == true) {
+      dbg(p);
+      update_node(t[p]);
+      if(t[p].l < t[p].r) {
+        t[l(p)].set_lazy(t[p].lazy_set, t[p].lazy_add);
+        t[r(p)].set_lazy(t[p].lazy_set, t[p].lazy_add);
       }
-      cur.lazy_val = false;
-      cur.lazy_sum = 0; 
-      cur.upd = false; // Poner el neutro del update
+      reset_node(t[p]);
     }
   }
 
-  node query(int l, int r, int p = 1) {
-    push(p); node &cur = t[p];
-    if(l > cur.r || r < cur.l) return node(); // Return NEUT
-    if(l <= cur.l && cur.r <= r) return cur;
-    return op(query(l,r,l(p)),query(l,r,r(p)));
+  node query(tipo l, tipo r, int p = 1) {
+    push(p); 
+    if(l > t[p].r || r < t[p].l) return node();
+    if(l <= t[p].l && t[p].r <= r) return t[p];
+    return op(query(l,r,l(p)),query(l,r,r(p)));		
   }
 
-  void update1(int l, int r, tipo val, int p = 1) { // root at p = 1
+  void update(tipo l, tipo r, tipo set, tipo add, int p = 1) {
     push(p); node &cur = t[p];
+    dbg(p, set, add, cur.l, cur.r);
     if(l > cur.r || r < cur.l) return;
     if(l <= cur.l && cur.r <= r) {
-      cur.set_lazy_sum(val); push(p); return;
+      cur.set_lazy(set, add); push(p); return;
     }
-    update1(l, r, val, l(p)); update1(l, r, val, r(p));
-    cur = op(t[l(p)], t[r(p)]); // TODO: why this line????????????????????
-    // if (p == 1) dbg(t);
+    update(l, r, set, add, l(p)); update(l, r, set, add, r(p));
+    cur = op(t[l(p)], t[r(p)]);
   }
 
-  void update2(int l, int r, tipo val = 1, int p = 1) { // root at p = 1
-    push(p); node &cur = t[p];
-    // dbg(p, cur.l, cur.r);
-    if(l > cur.r || r < cur.l) return;
-    if(l <= cur.l and cur.r <= r) {
-      // dbg("adentro", val, cur.l, cur.r);
-      cur.set_lazy_val(val); push(p); return; // TODO: check how to determine val
-    }
-    update2(l, r, val, l(p)); update2(l, r, val +r -l, r(p));
-    cur = op(t[l(p)], t[r(p)]); 
-    // if (p == 1) dbg(t);
-  }
-
-  void build(vector <tipo> v, int n) { // iterative build
+  void build(vector<tipo> v, int n) { // iterative build
     tam = sizeof(int) * 8 - __builtin_clz(n); tam = 1<<tam;
     t.resize(2*tam); v.resize(tam);
-    forn(i,tam) t[tam+i] = node(v[i],i); 
-    // forn(i,n) t[tam+i].ans[0] = 1;
+    forn(i,tam) t[tam+i] = node(int(i));
+    forn(i,n) t[tam+i].ans[0] = 1; 
     for(int i = tam - 1; i > 0; i--) t[i] = op(t[l(i)],t[r(i)]); 
   }
 };
 
-
 void solve() {
   int n, q; cin >> n >> q;
   vi v(n);
-  segtree_lazy s;
+  lazy s;
   s.build(v,n);
 
-  RAYA;
   while (q--) {
-    int op; cin >> op;
+    dbg(s.t);
+    int op; cin >> op; op--;
     int i, j, v; cin >> i >> j; 
     i--; j--;
-    if (op == 1) {
-      cin >> v;
-      s.update1(i,j,v);
+
+    if (op == 0) {
+      cin >> v; 
+      if (v %5 == 0) continue;
+      dbg("boca");
+      s.update(i,j,-1,v); // lazy add
     }
-    else if (op == 2) s.update2(i,j);
-    else if (op == 3) {
+    if (op == 1) s.update(i,j,i,0); // lazy set
+    if (op == 2) {
       int tot = s.query(i,j).ans[0];
-      dbg(s.t);
-      cout << tot << '\n';
+      cout << tot << endl;
     }
   }
-
 }
 
 int main(){
