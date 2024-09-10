@@ -65,9 +65,7 @@ struct segtree_lazy {
   }
 
   void node_update(node &cur) { //Operacion update
-    if (cur.upd) {
-      cur.sum = (cur.r -cur.l +1) -cur.sum;
-    }
+    cur.sum = min(n, (cur.r -cur.l +1)) -cur.sum;
   }
 
   void reset_lazy(node &cur) {
@@ -113,15 +111,37 @@ struct segtree_lazy {
 
   tipo find_kth(int k, int p = 1) {
     push(p); node &cur = t[p];
-    if (k == 0 or cur.r == cur.l) return cur.l +1;
-
     dbg(p, cur.l, cur.r, k);
-    push(l(p)); node &l_child = t[l(p)];
+    if (cur.l == cur.r) return cur.l;
 
+    push(l(p)); node &l_child = t[l(p)];
     if (l_child.sum < k) return find_kth(k -l_child.sum, r(p));
     else return find_kth(k, l(p));
   }
 };
+
+/*
+// made by Monazo97
+int find_kth(int k, segtree &s) {
+  int pos = 1;
+  int l = s.t[pos].l;
+  int r = s.t[pos].r;
+  while(l<r) {
+    int l_child = 2*pos;
+    int r_child = 2*pos+1;
+    int suma = s.t[l_child].ans;
+    if(suma >= k) {
+      pos = l_child;
+    } else {
+      k -= suma;
+      pos = r_child;
+    }
+    l = s.t[pos].l;
+    r = s.t[pos].r;
+  }
+  return l;
+}
+*/
 
 
 void solve() {
@@ -131,6 +151,7 @@ void solve() {
 
   while (q--) {
     int op; cin >> op;
+    // forn(i,n) dbg(s.query(i,i).sum);
 
     if (op == 1) {
       ll l, r; cin >> l >> r;
@@ -139,14 +160,10 @@ void solve() {
       s.update(l,r,1);
     } else {
       int k; cin >> k;
-      ll tot = -1;
-      if (k == 0) tot = 0;
-      else tot = s.find_kth(k);
+      ll tot = s.find_kth(k +1);
       cout << tot << '\n';
-
-      forn(i,n) dbg(s.query(i,i).sum);
-      RAYA;
     }
+    // RAYA;
   }
 }
 
