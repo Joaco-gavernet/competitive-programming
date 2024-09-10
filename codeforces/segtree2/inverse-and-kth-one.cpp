@@ -41,12 +41,12 @@ typedef long long tipo;
 const int NEUT = 0; // REMINDER !!! 
 
 struct node {
-  tipo ans, l, r, lazy;
+  tipo sum, lazy, l, r;
   bool upd;
-  node() { ans = 0; lazy = 0; upd = false; l = r = -1; } // REMINDER !!! SET NEUT
-  node(tipo val, int pos) : ans(val), l(pos), r(pos), lazy(0), upd(false) {} // Set node
+  node() { sum = lazy = 0; upd = false; l = r = -1; } // REMINDER !!! SET NEUT
+  node(tipo val, int pos) : sum(val), l(pos), r(pos), lazy(0), upd(false) {} // Set node
   void set_lazy(tipo x) { 
-    lazy = x;
+    lazy = !lazy;
     upd = true; 
   }
 };
@@ -59,14 +59,15 @@ struct segtree_lazy {
 
   node op(node a, node b) { // Operacion de query
     node aux; 
-    // dbg(a.ans, b.ans, a.l, a.r, b.l, b.r);
-    aux.ans = a.ans + b.ans;
+    aux.sum = a.sum + b.sum;
     aux.l = a.l; aux.r = b.r;
     return aux;
   }
 
   void node_update(node &cur) { //Operacion update
-    if (cur.upd) cur.ans = cur.lazy*(min(n, cur.r) -cur.l +1); 
+    if (cur.upd) {
+      cur.sum = (cur.r -cur.l +1) -cur.sum;
+    }
   }
 
   void reset_lazy(node &cur) {
@@ -109,6 +110,17 @@ struct segtree_lazy {
     forn(i,tam) t[tam+i] = node(v[i],i);
     for(int i = tam - 1; i > 0; i--) t[i] = op(t[l(i)],t[r(i)]); 
   }
+
+  tipo find_kth(int k, int p = 1) {
+    push(p); node &cur = t[p];
+    if (k == 0 or cur.r == cur.l) return cur.l +1;
+
+    dbg(p, cur.l, cur.r, k);
+    push(l(p)); node &l_child = t[l(p)];
+
+    if (l_child.sum < k) return find_kth(k -l_child.sum, r(p));
+    else return find_kth(k, l(p));
+  }
 };
 
 
@@ -119,20 +131,22 @@ void solve() {
 
   while (q--) {
     int op; cin >> op;
-    ll l, r; cin >> l >> r;
-    r--;
 
     if (op == 1) {
-      int v; cin >> v;
-      s.update(l,r,v);
+      ll l, r; cin >> l >> r;
+      r--;
+
+      s.update(l,r,1);
     } else {
-      auto z = s.query(l,r);
-      cout << z.ans << '\n';
+      int k; cin >> k;
+      ll tot = -1;
+      if (k == 0) tot = 0;
+      else tot = s.find_kth(k);
+      cout << tot << '\n';
+
+      forn(i,n) dbg(s.query(i,i).sum);
+      RAYA;
     }
-    /*
-    forn(i,n) dbg(s.query(i,i).ans);
-    RAYA;
-    */
   }
 }
 

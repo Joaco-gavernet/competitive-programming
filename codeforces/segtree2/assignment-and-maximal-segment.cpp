@@ -41,10 +41,10 @@ typedef long long tipo;
 const int NEUT = 0; // REMINDER !!! 
 
 struct node {
-  tipo ans, l, r, lazy;
+  tipo sum, pref, suf, seg, l, r, lazy;
   bool upd;
-  node() { ans = 0; lazy = 0; upd = false; l = r = -1; } // REMINDER !!! SET NEUT
-  node(tipo val, int pos) : ans(val), l(pos), r(pos), lazy(0), upd(false) {} // Set node
+  node() { sum = pref = suf = seg = lazy = 0; upd = false; l = r = -1; } // REMINDER !!! SET NEUT
+  node(tipo val, int pos) : sum(val), pref(val), suf(val), seg(val), l(pos), r(pos), lazy(0), upd(false) {} // Set node
   void set_lazy(tipo x) { 
     lazy = x;
     upd = true; 
@@ -59,14 +59,28 @@ struct segtree_lazy {
 
   node op(node a, node b) { // Operacion de query
     node aux; 
-    // dbg(a.ans, b.ans, a.l, a.r, b.l, b.r);
-    aux.ans = a.ans + b.ans;
+    aux.sum = a.sum + b.sum;
+    aux.suf = max(b.suf, a.suf + b.sum);
+    aux.pref = max(a.pref, a.sum + b.pref);
+
+    aux.seg = max(a.seg, b.seg);
+    aux.seg = max(aux.seg, aux.sum);
+    aux.seg = max(aux.seg, aux.suf);
+    aux.seg = max(aux.seg, aux.pref);
+    aux.seg = max(aux.seg, 0ll);
+    aux.pref = max(aux.pref, 0ll);
+    aux.suf = max(aux.suf, 0ll);
+
     aux.l = a.l; aux.r = b.r;
     return aux;
   }
 
   void node_update(node &cur) { //Operacion update
-    if (cur.upd) cur.ans = cur.lazy*(min(n, cur.r) -cur.l +1); 
+    if (cur.upd) {
+      cur.sum = cur.lazy *(cur.r -cur.l +1);
+      cur.pref = cur.suf = cur.seg = 0;
+      if (cur.lazy > 0) cur.pref = cur.suf = cur.seg = cur.sum;
+    }
   }
 
   void reset_lazy(node &cur) {
@@ -118,19 +132,17 @@ void solve() {
   s.build(vi(n,0), n);
 
   while (q--) {
-    int op; cin >> op;
     ll l, r; cin >> l >> r;
     r--;
 
-    if (op == 1) {
-      int v; cin >> v;
-      s.update(l,r,v);
-    } else {
-      auto z = s.query(l,r);
-      cout << z.ans << '\n';
-    }
+    int v; cin >> v;
+    s.update(l,r,v);
+
+    ll tot = s.query(0,n-1).seg;
+    cout << tot << '\n';
+
     /*
-    forn(i,n) dbg(s.query(i,i).ans);
+    forn(i,n) dbg(s.query(i,i).sum);
     RAYA;
     */
   }
