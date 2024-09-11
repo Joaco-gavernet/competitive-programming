@@ -37,15 +37,14 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+
 void solve() {
 }
 
 int main(){
   FIN;
-  
-  int t = 1; cin >> t;
+  int t = 1; 
+  cin >> t;
   while (t--) solve();
-  
-  
   return 0;
 }
