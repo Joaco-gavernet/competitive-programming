@@ -41,13 +41,12 @@ typedef long long tipo;
 const int NEUT = 0; // REMINDER !!! 
 
 struct node {
-  tipo sum, lazy, l, r;
+  tipo sum, l, r;
   bool upd;
-  node() { sum = lazy = 0; upd = false; l = r = -1; } // REMINDER !!! SET NEUT
-  node(tipo val, int pos) : sum(val), l(pos), r(pos), lazy(0), upd(false) {} // Set node
-  void set_lazy(tipo x) { 
-    lazy = !lazy;
-    upd = true; 
+  node() { sum = 0; upd = false; l = r = -1; } // REMINDER !!! SET NEUT
+  node(tipo val, int pos) : sum(val), l(pos), r(pos), upd(false) {} // Set node
+  void set_lazy() { 
+    upd = !upd; 
   }
 };
 
@@ -69,7 +68,7 @@ struct segtree_lazy {
   }
 
   void reset_lazy(node &cur) {
-    cur.lazy = 0; cur.upd = false; //Poner el neutro del update
+    cur.upd = false; //Poner el neutro del update
   }
 
   void push(int p) {
@@ -77,8 +76,8 @@ struct segtree_lazy {
     if(cur.upd == true) {
       node_update(cur);
       if(cur.l < cur.r) {
-        t[l(p)].set_lazy(cur.lazy);
-        t[r(p)].set_lazy(cur.lazy);
+        t[l(p)].set_lazy();
+        t[r(p)].set_lazy();
       }
       reset_lazy(cur);
     }
@@ -95,7 +94,7 @@ struct segtree_lazy {
     push(p); node &cur = t[p];
     if(l > cur.r || r < cur.l) return;
     if(l <= cur.l && cur.r <= r) {
-      cur.set_lazy(val); push(p); return;
+      cur.set_lazy(); push(p); return;
     }
     update(l, r, val, l(p)); update(l, r, val, r(p));
     cur = op(t[l(p)], t[r(p)]);
@@ -111,7 +110,6 @@ struct segtree_lazy {
 
   tipo find_kth(int k, int p = 1) {
     push(p); node &cur = t[p];
-    dbg(p, cur.l, cur.r, k);
     if (cur.l == cur.r) return cur.l;
 
     push(l(p)); node &l_child = t[l(p)];
@@ -119,29 +117,6 @@ struct segtree_lazy {
     else return find_kth(k, l(p));
   }
 };
-
-/*
-// made by Monazo97
-int find_kth(int k, segtree &s) {
-  int pos = 1;
-  int l = s.t[pos].l;
-  int r = s.t[pos].r;
-  while(l<r) {
-    int l_child = 2*pos;
-    int r_child = 2*pos+1;
-    int suma = s.t[l_child].ans;
-    if(suma >= k) {
-      pos = l_child;
-    } else {
-      k -= suma;
-      pos = r_child;
-    }
-    l = s.t[pos].l;
-    r = s.t[pos].r;
-  }
-  return l;
-}
-*/
 
 
 void solve() {
@@ -151,8 +126,6 @@ void solve() {
 
   while (q--) {
     int op; cin >> op;
-    // forn(i,n) dbg(s.query(i,i).sum);
-
     if (op == 1) {
       ll l, r; cin >> l >> r;
       r--;
@@ -163,14 +136,13 @@ void solve() {
       ll tot = s.find_kth(k +1);
       cout << tot << '\n';
     }
-    // RAYA;
   }
 }
+
 
 int main(){
   FIN;
   int t = 1; 
-  // cin >> t;
   while (t--) solve();
   return 0;
 }
