@@ -50,15 +50,22 @@ struct node {
   vi ans;
   bool upd; 
   node() { ans = vi(5,0); upd = false; lazy_set = -1; lazy_add = 0; }
-  node(int pos) { ans = vi(5,0); upd = false; l = r = pos; lazy_set = -1; lazy_add = 0; }
-  void set_lazy(tipo _set, tipo _add) {
+  node(int val, int pos) { 
+    ans = vi(5,0); 
+    ans[val] = 1; 
+    upd = false; 
+    l = r = pos; 
+    lazy_set = -1; 
+    lazy_add = 0; 
+  }
+  void set_lazy(tipo _set, tipo _add, ll _l) {
     upd = true; 
-    if (_set == -1) { 
-      lazy_add += _add; // TODO: rethink if oversimplification of cases
-    } else {
-      lazy_set = _set;
-      lazy_add = 0;
-    }
+    if (_set != -1) _set += l -_l;
+
+    if (lazy_set == -1 and _set == -1) lazy_add += _add;
+    else if (lazy_set == -1 and _set != -1) lazy_set = _set, lazy_add = 0;
+    else if (_set != -1) lazy_set = _set, lazy_add = 0;
+    else if (_set == -1) lazy_set += _add;
   }
 };
 
@@ -73,7 +80,7 @@ struct lazy {
 
   node op(node a, node b) { //Operacion de query
     node aux; 
-    forn(i,5) aux.ans[i] += a.ans[i];
+    forn(i,5) aux.ans[i] = a.ans[i];
     forn(i,5) aux.ans[i] += b.ans[i];
     aux.l = a.l; aux.r = b.r;
     return aux;
@@ -81,34 +88,33 @@ struct lazy {
 
   void update_node(node &cur) {
     if (cur.upd == false) return;
-    cur.upd = false;
 
-    int delta = cur.r-cur.l;
-    forn(i,5) cur.ans[i] += delta/5;
-    forn(i,delta%5) cur.ans[(cur.lazy_set+i)%5]++; // TODO: check
-
-    // shift current ans
-    vi aux(5,0);
-    forn(i,5) aux[(i +cur.lazy_add) %5] = cur.ans[i];
-    cur.ans = aux;
+    if (cur.lazy_set == -1) {
+      // shift current ans
+      vi aux(5,0);
+      forn(i,5) aux[(i +cur.lazy_add) %5] = cur.ans[i];
+      cur.ans = aux;
+    } else {
+      int delta = cur.r -cur.l +1;
+      forn(i,5) cur.ans[i] = delta/5;
+      forn(i,delta%5) cur.ans[(cur.lazy_set+i)%5]++; 
+    }
   }
 
-  void reset_node(node &cur) {
+  void reset_lazy(node &cur) {
     cur.upd = false;
-    cur.ans = vi(5,0); 
     cur.lazy_set = -1; 
     cur.lazy_add = 0; 
   }
 
   void push(tipo p) {
     if(t[p].upd == true) {
-      dbg(p);
       update_node(t[p]);
       if(t[p].l < t[p].r) {
-        t[l(p)].set_lazy(t[p].lazy_set, t[p].lazy_add);
-        t[r(p)].set_lazy(t[p].lazy_set, t[p].lazy_add);
+        t[l(p)].set_lazy(t[p].lazy_set, t[p].lazy_add, t[p].l);
+        t[r(p)].set_lazy(t[p].lazy_set, t[p].lazy_add, t[p].l);
       }
-      reset_node(t[p]);
+      reset_lazy(t[p]);
     }
   }
 
@@ -119,22 +125,20 @@ struct lazy {
     return op(query(l,r,l(p)),query(l,r,r(p)));		
   }
 
-  void update(tipo l, tipo r, tipo set, tipo add, int p = 1) {
+  void update(tipo l, tipo r, tipo _set, tipo _add, int p = 1) {
     push(p); node &cur = t[p];
-    dbg(p, set, add, cur.l, cur.r);
     if(l > cur.r || r < cur.l) return;
     if(l <= cur.l && cur.r <= r) {
-      cur.set_lazy(set, add); push(p); return;
+      cur.set_lazy(_set,_add,l); push(p); return;
     }
-    update(l, r, set, add, l(p)); update(l, r, set, add, r(p));
+    update(l, r, _set, _add, l(p)); update(l, r, _set, _add, r(p));
     cur = op(t[l(p)], t[r(p)]);
   }
 
   void build(vector<tipo> v, int n) { // iterative build
     tam = sizeof(int) * 8 - __builtin_clz(n); tam = 1<<tam;
     t.resize(2*tam); v.resize(tam);
-    forn(i,tam) t[tam+i] = node(int(i));
-    forn(i,n) t[tam+i].ans[0] = 1; 
+    forn(i,tam) t[tam+i] = node(v[i],int(i));
     for(int i = tam - 1; i > 0; i--) t[i] = op(t[l(i)],t[r(i)]); 
   }
 };
@@ -146,22 +150,25 @@ void solve() {
   s.build(v,n);
 
   while (q--) {
-    dbg(s.t);
-    int op; cin >> op; op--;
+    int op; cin >> op; 
     int i, j, v; cin >> i >> j; 
     i--; j--;
 
-    if (op == 0) {
+    if (op == 1) {
       cin >> v; 
-      if (v %5 == 0) continue;
-      dbg("boca");
       s.update(i,j,-1,v); // lazy add
     }
-    if (op == 1) s.update(i,j,i,0); // lazy set
     if (op == 2) {
+      s.update(i,j,1,0); // lazy set
+    }
+    if (op == 3) {
       int tot = s.query(i,j).ans[0];
       cout << tot << endl;
     }
+    /*
+    forn(i,n) dbg(s.query(i,i).ans);
+    RAYA;
+    */
   }
 }
 
