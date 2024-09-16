@@ -36,12 +36,14 @@ const int MAXN = 200005;
 
 struct arista {
   // x -> next node, w = weight
-  ll x, w, dist;
+  ll x, w, kms;
 };
 
 struct nodo {
-  tipo d, v, a, kms; // d -> distance, v -> actual node, a = previous node
-  bool operator<(const nodo& x) const {return d > x.d;}
+  tipo c, v, a, kms; // d -> distance, v -> actual node, a = previous node
+  nodo(): c(INF), v(0), a(0), kms(0) {}
+  nodo(ll _c, ll _v, ll _a, ll _kms): c(_c), v(_v), a(_a), kms(_kms) {}
+  bool operator<(const nodo& x) const {return c > x.c;}
 };
 
 struct station {
@@ -49,36 +51,25 @@ struct station {
   vector<pi> edges;
 };
 
-vector<nodo> Dijkstra(int start, int n, vector<vector<arista>> &g, int B, vector<vector<nodo>> &dp) {
-  vector<nodo> ans(n, {INF,0,0,0});
-  vector<bool> visto(n, false);
-  priority_queue<nodo> p; p.push({0,start,-1,0});
+void Dijkstra(int start, int N, int B, vector<vector<arista>> &g, vector<vector<nodo>> &dp) {
+  vector<vb> visto(B+1, vb(N,false));
+  priority_queue<nodo> p; p.push(nodo(0,start,-1,0));
   while(!p.empty()) {
     nodo it = p.top(); p.pop();
-    if(visto[it.v]) continue;
+    if (visto[it.kms][it.v]) continue;
     else {
-      ans[it.v] = it; visto[it.v] = true;
-      for(arista u : g[it.v]) {
-	// check every possible transition from dp
-	ll act = ans[it.v].d + u.w*u.dist;
-	//~ dbg(it.v, u.x, act, ans[u.x].d, ans[it.v].kms+u.dist, B);
-	if((!visto[u.x] or act < ans[u.x].d) and ans[it.v].kms+u.dist <= B) {
-	  p.push({act, u.x, it.v, ans[it.v].kms+u.dist});
-	}
-	forr(i,1,B-1) {
-	  //~ dbg(i, it.v, dp[i]);
-	  act = dp[i][it.v].d + u.w*u.dist;
-	  if((!visto[u.x] or act < ans[u.x].d) and dp[i][it.v].kms+u.dist <= B) {
-	    p.push({act, u.x, it.v, dp[i][it.v].kms+u.dist});
-	    //~ if (B == 12) dbg(act, it.d, u.w, u.dist, u.x, it.v);
-	  }
+      dp[it.kms][it.v] = it; 
+      visto[it.kms][it.v] = true;
+      for(arista u : g[it.v]) { // check every possible transition from dp
+	ll act = dp[it.kms][it.v].c + u.w*u.kms;
+	if (!visto[it.kms][u.x] and it.kms+u.kms <= B) {
+	  p.push(nodo(act, u.x, it.v, dp[it.kms][it.v].kms+u.kms));
 	}
       }
-      //~ if (B == 12) dbg(p.size());
     }
   }
-  return ans;
 }
+
 
 ostream &operator << (ostream &os, const station &s) {
   return os << "(" << s.x << "," << s.y << "," << s.l << ")";
@@ -89,11 +80,11 @@ istream &operator >> (istream &is, station &s) {
 }
 
 ostream &operator << (ostream &os, const nodo &x) {
-  return os << "(" << x.d << "," << x.v << "," << x.a << "," << x.kms << ")";
+  return os << "(" << x.c << "," << x.v << "," << x.a << "," << x.kms << ")";
 }
 
 ostream &operator << (ostream &os, const arista &a) {
-  return os << "(" << a.x << "," << a.w << "," << a.dist << ")";
+  return os << "(" << a.x << "," << a.w << "," << a.kms << ")";
 }
 
 ll findDistance(const station &a, const station &b) {
@@ -145,18 +136,15 @@ int main() {
       g[i].pb({j, w, dist});
     }
   }
-  //~ forn(i,N) dbg(i, g[i]);
   
   // procesamiento //////////////////////////////////////
-  vector<vector<nodo>> dp(B+1);
-  forr(b,1,B+1) {
-    dp[b] = Dijkstra(0,N,g,b,dp);
-  }
-  //~ forn(b,B+1) dbg(b, dp[b]);
+  vector<vector<nodo>> dp(B+1, vector<nodo>(N,nodo()));
+  Dijkstra(0,N,B,g,dp);
   
   // output //////////////////////////////////////
   ll best = INF;
-  forr(i,1,B+1) best = min(best, dp[i][N-1].d);
+  forn(i,B+1) best = min(best, dp[i][N-1].c);
+  if (best == INF) best = -1;
   cout << best << endl;
   
   
