@@ -54,18 +54,14 @@ void solve() {
 
     ll a = check(l, k, k+n-1);
     ll b = check(r, k, k+n-1);
-    ll act = check(mid, k, k+n-1);
-    if (act < a) l += (mid-l)/2;
-    else {
-      r = mid;
-      continue;
-    }
+    ll act1 = check(mid, k, k+n-1);
+    ll act2 = check(mid+1, k, k+n-1);
 
-    if (act < b) r = mid + (r-mid)/2;
-    else l = mid;
+    if (act1-act2 >= 0) l = mid;
+    else r = mid;
   }
 
-  cout << min(check(l, k, k+n-1), check(r, k, k+n-1)) << '\n';
+  cout << min(check(r, k, k+n-1), check(l, k, k+n-1)) << '\n';
 }
 
 int main(){
