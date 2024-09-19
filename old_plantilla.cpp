@@ -17,7 +17,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #endif
 
 typedef long long ll;
-typedef pair<ll,ll> pi;
+typedef pair<ll,ll> ii;
 typedef vector<bool> vb;
 typedef vector<ll> vi;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
@@ -40,6 +40,7 @@ const int MAXN = (int)(2e5+5);
 
 void solve() {
 }
+
 
 int main(){
   FIN;
