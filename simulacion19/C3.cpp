@@ -6,13 +6,13 @@ using namespace std;
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
 template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
- 
+
 void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
- 
+
 #ifdef LOCAL
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
-const int MAXN = (int)(1e3+5);
+const int MAXN = (int)(2e3+5);
 const int LOG = 2;
 #else
 #define dbg(...)
@@ -77,7 +77,7 @@ struct segtree { // Segtree for Sum Range Query
 
   tipo encontrar(int l, int r, int x, int y) {
     // busca primer overflow/underflow de [x,y] en el rango [l,r]
-    int a = l-1, b = r+1;
+    int a = l-1, b = r + 1;
     while (1 < b-a) {
       int mid = a + (b-a)/2;
       node aux = query(l,mid);
@@ -85,14 +85,10 @@ struct segtree { // Segtree for Sum Range Query
       else a = mid;
     }
 
-    node aux = query(l,b);
-    node zl = query(l,l);
-    node zr = query(r,r);
-    if (zl.ans.fs < x) return {l,0};
-    else if (zl.ans.ss > y) return {l,1};
-    else if (x <= zr.ans.fs and zr.ans.ss <= y) return {-1, 0};
-    else if (zr.ans.fs < x) return {r, 0};
-    else return {r, 1};
+    node aux = query(b,b);
+    if (b == r+1) return {-1,0};
+    else if (aux.ans.fs < x) return {b,0}; 
+    else if (y < aux.ans.ss) return {b,1}; 
   }
 };
 
@@ -110,12 +106,7 @@ int main(){
   forr(i,1,n) h[i] = h[i-1] + v[i]; 
   segtree s;
   s.build(h,n);
-
-  /*
-  dbg(l,u);
-  dbg(h);
-  RAYA;
-  */
+  // dbg(l,u); dbg(h); RAYA;
 
   // build sparse table
   const pair<int,bool> NEUT2 = {-1, 0};
@@ -124,61 +115,48 @@ int main(){
   ll low, high;
   forn(i,n) {
     int del = 0;
-    if (i > 0) del = h[i-1];
-
+    if (i > 0) h[i];
     low = del;
     high = u-l +del;
     jmp[0][i][0] = s.encontrar(i,n,low,high);
-    if (jmp[0][i][0].fs == n) jmp[0][i][0] = NEUT2; 
 
     low = l-u +del;
     high = del;
     jmp[1][i][0] = s.encontrar(i,n,low,high);
-    if (jmp[1][i][0].fs == n) jmp[1][i][0] = NEUT2; 
   }
 
   forr(j, 1, LOG) { 
     forn(i, n) {
       if (jmp[0][i][j-1] == NEUT2) jmp[0][i][j] = NEUT2;
       else {
-        if (jmp[0][i][j-1].ss == 0) jmp[0][i][j] = jmp[0][jmp[0][i][j-1].fs +1][j-1];
-        else jmp[0][i][j] = jmp[1][jmp[0][i][j-1].fs +1][j-1];
+        auto [next,type] = jmp[0][i][j-1];
+        jmp[0][i][j] = jmp[type][next][j-1];
+      }
+      if (jmp[1][i][j-1] == NEUT2) jmp[1][i][j] = NEUT2;
+      else {
+        auto [next,type] = jmp[1][i][j-1];
+        jmp[1][i][j] = jmp[type][next][j-1];
       }
     }
   }
 
-  /*
-  forn(i,n) {
-    forn(j,LOG) cerr << jmp[0][i][j] << ' '; 
-    cerr << endl;
-  }
-  RAYA;
-  forn(i,n) {
-    forn(j,LOG) cerr << jmp[1][i][j] << ' '; 
-    cerr << endl;
-  }
-  RAYA;
-  */
-
   forn(_,q) {
     int b,e,x; cin >> b >> e >> x;
     b--; e--;
-    // dbg(b,e,x);
 
     // find first overflow/underflow using segtree
     int del = 0;
     if (b > 0) del = h[b-1];
-    low = l +del -x;
+    low = l +del -x; // TODO: rethink low and high boundaries
     high = u +del -x;
     pair<int,bool> ans = s.encontrar(b,e,low,high); 
-    // dbg(x, del);
+    // dbg(ans); dbg(b,e,x); dbg(x, del);
 
     if (ans.fs != -1) {
       if (ans.ss == 0) x = l;
       else x = u;
       del = h[ans.fs];
-      // dbg(ans);
-      // dbg(x, del);
+      // dbg(ans); dbg(x, del);
 
       // check sparse table
       bool t = ans.ss;
@@ -202,13 +180,11 @@ int main(){
     }
 
     ll toprint = x + h[e] - del;
-    // dbg(toprint, h[e]);
     cout << min(max(toprint, l), u) << '\n';
-    // RAYA;
+    // dbg(toprint, h[e]); RAYA;
   }
 
   return 0;
 }
-
 
 
