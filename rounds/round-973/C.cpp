@@ -37,33 +37,42 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
-string ask(int n, string act = "") {
-  bool is;
-  if (act.size() == n) return act;
-
-  cout << "? " << act + '0' << endl;
-  cout.flush();
-  cin >> is;
-  if (is == true) return ask(n, act+'0');
-
-  cout << "? " << act + '1' << endl;
-  cout.flush();
-  cin >> is;
-  if (is == true) return ask(n, act+'1');
-
-  char c;
-  if (act[0] == '1') c = '0';
-  else c = '1';
-  cout << "? " << c + act << endl;
-  cout.flush();
-  cin >> is;
-  return ask(n, c+act);
-}
 
 void solve() {
   int n; cin >> n;
 
-  string ans = ask(n);
+  bool is, ok = true;
+  string ans = "";
+  while (ans.size() < n) {
+    if (ok) {
+      ans += '0';
+      cout << "? " << ans << endl;
+      cout.flush();
+      cin >> is;
+      if (is) continue;
+
+      ans[ans.size() -1] = '1';
+      cout << "? " << ans << endl;
+      cout.flush();
+      cin >> is;
+      if (is) continue;
+      ans.pop_back();
+    }
+
+    ok = false;
+    char c;
+    if (ans[0] == '1') c = '0';
+    else c = '1';
+    ans = c + ans;
+    cout << "? " << ans << endl;
+    cout.flush();
+    cin >> is;
+    if (is) continue;
+
+    if (c == '0') ans[0] = '1';
+    else ans[0] = '0';
+  }
+
   cout << "! " << ans << endl;
 }
 
