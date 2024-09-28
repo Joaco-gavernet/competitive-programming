@@ -20,19 +20,24 @@ int main() {
   forn(i,m) {
     int a,b; cin >> a >> b;
     if (g[a] == 0 and g[b] == 0) {
-      ans[i] = '1';
+      cerr << 1 << endl;
+      ans[i] = '0';
       g[a] = 1;
       g[b] = -1;
     } else if (g[a] != 0 and g[b] == 0) {
-      if (g[a] == 1) g[b] = -1, ans[i] = '1';
-      else g[b] = 1, ans[i] = '0';
+      cerr << 2 << endl;
+      if (g[a] == 1) g[b] = -1, ans[i] = '0';
+      else g[b] = 1, ans[i] = '1';
     } else if (g[a] == 0 and g[b] != 0) {
-      if (g[b] == 1) g[a] = -1, ans[i] = '0';
-      else g[a] = 1, ans[i] = '1';
-    } else if (g[a] + g[b] != 0) {
+      cerr << 3 << endl;
+      if (g[b] == 1) g[a] = -1, ans[i] = '1';
+      else g[a] = 1, ans[i] = '0';
+    } else if (g[a] == -1 and g[b] == 1) ans[i] = '1';
+    else if (g[a] + g[b] != 0) {
       cout << "NO\n";
       return 0;
     }
+    cerr << "/////////////////////\n";
   }
   cout << "YES\n";
   cout << ans << '\n';

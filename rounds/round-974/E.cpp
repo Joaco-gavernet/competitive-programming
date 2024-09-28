@@ -34,42 +34,45 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1<<30); // (1LL<<60)
+const ll INF = (ll)(1LL<<60); // (1LL<<60)
 
-
+typedef ll tipo;
 const int MAXN = 200005;
-typedef long long tipo;
 
-
-struct nodo {
-  int t, who = -1;
+struct arista {
+  int x; tipo w; // x -> next node, w = weight
 };
 
-ll BFS(int first, int second, vector<vector<ii>> &g) {
-  int n = g.size();
-  dbg(first, second);
+struct nodo {
+  tipo d = INF, v, a; // d -> distance, v -> actual node, a = previous node
+  bool operator<(const nodo& x) const {return d > x.d;}
+};
 
-  vector<nodo> state(n);
-  priority_queue<ii, vector<ii>, greater<ii>> q;
-  state[first] = {0, first};
-  state[second] = {0, second};
-  q.push({first, first});
-  q.push({second, second});
-
-  while(!q.empty()) {
-    auto [v, who] = q.top(); q.pop();
-    dbg(v, who);
-    if (who == first and state[v].who == second) return state[v].t;
-    else if (who == second and state[v].who == first) return state[v].t;
-    state[v].who = who;
-
-    for(auto [weight, u] : g[v]) {
-      if (who == state[u].who) continue;
-      q.push({state[v].t + weight, who});
+vector<nodo> Dijkstra(int start, int n, vector<vector<arista>> &g) {
+  vector<nodo> ans(n);
+  vector<bool> visto(n, false);
+  priority_queue<nodo> p; p.push({0,start,-1});
+  while(!p.empty()) {
+    nodo it=p.top(); p.pop();
+    if(visto[it.v]) continue;
+    else {
+      ans[it.v] = it; visto[it.v] = true;
+      for(arista u : g[it.v]) {
+        if(!visto[u.x]) p.push({it.d + u.w, u.x, it.v});
+      }
     }
   }
-  return -1;
+  return ans;
 }
+
+ostream &operator << (ostream &os, const arista &a) {
+  return os << '(' << a.x << ',' << a.w << ')';
+}
+
+ostream &operator << (ostream &os, const nodo &v) {
+  return os << '(' << v.v << ',' << v.d << ')';
+}
+
 
 void solve() {
   int n, m, h; cin >> n >> m >> h;
@@ -79,21 +82,41 @@ void solve() {
     horses[i] = true;
   }
 
-  vector<vector<ii>> g(n);
+  vector<vector<arista>> g(2*n);
   while (m--) {
     int u, v, w; cin >> u >> v >> w;
     u--; v--;
-    if (horses[u]) g[u].pb({v,w/2});
+    if (horses[u]) g[u].pb({n+v,w/2});
     else g[u].pb({v,w});
 
-    if (horses[v]) g[v].pb({u,w/2});
+    if (horses[v]) g[v].pb({n+u,w/2});
     else g[v].pb({u,w});
   }
 
-
-  ll ans = BFS(0,n-1,g);
-  cout << ans << '\n';
   RAYA;
+  forn(i,n) dbg(i, g[i]);
+  RAYA;
+  forn(i,n) dbg(i+n, g[i+n]);
+  RAYA;
+
+  vector<nodo> tR = Dijkstra(0,2*n,g);
+  vector<nodo> tM = Dijkstra(n-1,2*n,g);
+  dbg(tR);
+  dbg(tM);
+
+  ll best = 1LL<<60;
+  forn(i,n) {
+    if ((tR[i].d != INF or tR[i+n].d != INF) and (tM[i].d != INF or tM[i+n].d != INF)) {
+      ll first = tR[i+n].d;
+      if (tR[i].d < first) first = tR[i].d;
+      ll second = tM[i+n].d;
+      if (tM[i].d < second) second = tM[i].d;
+      best = min(best, max(first, second));
+    }
+  }
+
+  if (best == 1LL<<60) cout << "-1\n";
+  else cout << best << '\n';
 }
 
 

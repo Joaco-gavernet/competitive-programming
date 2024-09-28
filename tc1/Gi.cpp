@@ -19,7 +19,8 @@ int main() {
     ll ans = 0;
     ll D = t/x;
     if (n > D) ans += (n-D)*D;
-    ans += ll(D*(D-1)/2);
+    D = min(D,n);
+    ans += D*(D-1)/2;
 
     cout << ans << '\n';
   }

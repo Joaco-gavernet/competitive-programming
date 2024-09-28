@@ -34,49 +34,46 @@ int main(){
     // n = number of friends
     // m = total days
     
-    vector<int> diasPersona(m,0); // cuantas personas pueden en el dia
-    vector<vector<int>> puedo(n);
-    vector<vector<int>> v(n);
+    vector<vector<int>> v(m); // input
+    vector<vector<int>> puedo(n); // dias disponibles de cada persona
+    vector<int> histo(n); // cuenta cuantos dias juega cada uno
+    vector<int> ocupado(m,-1); 
+    queue<int> q;
 
-    RAYA;
-    int tot;
-    forn(i,n) {
-      cin >> tot; 
+    forn(i,m) {
+      int act; cin >> act; 
 
-      int aux;
-      forn(j,tot) {
-        cin >> aux;
-        aux--;
-        puedo[aux].pb(j);
-        diasPersona[aux]++;
+      while (act--) {
+        int aux; cin >> aux;
+        puedo[--aux].pb(i);
         v[i].pb(aux);
       }
     }
 
-    vector<int> ocupado(m,-1);
-    vector<int> especiales;
     forn(i,n) {
-      if (puedo[i].size() <= ceil(m/2)) {
-        for (int d: puedo[i]) ocupado[d] = i;
-      } else especiales.pb(i);
+      histo[i] = puedo[i].size();
+      if (histo[i] <= ceil(m/2)) q.push(i);
     }
 
-    RAYA;
-    DBG(m);
-    bool ans = true;
-    forn(i,m) {
-      if (ocupado[i] == -1) {
-        ans = false;
-        DBG(i);
+    int tot = 0;
+    while (SZ(q) > 0) {
+      int e = q.front(); q.pop();
+      for (int d: puedo[e]) if (ocupado[d] == -1) {
+        for (int h: v[d]) if (--histo[h] <= ceil(m/2)) q.push(h);
+        tot++;
+        ocupado[d] = e;
       }
     }
-    if (ans == false) {
+
+    if (tot == m) {
       cout << "YES\n";
-      forn(i,m) cout << ocupado[i] << ' ';
-    } else {
-      cout << "NO\n";
-    }
+      forn(i,m) cout << ocupado[i] +1 << ' ';
+      cout << '\n';
+    } else cout << "NO\n";
   }
   
   return 0;
 }
+
+// 1 2 1 1 2 3 
+
