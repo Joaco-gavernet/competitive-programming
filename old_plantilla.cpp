@@ -24,18 +24,17 @@ typedef vector<ll> vi;
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
-#define mp make_pair
 #define all(c) (c).begin(),(c).end()
+#define fst first
+#define snd second
 #define DBG(x) cerr << #x << " = " << (x) << endl
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
-#define esta(x,c) ((c).find(x) != (c).end())
-#define fs first
-#define ss second
 #define RAYA cerr << "===============================" << endl
 
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
+
 
 
 void solve() {
