@@ -38,17 +38,18 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1LL<<60); // (1LL<<60)
 
 typedef long long tipo;
+typedef long double ld; 
 
 struct CD{
-  double r,i;
-  CD(double r=0,double i=0):r(r),i(i){}
-  double real()const{return r;}
+  ld r,i;
+  CD(ld r=0, ld i=0):r(r),i(i){}
+  ld real()const{return r;}
   void operator /=(const tipo c){r/=c; i/=c;}
 };
 CD operator*(const CD& a, const CD& b){return CD(a.r*b.r-a.i*b.i,a.r*b.i+a.i*b.r);}
 CD operator+(const CD& a, const CD& b){return CD(a.r+b.r,a.i+b.i);}
 CD operator-(const CD& a, const CD& b){return CD(a.r-b.r,a.i-b.i);}
-const double pi=acos(-1);
+const ld pi=acos(-1);
 const tipo MAXN=1<<21;
 CD cp1[MAXN+9],cp2[MAXN+9];
 tipo R[MAXN+9];
@@ -56,7 +57,7 @@ tipo R[MAXN+9];
 void dft(CD* a, tipo n, bool inv){
   forn(i, n) if(R[i]<i) swap(a[R[i]],a[i]);
   for(int m=2;m<=n;m*=2){
-    double z=2*pi/m*(inv?-1:1);
+    ld z=2*pi/m*(inv?-1:1);
     CD wi=CD(cos(z),sin(z));
     for(int j=0;j<n;j+=m){
       CD w(1);
@@ -68,7 +69,7 @@ void dft(CD* a, tipo n, bool inv){
   if(inv) forn(i,n) a[i]/=n;
 }
 
-vector<tipo> multiply(vector<tipo> &p1, vector<tipo> &p2){
+vector<tipo> multiply(vector<tipo> &p1, vector<tipo> &p2, bool deb = false){
   tipo n=SZ(p1)+SZ(p2)+1;
   tipo m=1,cnt=0;
   while(m<=n) m+=m,cnt++;
@@ -85,100 +86,62 @@ vector<tipo> multiply(vector<tipo> &p1, vector<tipo> &p2){
   return res;
 }
 
-bool samesign(ll a, ll b) {
-  return ((a<0)and(b<0)) or ((a>0)and(b>0));
-}
-
-void maxis(int n, vi &F, vi &C, vector<ii> &ans) {
+void fmaxis(int n, vi &F, vi &C, vi &pairs, bool deb) {
   int l = 0, r = n-1;
-  vi bests;
-  while (r-l >= 0) {
-    if (C[l] != 0 and F[l] != 0 and samesign(C[l], F[l])) bests.pb(C[l]*F[l++]);
-    else if (C[r] != 0 and F[r] != 0 and samesign(C[r], F[r])) bests.pb(C[r]*F[r--]);
-    else break;
-  }
-  sort(all(bests), greater<ll>());
-  forn(i,SZ(bests)) {
-    ans[i].ss = bests[i];
-    if (i > 0) ans[i].ss += ans[i-1].ss;
-  }
-
+  while (l <= r and F[l]*C[l] > 0) pairs.pb(F[l]*C[l]), l++;
+  while (l <= r and F[r]*C[r] > 0) pairs.pb(F[r]*C[r]), r--; 
+  sort(all(pairs), greater<ll>()); 
+  forr(i,1,SZ(pairs)) pairs[i] += pairs[i-1];
   if (l <= r) {
-    vi _F, _C;
-    forn(i,r-l+1) {
-      _F.pb(F[i+l]);
-      _C.pb(C[i+l]);
-    }
-    reverse(all(_C));
-    vi prod = multiply(_C, _F);
-    forr(j,SZ(bests),n) {
-      ans[j].ss = 0;
-      if (SZ(bests) > 0) ans[j].ss = ans[SZ(bests) -1].ss;
-      ll delta = max(prod[j -SZ(bests)], prod[SZ(prod) -1 -(j -SZ(bests))]);
-      ans[j].ss += delta; 
-    }
+    vi Ci(C.begin() +l, C.begin() +r +1);
+    vi Fi(F.begin() +l, F.begin() +r +1);
+    reverse(all(Ci));
+    vi prod = multiply(Ci, Fi, deb);
+    ll aux = 0;
+    if (SZ(pairs)) aux = *(--pairs.end()); 
+    for (int i = 0, j = SZ(prod) -1; i <= j; i++, j--) 
+      pairs.pb(aux +max(prod[i], prod[j]));
   }
 }
 
-void minis(int n, vi &F, vi &C, vector<ii> &ans) {
+void fminis(int n, vi &F, vi &C, vi &pairs) {
   int l = 0, r = n-1;
-  vi bests;
-  reverse(all(C));
-  while (r-l >= 0) {
-    if (C[l] != 0 and F[l] != 0 and samesign(C[l], F[l]) == false) bests.pb(C[l]*F[l++]);
-    else if (C[r] != 0 and F[r] != 0 and samesign(C[r], F[r]) == false) bests.pb(C[r]*F[r--]);
-    else break;
-  }
-  sort(all(bests));
-  forn(i,SZ(bests)) {
-    ans[i].fs = bests[i];
-    if (i > 0) ans[i].fs += ans[i-1].fs;
-  }
-
+  reverse(all(C)); 
+  while (l <= r and F[l]*C[l] < 0) pairs.pb(F[l]*C[l]), l++;
+  while (l <= r and F[r]*C[r] < 0) pairs.pb(F[r]*C[r]), r--; 
+  sort(all(pairs)); 
+  forr(i,1,SZ(pairs)) pairs[i] += pairs[i-1];
   if (l <= r) {
-    vi _F, _C;
-    forn(i,r-l+1) {
-      _F.pb(F[i+l]);
-      _C.pb(C[i+l]);
-    }
-    reverse(all(_C)); 
-    vi prod = multiply(_C, _F);
-    forr(j,SZ(bests),n) {
-      ans[j].fs = 0;
-      if (SZ(bests) > 0) ans[j].fs = ans[SZ(bests) -1].fs;
-      ll delta = min(prod[j -SZ(bests)], prod[SZ(prod) -1 -(j -SZ(bests))]);
-      ans[j].fs += delta; 
-    }
+    vi Ci(C.begin() +l, C.begin() +r +1);
+    vi Fi(F.begin() +l, F.begin() +r +1);
+    reverse(all(Ci));
+    vi prod = multiply(Ci, Fi);
+    ll aux = 0;
+    if (SZ(pairs)) aux = *(--pairs.end()); 
+    for (int i = 0, j = SZ(prod) -1; i <= j; i++, j--) 
+      pairs.pb(aux +min(prod[i], prod[j]));
   }
 }
 
 
-void solve() {
+int main() {
+  FIN; 
+
   int n; cin >> n;
   vi F(n), C(n);
+  bool deb = false;
   forn(i,n) cin >> F[i];
   forn(i,n) cin >> C[i];
   sort(all(F));
   sort(all(C));
-  dbg(F);
-  dbg(C);
 
-  vector<ii> ans(n); 
-  maxis(n, F, C, ans);
-  // dbg(ans); 
-  // RAYA; 
-  minis(n, F, C, ans);
-  // dbg(ans);
-  // RAYA; 
+  vi maxis, minis;
+  fmaxis(n, F, C, maxis, deb);
+  fminis(n, F, C, minis);
 
-  for (auto [mi, mx] : ans) cout << mi << ' ' << mx << '\n';
-}
+  forn(i,n) cout << minis[i] << ' ' << maxis[i] << '\n';
 
-int main(){
-  FIN;
-  int t = 1; 
-  // cin >> t;
-  while (t--) solve();
-  return 0;
+
+  return 0; 
 }
 
