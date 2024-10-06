@@ -14,58 +14,45 @@ typedef pair<ll,ll> ii;
 #define DBG(c) cerr << #c << " = " << c << endl
 #define RAYA cerr << "========================= \n"
 
-const ll MAXN = -1;
-const ll MOD = -1;
-const ll INF = -1;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+int my_random(int l, int r){ // Random number in [l, r]
+  return uniform_int_distribution<int>(l, r)(rng);
+}
 
-vi dxu = {1,0,-1,0};
-vi dyu = {0,-1,0,1};
+int solve() {
+  ll cx = my_random(0,1e6);
+  ll cy = my_random(0,1e6);
+  cout << cx << ' ' << cy << endl;
+  cout.flush();
+  ll d; cin >> d;
+  if (d == 0) return 1;
 
-void solve(ll x, ll y, ll dist, ll lado) {
-  vi dx = {dist,dist,-dist,-dist};
-  vi dy = {dist,-dist,dist,-dist};
-  vi ans(4, (1LL<<60));
-
-  forn(i,4) {
-    if (x +dx[i] < 0) continue;
-    if (x +dx[i] > 1e6) continue;
-    if (y +dy[i] < 0) continue;
-    if (y +dy[i] > 1e6) continue;
-    cout << x +dx[i] << ' ' << y +dy[i] << endl;
-    //~ DBG(dist); 
-    //~ DBG(pow(1e6-(x+dx[i]),2) + pow(1e6-(y+dy[i]),2));
-    cout.flush();
-    cin >> ans[i];
-    if (ans[i] == 0) return;
-    else if (ans[i] == 1) {
-      ll aux;
-      forn(j,4) {
-	if (x +dx[i] +dxu[j] < 0) continue;
-	if (x +dx[i] +dxu[j] > 1e6) continue;
-	if (y +dy[i] +dyu[j] < 0) continue;
-	if (y +dy[i] +dyu[j] > 1e6) continue;
-        cout << x +dx[i] +dxu[j] << ' ' << y +dy[i] +dyu[j] << endl;
-        cout.flush();
-        cin >> aux;
-        if (aux == 0) return;
-      }
-      //~ cout << "aca\n";
+  for (ll x = 0; x*x <= d; x++) {
+    ll z = d -x*x;
+    ll y = sqrtl(z);
+    while (y*y < z) y++;
+    if (y*y != z) continue;
+    ll dx[] = {x,x,-x,-x};
+    ll dy[] = {y,-y,y,-y};
+    forn(i,4) {
+      if (cx +dx[i] < 0 or 1e6 < cx +dx[i]) continue;
+      if (cy +dy[i] < 0 or 1e6 < cy +dy[i]) continue;
+      cout << cx +dx[i] << ' ' << cy +dy[i] << endl;
+      cout.flush();
+      cin >> d;
+      if (d == 0) return 1;
     }
   }
 
-  int best = 0;
-  forr(i,1,4) {
-    if (ans[i] < ans[best]) best = i;
-  }
-
-  solve(x +dx[best], y +dy[best], lado/2, lado-lado/2);
+  return 0;
 }
+
 
 int main() {
   FIN;
 
   int n; cin >> n;
-  while (n--) solve(5e5, 5e5, 250000, 250000);
+  for (int cont = 0; cont < n; ) cont += solve();
 
   return 0;
 }
