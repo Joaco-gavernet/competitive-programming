@@ -27,6 +27,7 @@ typedef vector<ll> vi;
 #define all(c) (c).begin(),(c).end()
 #define fst first
 #define snd second
+#define SZ(x) int((x).size()) 
 #define DBG(x) cerr << #x << " = " << (x) << endl
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define RAYA cerr << "===============================" << endl
