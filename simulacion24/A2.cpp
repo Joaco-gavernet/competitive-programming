@@ -16,7 +16,7 @@ typedef vector<bool> vb;
 typedef pair<string, string> tipo; 
 struct cmp {
   bool operator () (const tipo &a, const tipo &b) const {
-    if (a.first == b.first) return a.second < b.second; 
+    if (a.first == b.first) return a.second <= b.second; 
     else return a.first < b.first; 
   }
 }; 
@@ -25,28 +25,21 @@ int main() {
   FIN; 
 
   int n; cin >> n; 
-  // multiset<pair<string, string>> st; 
-  vector<pair<string, string>> v; 
+  vector<tipo> v; 
   forn(i,n) {
     string s, ss; cin >> s; 
     ss = s; 
     sort(all(ss)); 
-    // st.insert({ss, s}); 
     v.push_back({ss, s}); 
   }
-
   sort(all(v)); 
-  // for (auto [fst, snd] : v) cerr << fst << ' ' << snd << '\n'; 
-  // RAYA; 
 
   int m; cin >> m; 
-  while (m--) {
+  forn(_,m) {
     string s, ss; cin >> s; 
     ss = s; 
     sort(all(ss)); 
-    // cerr << ss << ' ' << s << '\n'; 
     cout << upper_bound(all(v), make_pair(ss,s), cmp()) -v.begin() << '\n'; 
-    // cout << distance(st.begin(), st.upper_bound({ss, s})) << '\n'; 
   }
 
 
