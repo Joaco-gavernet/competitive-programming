@@ -3,6 +3,7 @@ using namespace std;
 
 typedef long long ll;
 typedef vector<ll> vi;
+typedef vector<bool> vb;
 typedef pair<ll,ll> ii;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i,a,b) for(ll i = (ll)(a); i < (ll)(b); i++)
@@ -15,28 +16,35 @@ typedef pair<ll,ll> ii;
 
 
 const int MAXN = 1000;
-const int INF = -1;
+const ll INF = 1LL<<60;
 const int MOD = -1;
 
 int main() {
   FIN; 
-  int m, n;
-  cin >> m >> n;
-  vector <int> v(n);
-  forn(i,n) cin >> v[i];
-  sort(all(v)); reverse(all(v));
-  vector <int> dp(3*MAXN+5,-1);
-  dp[0]=0;
-  forn(i,n){
-    for(int j = 2*m; j>-1; j--){
-      if(dp[j]!=-1){
-	if(dp[j+v[i]]==-1) dp[j+v[i]]=abs(dp[j]-v[i]);
-	else dp[j+v[i]]=min(dp[j+v[i]],abs(dp[j]-v[i]));
+
+  int c, n; cin >> c >> n;
+  vi v(n); forn(i,n) cin >> v[i];
+
+  vector<vb> dp(c+1, vb(c+1, false)); 
+  dp[0][0] = true; 
+  forn(i,n) {
+    for (int a = c; a >= 0; a--) {
+      for (int b = c; b >= 0; b--) {
+	if (b-v[i] >= 0) dp[a][b] = dp[a][b] or dp[a][b-v[i]]; 
+	if (a-v[i] >= 0) dp[a][b] = dp[a][b] or dp[a-v[i]][b]; 
       }
     }
   }
-  for(int j = 2*m; j>-1; j--){
-    if(dp[j]!=-1 and (dp[j]+j)/2<=m){cout << (dp[j]+j)/2 << " " << (-dp[j]+j)/2 << "\n"; return 0;}
+
+  // find best option
+  int A = 0, B = 0;
+  forn(a,c+1) {
+    forn(b,c+1) {
+      if (dp[a][b] and (a+b > A+B or (a+b == A+B and abs(a-b) < abs(A-B)))) A = a, B = b; 
+    }
   }
+
+  cout << max(A,B) << ' ' << min(A,B) << endl; 
+
   return 0;
 }
