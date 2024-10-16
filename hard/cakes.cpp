@@ -38,7 +38,6 @@ const int MAXN = (int)(2e5+5);
 
 // Dinic: Max Flow en O(V^2 E). Para el grafo bipartito con source
 // y sink dummy, funciona en O(sqrt(V) E). Equivalente a Hopcroft-Karp.
-
 // Matching: aristas saturadas (que no incluyan source/sink)
 // Min cut: nodos con dist>=0 vs nodos con dist<0
 // MVC: Nodos izquierda con dist<0 + nodos derecha con dist>0
@@ -93,7 +92,12 @@ int main(){
   FIN;
 
   int g, c, t; cin >> g >> c >> t; 
-  vi profit(c); forn(i,c) cin >> profit[i]; 
+  vi profit(c); 
+  ll prim = -1; 
+  forn(i,c) {
+    cin >> profit[i]; 
+    if (i == 0) prim = profit[0]; 
+  }
   vi ing(g); forn(i,g) cin >> ing[i]; 
   vi tool(t); forn(i,t) cin >> tool[i]; 
   vector<vi> recipes(c, vi(g)); 
@@ -103,37 +107,23 @@ int main(){
     int tot, x; cin >> tot; 
     while (tot--) cin >> x, tools_needed[i].pb(x); 
   } 
-  /*
-  dbg(profit); 
-  dbg(ing); 
-  dbg(tool); 
-  dbg(recipes); 
-  dbg(tools_needed); 
-  */
+  forn(i,c) forn(j,g) profit[i] -= recipes[i][j] *ing[j]; 
 
-  // discount the ingredients from the profit
-  forn(i,c) forn(j,g) profit[i] -= recipes[i][j] *ing[j];
-  // dbg(profit); 
-
-  ll ans = 0;
-  forn(i,c) ans += profit[i]; 
+  ll ans = 0; 
+  forn(i,c) if (profit[i] >= 0) ans += profit[i]; 
 
   int n = 2 + c + t; 
   Dinic red(n); 
-  forn(i,c) {
-    // dbg(0, i, profit[i]); 
-    red.add_edge(0, 1+i, profit[i]); 
+  forn(i,c) { 
+    if (profit[i] >= 0) red.add_edge(0, 1+i, profit[i]); 
     for (int k : tools_needed[i]) red.add_edge(1+i, k + c, INF); 
   }
   forn(i,t) red.add_edge(c +1 +i, n-1, tool[i]); 
 
   ll aux = red.max_flow(0,n-1); 
-  // dbg(ans, aux); 
   ans -= aux; 
   if (ans < 0) ans = 0; 
   cout << ans << '\n'; 
-
-
 
   return 0;
 }
