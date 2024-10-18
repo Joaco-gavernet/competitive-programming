@@ -39,6 +39,7 @@ void seteo(vector<long double> &v, int k){
   return;
 }
 
+// esta funcion se encarga de calcular el costo del intervalo asignado actual
 void calc_costo(int n) {
   forn(i,n) forn(j,n) costo[i][j]=0;
   forn(l,n){
@@ -63,7 +64,8 @@ void compute(int l, int r, int optl, int optr) {
   compute(med+1, r, opt, optr); 
 }
 
-long double solve_sac(int n, int k) {
+// resuelve el divide-and-conquer (DAC) 
+long double solve_dac(int n, int k) {
   forn(i,n) last[i] = costo[0][i]; 
   for (int i = 0; i <= k; i++) {
     fill(all(dp), INF); 
@@ -76,7 +78,7 @@ long double solve_sac(int n, int k) {
 
 int main() {
   FIN; 
-  cout<<fixed<<setprecision(7);
+  cout<<fixed<<setprecision(7); // setea decimales a printear despues de la coma
   int n,m,k,s; cin>>n>>m>>k>>s; nn=n+m;
   vector<long double> pos(nn);
   forn(i,nn) cin>>pos[i];
@@ -87,15 +89,12 @@ int main() {
   aux=aux*aux;
   aux=aux*(nn);
   long double ans;
-  if(k==1){
-    ans=costo[0][nn-1];
-  }else{
-    ans=solve_sac(nn,k);
-  }
-  //~ DBG(ans);
+
+  if (k == 1) ans = costo[0][nn-1];
+  else ans = solve_dac(nn,k);
+
   ans=ans+aux;
-  //~ DBG(costo[0][1]); DBG(aux);
-  //~ DBG(costo[0][0]); DBG(costo[1][1]);
   cout<<ans<<"\n";
+
   return 0;
 }
