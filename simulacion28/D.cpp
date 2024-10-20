@@ -42,7 +42,7 @@ struct segtree_lazy {
 
   node op(node a, node b) {
     node aux; 
-    aux.ans = vector <int>(64,0); 
+    aux.ans = vi(64, 0); 
     forn(i,64) aux.ans[i] = a.ans[i] + b.ans[i]; 
     aux.l = a.l; aux.r = b.r; 
     return aux; 
@@ -107,7 +107,7 @@ void dfs(int v) {
   run.pb(v); 
   for (auto u : g[v]) if (visto[u] == false) dfs(u); 
   der[v] = SZ(run); 
-  run.pb(v); 
+  //~ run.pb(v); 
 }
 
 int main() {
@@ -132,10 +132,7 @@ int main() {
   vb entre(n); 
   vector<int> base; 
   for (auto x : run) {
-    if (entre[x] == false) {
-      entre[x] = true; 
-      base.pb(color[x]); 
-    } else base.pb(-1); 
+    base.pb(color[x]); 
   }
   // for (auto u : base) DBG(u); 
   tree.build(base, 2*n); 
@@ -145,11 +142,11 @@ int main() {
     if (op == 1) {
       int v; cin >> v; 
       v--; 
-      tree.update(izq[v], der[v], 1); 
+      tree.update(izq[v], der[v]-1, 1); 
     } else {
       int v, c; cin >> v >> c; 
       v--; 
-      auto no = tree.query(izq[v], der[v]); 
+      auto no = tree.query(izq[v], der[v]-1); 
       cout << no.ans[c] << "\n"; 
     }
   }
