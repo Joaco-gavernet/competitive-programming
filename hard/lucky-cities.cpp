@@ -97,18 +97,27 @@ struct BCC{
   }
 };
 
-void dfs(int v, unordered_set<int> &nodes, vector<vii> &g, unordered_map<int,bool> &visto, unordered_map<int,int> &teams, bool my, bool &check) {
-  // dbg(v, g[v]);
-  visto[v] = true;
-  if (my) teams[v] = 1;
-  else teams[v] = 2; 
-  for (auto [u, id] : g[v]) {
-    if (esta(nodes,u) == false) continue;
-    if (visto[u] == false) {
-      dfs(u, nodes, g, visto, teams, !my, check);
-      if (check == false) return;
-    } else if (teams[u] == (my ? 1 : 2)) check = false;
+void bfs(int start, unordered_set<int> &nodes, vector<vii> &g, unordered_map<int,int> &teams, bool &check) {
+  queue<int> q; q.push(start); 
+  teams[start] = 1; 
+  while (q.size()) {
+    auto v = q.front(); q.pop(); 
+    int next = (teams[v] == 1 ? 2 : 1); 
+    for (auto [u, id] : g[v]) {
+      if (esta(nodes,u) == false) continue; 
+      if (teams[u] == 0) q.push(u), teams[u] = next; 
+      else if (teams[u] == teams[v]) {
+        check = false;
+        return; 
+      }
+    }
   }
+}
+
+unordered_set<int> build_nodes(vi &v) {
+  unordered_set<int> ans;  
+  for (auto u: v) ans.insert(u); 
+  return ans; 
 }
 
 void solve() {
@@ -119,44 +128,35 @@ void solve() {
     g.add_edge(--a, --b);
   }
 
-  // forn(i,n) dbg(i, g.adj[i]);
-  // RAYA;
-
-  BCC bicomps(g);
-  const int tam = SZ(bicomps.comps);
-  vector<unordered_set<int>> comps(tam);
-  forn(i,tam) {
-    auto list = bicomps.comps[i];
-    for (auto v : list) comps[i].insert(v);
-  }
-
+  BCC bicomps(g); // O(n) 
+  
   set<int> ans;
-  dbg(tam);
-  forn(i,tam) {
-    dbg(i);
-    auto nodes = comps[i];
-    unordered_map<int,bool> visto; 
+  forn(i,SZ(bicomps.comps)) {
+    if (SZ(bicomps.comps[i]) <= 2) continue; 
+    unordered_set<int> nodes = build_nodes(bicomps.comps[i]);
+
     unordered_map<int,int> teams;
+    // if teams[v] == 0 -> nodo no visto
+    // if teams{v] == 1 -> team 1
+    // if teams[v] == 2 -> team 2
+
     bool check = true;
-    dfs(*nodes.begin(), nodes, g.adj, visto, teams, false, check);
+    bfs(*nodes.begin(), nodes, g.adj, teams, check);
     if (check == false) {
       for (auto x : nodes) {
         ans.insert(x);
       }
-      // dbg(SZ(ans));
     }
-    // RAYA;
   }
-  // dbg("aca"); 
-  // TODO: check why not reaching this point
   cout << SZ(ans) << endl;
 }
 
 int main(){
+  FIN;
+
   #ifndef LOCAL
   freopen("d.in", "r", stdin);
   #endif
-  FIN;
   int t; cin >> t;
   while (t--) solve();
   return 0;
