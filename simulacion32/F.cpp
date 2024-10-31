@@ -32,29 +32,58 @@ typedef vector<ll> vi;
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define RAYA cerr << "===============================" << endl
 
-const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1<<30); // (1LL<<60)
-// const int MAXN = (int)(2e5+5);
-const int MAXN = 1005; 
 
+
+const int MOD = 1e9+7; 
+
+vector<vi> prod(vector<vi> &a, vector<vi> &b, int MOD) {
+  const int n = SZ(a); 
+  vector<vi> ans(n, vi(n,0)); 
+  forn(i,n) forn(j,n) forn(k,n) {
+    ans[i][j] += (a[i][k]*b[k][j]) %MOD; 
+    if (ans[i][j] >= MOD) ans[i][j] -= MOD; 
+  }
+  return ans; 
+}
+
+vector<vi> be(ll k, vector<vi> mat, int MOD) {
+  if (k == 1) return mat; 
+  const int n = SZ(mat); 
+  vector<vi> ans, aux; 
+  aux = be(k/2, mat, MOD); 
+  ans = prod(aux, aux, MOD); 
+  if (k&1) ans = prod(ans, mat, MOD); 
+  return ans; 
+}
 
 int main(){
   FIN;
 
-  // preprocesamiento
-  vi dp(MAXN); 
-  dp[1] = 1; 
-  forr(i,2,MAXN) {
-    dp[i] = dp[i-1] + dp[i-2] + 2*i*i + 5; 
-    if (dp[i] >= MOD) dbg(i), dp[i] -= MOD; 
-  }
-  // dbg(dp); 
+  // modulate with matrix exponentiation and the formula B = M x A
+  // B = [fn+k, fn+k-1, (n+k)^2, n+k, 1] si se generaliza a k pasos
+  // A = [f1, f0, n^2, n, 1] si n = 1
 
   int q; cin >> q; 
-  int x; 
+  vector<vi> base = {{1, 1, 2, 0, 5}, 
+                    {1, 0, 0, 0, 0}, 
+                    {0, 0, 1, 2, 1}, 
+                    {0, 0, 0, 1, 1}, 
+                    {0, 0, 0, 0, 1}};  
+  const int n = 5; 
+  vi A = {1, 0, 4, 2, 1}; 
+
   while (q--) {
-    cin >> x; 
-    cout << (x < MAXN ? dp[x] : -1) << '\n'; 
+    ll k; cin >> k; 
+    vector<vi> M = be(k,base,MOD); 
+
+    // make the dot product B[0] = M[0] * A 
+    ll b = 0; 
+    forn(i,n) {
+      b += (M[1][i]*A[i]) %MOD; 
+      if (b >= MOD) b -= MOD; 
+    }
+
+    cout << b << '\n'; 
   }
 
   return 0;
