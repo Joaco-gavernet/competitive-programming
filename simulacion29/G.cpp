@@ -32,11 +32,7 @@ typedef vector<ll> vi;
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define RAYA cerr << "===============================" << endl
 
-const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e5+5);
-
-
+const ll INF = (ll)(1LL<<60); // (1LL<<60)
 
 int main(){
   FIN;
@@ -44,37 +40,19 @@ int main(){
   int n, k; cin >> n >> k; 
   vi v(n); forn(i,n) cin >> v[i]; 
   sort(all(v)); 
-  vi pref(n+1); forn(i,n) pref[i+1] = pref[i] + v[i]; 
-  // dbg(v); 
-  // dbg(pref); 
 
-  int last = 0; 
-  ll tot = 0; 
-  while (last < n-1) {
-    int mid = last +(n-last)/2; 
-    ll profit = pref[mid] -pref[last]; 
-    // dbg(last, mid, profit, tot); 
-    if (profit >= k) {
-      int _last = last +1; 
-      int _mid = _last +(n-_last)/2; 
-      ll idea = pref[_mid] -pref[_last]; 
-      if (idea > profit) {
-        tot += v[last]; 
-        tot += k; 
-        last = _mid; 
-      } else {
-        tot += k; 
-        last = mid; 
-      }
-    } else {
-      tot += profit; 
-      last = mid; 
-    }
-    // RAYA; 
+  vector<vi> dp(2, vi(n+1,INF)); 
+  dp[0][0] = dp[1][0] = 0; 
+  forn(i,n) {
+    ll act = min(dp[0][i], dp[1][i]); 
+    dp[1][i+1] = act +v[i]; // by hand
+
+    // by nuke bomb
+    int jmp = (n-i) /2; 
+    dp[0][i +jmp] = min(dp[0][i +jmp], act +k); 
   }
-  tot += *v.rbegin(); 
-  cout << tot << '\n'; 
 
+  cout << dp[1][n] << '\n'; 
 
   return 0;
 }
