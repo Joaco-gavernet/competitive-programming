@@ -53,12 +53,12 @@ ostream &operator << (ostream &os, const node v) {
 int main(){
   FIN;
 
-  int n; cin >> n; 
+  int n, m; cin >> n >> m; 
   vi val(n); forn(i,n) cin >> val[i]; 
   vector<vi> _g(n); 
   vector<node> g(n);
   vi deg(n); 
-  forn(_,n-1) {
+  forn(_,m) {
     int a, b; cin >> a >> b; 
     _g[--a].pb(--b); 
     _g[b].pb(a); 
