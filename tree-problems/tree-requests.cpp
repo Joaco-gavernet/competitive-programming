@@ -44,15 +44,14 @@ struct query { // Queries to answer, v: vertex, c: color, idx: ans pos
 vector<int> g[MAXN];
 vector<query> q[MAXN]; // Queries to answer
 bitset<MAXN> ans; // Answer to each query
-vector<char> color(MAXN); 
+string color; 
 
-unordered_map<int, unordered_map<char,int>> cnt[MAXN]; // struct to store the info and merge
+unordered_map<int, int> cnt[MAXN]; // struct to store the info and merge
 
 int merge(int v, int u){ 
   if(SZ(cnt[v]) < SZ(cnt[u])) swap(u, v); // now v is the large one
-  for(auto &[d, mp]: cnt[u]){
-    for (auto &[x, y]: mp) cnt[v][d][x] += y; 
-    mp.clear(); 
+  for(auto &[d, bits]: cnt[u]) {
+    cnt[v][d] ^= bits;
   }
   cnt[u].clear(); 
   return v; // return the large node
@@ -64,18 +63,14 @@ void process_queries(int v, int v_repr){
   for(auto &[d, i]: q[v]) {
     int odds = 0; 
     ans[i] = 1; 
-    for (auto [x, y]: cnt[v_repr][d]) {
-      if (y %2 == 1 and odds++ == 1) {
-        ans[i] = 0; 
-        break; 
-      }
-    }
+    if (__builtin_popcount(cnt[v_repr][d]) > 1) ans[i] = 0; 
   }
 }
 
 int dfs(int v, int p, int depth = 1){
   int v_repr = v; // Initialize the representative of v
-  cnt[v][depth][color[v]]++; // Initialize counter
+  int shft = color[v] -'a'; 
+  cnt[v][depth] |= (1<<shft); // Initialize counter
   for(auto u: g[v]){
     if(u == p) continue;
     int u_repr = dfs(u, v, depth +1); // Get the representative of u
@@ -99,9 +94,7 @@ int main(){
     int par; cin >> par; par--; 
     g[par].pb(i); 
   }
-  string s; cin >> s; 
-  int i = 0; 
-  for (char c : s) color[i++] = c; 
+  cin >> color; 
 
   forn(id,m) {
     int v, h; cin >> v >> h; 
