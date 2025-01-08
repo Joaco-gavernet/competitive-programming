@@ -37,29 +37,12 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 
-ll look(int l, int r, int k) {
-  if (r-l+1 < k) return 0;  
-  ll op = log2(r-l+1); 
-  if (1LL<<op == r-l+1) return 0; 
-  ll ans = 0; 
-  ll m = (r+l)/2;
-  if ((r-l+1) %2 == 0) ans += look(l,m,k);
-  else {
-    ans += m;
-    ans += look(l,m-1,k);
-  }
-  ans += look(m+1,r,k); 
-  // dbg(l,r,ans); 
-  return ans; 
-}
 
 void solve() {
-  ll n, k; cin >> n >> k; 
-  ll lucky = -1;
-  if (k == 1) lucky = n*(n+1)/2; 
-  else lucky = look(1,n,k); 
-
-  cout << lucky << '\n'; 
+  ll a, b, n, m; cin >> a >> b >> n >> m; 
+  ll op = n/(m+1) *a *m + (n%(m+1) * min(a,b));
+  ll opp = b*n; 
+  cout << min(op, opp) << '\n'; 
 }
 
 

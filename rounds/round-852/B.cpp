@@ -39,6 +39,27 @@ const int MAXN = (int)(2e5+5);
 
 
 void solve() {
+  int x, y; cin >> x >> y; 
+  vi v; 
+  if (abs(x) < abs(y)) {
+    dbg(v); 
+    for (int i = 0; i <= abs(x); i++) v.pb(i * (x < 0 ? -1 : 1)); 
+    if (y != 0) {
+      for (int i = abs(x) -1; i >= 0; i--) v.pb(i * (x < 0 ? -1 : 1)); 
+      for (int i = 0; i <= abs(y); i++) v.pb(i * (y < 0 ? 1 : -1)); 
+    }
+  } else { 
+    for (int i = 0; i <= abs(y); i++) v.pb(i * (y < 0 ? -1 : 1)); 
+    if (y != 0) {
+      for (int i = abs(y) -1; i >= 0; i--) v.pb(i * (y < 0 ? -1 : 1)); 
+      for (int i = -1; i >= abs(x); i--) v.pb(i * (x < 0 ? 1 : -1)); 
+    }
+  } 
+
+
+  cout << SZ(v) << '\n'; 
+  for (auto x: v) cout << x << ' '; 
+  cout << '\n'; 
 }
 
 
