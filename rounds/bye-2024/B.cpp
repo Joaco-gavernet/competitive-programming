@@ -17,9 +17,9 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #endif
 
 typedef long long ll;
-typedef pair<ll,ll> ii;
+typedef pair<int,int> ii;
 typedef vector<bool> vb;
-typedef vector<ll> vi;
+typedef vector<int> vi;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
@@ -37,43 +37,30 @@ typedef vector<ll> vi;
 
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e5+5);
+const int MAXN = 10;
 
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace __gnu_pbds;
 
-typedef tree<ll,null_type,less<ll>,rb_tree_tag,tree_order_statistics_node_update> oset;
 
 void solve() {
   int n; cin >> n;
   vector<ii> v(n); 
-  oset st; 
-  map<ll,ll> cont; 
+  vi ok(2*n +1); 
+  vi pref(2*n+1); 
   string ans(n,'1'); 
+
   forn(i,n) {
     cin >> v[i].fs >> v[i].ss; 
-    if (v[i].fs == v[i].ss) {
-      st.insert(v[i].fs); 
-      cont[v[i].fs]++; 
-    }
+    if (v[i].fs == v[i].ss) ok[v[i].fs]++;
   }
-  st.insert(0); 
-
-  if (SZ(st)) {
-    forn(i,n) {
-      auto [l, r] = v[i]; 
-      if (l == r) {
-        if (cont[l] > 1) ans[i] = '0'; 
-      } else {
-        auto pl = st.order_of_key(l); 
-        auto pr = st.order_of_key(r);
-        while (*st.find_by_order(pl) < l) pl++; 
-        while (*st.find_by_order(pr) > r) pr--; 
-        if (pr -pl == r -l) ans[i] = '0'; 
-      }
-    }
+  pref[0] = bool(ok[0]); 
+  forr(i,1,2*n +1) pref[i] = pref[i-1] + bool(ok[i]); 
+  
+  forn(i,n) {
+    auto [l, r] = v[i]; 
+    if (l == r) {
+      if (ok[l] > 1) ans[i] = '0'; 
+    } else if (pref[r]-pref[l-1] == r-l+1) ans[i] = '0'; 
   }
-
   cout << ans << '\n'; 
 }
 
@@ -85,4 +72,3 @@ int main(){
   while (t--) solve();
   return 0;
 }
-    
