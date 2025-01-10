@@ -36,28 +36,22 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+ll n, k; 
 
-ll look(int l, int r, int k) {
-  if (r-l+1 < k) return 0;  
-  ll op = log2(r-l+1); 
-  if (1LL<<op == r-l+1) return 0; 
-  ll ans = 0; 
-  ll m = (r+l)/2;
-  if ((r-l+1) %2 == 0) ans += look(l,m,k);
-  else {
-    ans += m;
-    ans += look(l,m-1,k);
-  }
-  ans += look(m+1,r,k); 
-  // dbg(l,r,ans); 
-  return ans; 
+void look(int r, ll &ans, ll steps = 0) {
+  if (r < k) return; 
+  if (r %2) {
+    ll aux = r/2 +1; 
+    forn(i,1<<steps) ans += aux, aux += (r +1);
+    look(r/2,ans); 
+  } else look(r/2,ans); 
+  dbg(r, ans); 
 }
 
 void solve() {
-  ll n, k; cin >> n >> k; 
-  ll lucky = -1;
-  if (k == 1) lucky = n*(n+1)/2; 
-  else lucky = look(1,n,k); 
+  cin >> n >> k; 
+  ll lucky = 0;
+  look(n,lucky); 
 
   cout << lucky << '\n'; 
 }
