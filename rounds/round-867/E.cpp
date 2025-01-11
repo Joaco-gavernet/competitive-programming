@@ -55,7 +55,7 @@ void solve() {
   int mx = 0; 
   for (auto [k, v]: mpp) mx = max(mx,v);  
 
-  cout << max(ops -mx, mx) << '\n'; 
+  cout << max(mx, (ops+1)/2) << '\n'; 
 }
 
 
