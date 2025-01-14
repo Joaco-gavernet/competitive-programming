@@ -28,13 +28,14 @@ typedef vector<ll> vi;
 #define fs first
 #define ss second
 #define SZ(x) int((x).size()) 
+#define esta(x,v) (v).find(x) != (v).end() 
 #define DBG(x) cerr << #x << " = " << (x) << endl
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define RAYA cerr << "===============================" << endl
 
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = 205;
+const int MAXN = 35;
 
 
 bool cmp(ii &a, ii &b) {
@@ -46,37 +47,43 @@ bool cmp(ii &a, ii &b) {
   } 
 } 
 
+struct tup {
+  int l, r, id; 
+}; 
+
 int main(){
   FIN;
 
   int n, k; cin >> n >> k; 
   vector<ii> v(n); 
-  vi sum(MAXN); 
-  vector<vector<ii>> sup(MAXN, vector<ii>); // {r, id} de los segmentos que se agregan en cada l
+  vector<vector<ii>> sup(MAXN, vector<ii>()); // {r, id} de los segmentos que se agregan en cada l
 
   forn(i,n) {
     cin >> v[i].fs >> v[i].ss; 
     sup[v[i].fs].pb({v[i].ss, i}); 
-    sum[v[i].fs]++; 
-    sum[v[i].ss]--; 
+    sup[v[i].ss +1].pb({-v[i].ss, i}); 
   }
 
-  vi erased; 
-  forr(i,1,MAXN) {
-    sum[i] += sum[i-1]; 
-    if (sum[i] >= k) {
-      sort(all(sup[i])); 
-      reverse(all(sup[i])); 
+  set<int> erased; 
+  set<ii, greater<ii>> q; 
 
-      for (int j = 0, auto [r, id] = sup[i][j]; sum[i] >= k; ) {
-        erased.pb(); 
-        sum[i]--; 
+  forr(i,1,MAXN) {
+    for (auto x : sup[i]) {
+      if (esta(x.ss, erased)) continue; 
+      if (x.fs < 0) q.erase({-x.fs, x.ss}); 
+      else q.insert(x); 
+    }
+
+    if (SZ(q) > k) {
+      while (SZ(q) > k) {
+        auto [r, id] = *q.begin(); q.erase(q.begin()); 
+        erased.insert(id); 
       } 
     } 
   }
 
   cout << SZ(erased) << '\n'; 
-  for (auto x: erased) cout << x << ' '; 
+  for (auto x: erased) cout << x +1 << ' '; 
 
 
   return 0;
