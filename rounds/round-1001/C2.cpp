@@ -37,35 +37,26 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 
-int f(int n, vi &v) {
-  ll best = -INF;
-
-  if (SZ(v) == 1) best = max(best, v[0]); 
-  else best = accumulate(all(v), 0); 
-
-  while (n > 1) {
-    best = max(best, v[n-1] -v[0]); 
-    best = max(best, v[0] -v[n-1]); 
-
-    n--; 
-    vi vn(n); forn(i,n) vn[i] = v[i+1] -v[i]; 
-    v = vn; 
-  }
-  best = max(best, v[0]); 
-
-  return best; 
-}
-
+vi comprimir(vi &v) {
+  vi ans(SZ(v)-1); 
+  forn(i,SZ(v)-1) ans[i] = v[i+1] -v[i]; 
+  return ans; 
+} 
 
 void solve() {
   int n; cin >> n; 
   vi v(n); forn(i,n) cin >> v[i]; 
-  int k = n; 
 
-  ll best = f(n, v); 
+  ll best = accumulate(all(v), 0); 
+  forn(i,n-1) {
+    best = max(best, *v.rbegin() -*v.begin()); 
+    best = max(best, *v.begin() -*v.rbegin()); 
+    v = comprimir(v); 
+  } 
+
   cout << best << '\n'; 
 }
-
+ 
 
 int main(){
   FIN;
