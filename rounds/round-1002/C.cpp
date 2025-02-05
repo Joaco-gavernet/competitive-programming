@@ -31,6 +31,7 @@ typedef vector<ll> vi;
 #define DBG(x) cerr << #x << " = " << (x) << endl
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define RAYA cerr << "===============================" << endl
+#define esta(x,v) (v).find(x) != (v).end() 
 
 const ll MOD = (ll)(1e9+7); // 998244353 
 const ll INF = (ll)(1<<30); // (1LL<<60)
@@ -39,30 +40,29 @@ const int MAXN = (int)(2e5+5);
 
 
 void solve() {
-  int n, k; cin >> n >> k; 
-  vi a(n); forn(i,n) cin >> a[i]; 
-  int d = n -k +1; 
-
-
-  int ans = -1; 
-  if (n == k) {
-    for (int i = 1; i < n; i += 2) {
-      if (a[i] != i/2 +1) {
-        ans = i/2 +1; 
-        break; 
-      }
-    }
-    if (ans == -1) ans = n/2 +1; 
-  } else {
-    assert(d > 1); 
-    int u = 1; 
-    while (u < n and a[u] == 1) u++; 
-    if (u <= d) ans = 1; 
-    else ans = 2; 
+  int n; cin >> n; 
+  vector<vi> a(n, vi(n)); 
+  vb done(n, false); 
+  forn(i,n) { 
+    forn(j,n) cin >> a[i][j]; 
+    reverse(all(a[i])); 
   } 
 
-  assert(ans != -1); 
-  cout << ans << '\n'; 
+  vi mp(n +1); 
+  forn(i,n) {
+    int j = 0; 
+    while (j < n and a[i][j] == 1) j++; 
+    mp[j]++; 
+  } 
+
+  queue<int> zero; 
+  for (int i = 0; i <= n; i++) {
+    for (; mp[i] and SZ(zero); mp[i]--) zero.pop(); 
+    if (mp[i] == 0) zero.push(i); 
+  } 
+  zero.push(n); 
+
+  cout << zero.front() << '\n'; 
 }
 
 
