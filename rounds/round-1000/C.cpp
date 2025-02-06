@@ -38,6 +38,22 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 
+ii attempt(const int n, vector<set<int>> &g, int dif = -1) {
+  int mx = n; 
+  forn(i,n) if (i != dif and SZ(g[i]) >= SZ(g[mx])) mx = i; 
+  assert(mx != n); 
+  ll tot = SZ(g[mx]); 
+
+  ll sz2 = 0; 
+  forn(i,n) if (i != mx and i != dif) {
+    ll sz = SZ(g[i]) -int(esta(mx, g[i])); // adds O(log n) that could be avoided preprocessing parents and checking in O(1) 
+    if (sz > sz2) sz2 = sz;
+  } 
+  tot += sz2 -1; 
+
+  assert(tot != -1); 
+  return {tot, mx}; 
+} 
 
 void solve() {
   int n; cin >> n; 
@@ -48,22 +64,9 @@ void solve() {
     g[v].insert(u); 
   } 
 
-  int mx = n; 
-  forn(i,n) if (SZ(g[i]) > SZ(g[mx])) mx = i; 
-  assert(mx != n); 
-  ll tot = SZ(g[mx]); 
-
-  dbg(mx); 
-  ll sz2 = 0; 
-  forn(i,n) if (i != mx) {
-    ll sz = SZ(g[i]) -int(esta(mx, g[i])); 
-    if (sz > sz2) sz2 = sz;
-  } 
-  tot += sz2 -1; 
-
-  assert(tot != -1); 
-  cout << tot << '\n'; 
-  RAYA; 
+  auto [a, mx] = attempt(n,g); 
+  auto [b, mx2] = attempt(n,g,mx); 
+  cout << max(a, b) << '\n'; 
 }
 
 
