@@ -37,6 +37,15 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 
+ll bs(ll q, ll d) {
+  int l = -1, r = d +1; 
+  while (r-l > 1) {
+    int k = (r +l) /2; 
+    if (q < k + (d -k)/2) r = k; 
+    else l = k; 
+  } 
+  return l; 
+} 
 
 int main(){
   FIN;
@@ -49,28 +58,18 @@ int main(){
     return 0; 
   } 
 
-  ll wp = (e -sp) /dp; 
-  ll wm = (e -sm) /dm; 
+  ll wp = (e -sp +dp -1) /dp; 
+  ll wm = (e -sm +dm -1) /dm; 
 
-  ll d = -1, mins = 0; 
-  if (wp < wm) {
-    d = wm; 
-    mins = 4 *d *tm;
-    ll k = 2 *(e -sp +dp -1) /dp -d; 
-    if (k < 0) k = 0; 
-    mins += 4 *tp *k;
-    mins += tp *(d -k); 
-  } else {
-    d = wp; 
-    mins = 4 *d *tp; 
-    ll k = 2 *(e -sm +dm -1) /dm -d; 
-    if (k < 0) k = 0; 
-    mins += 4 *tm *k;
-    mins += tm *(d -k); 
-  }
+  if (wp > wm) swap(sp, sm), swap(dp, dm), swap(tp, tm), swap(wp, wm); 
+  ll u = min(wm, 2*(wm -wp)); 
 
-  cout << d << '\n'; 
-  cout << mins << '\n'; 
+  ll mins = 4 *wm *tm; // considering intensive training 
+  mins += tp *u; 
+  mins += 4 *tp *(wm -u);
+
+  cout << max(wm, 0LL) << '\n'; 
+  cout << max(mins, 0LL) << '\n'; 
 
 
   return 0;
