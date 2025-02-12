@@ -36,21 +36,34 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+bool valid(ll n) {
+  while (n > 0 and n %10 != 7) n /= 10; 
+  if (n %10 == 7) return true; 
+  else return false; 
+} 
 
+int check(ll n, ll d) {
+  forn(i,10) {
+    n += d; 
+    if (valid(n)) return i+1; 
+  } 
+  return 10; 
+} 
 
 void solve() {
   int n; cin >> n; 
 
-  int ans = 0; 
-  int c = 0; 
-  while (n %10 < 7) {
-    int x = n%10; 
-    c += x; 
-    n /= 10; 
-    ans++; 
+  if (valid(n)) {
+    cout << "0\n";
+    return; 
   } 
-  if (n %10 >= 7) cout << ans +(n%10) -7 << '\n'; 
-  else cout << << '\n'; 
+
+  int ans = 10; 
+  for (int d = 9; d <= 1e9-1; d *= 10, d += 9) {
+    int aux = check(n, d); 
+    ans = min(ans, aux); 
+  } 
+  cout << ans << '\n'; 
 }
 
 
