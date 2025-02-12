@@ -56,6 +56,7 @@ void calc(__int128 val,ll n){
 		if(nod==1) llegan[nod]+=val;
 		hijos=SZ(g[nod]);
 		if(hijos>0){
+			dbg(nod, toString(llegan[nod]%hijos)); 
 			forn(i,llegan[nod]%hijos) llegan[g[nod][i]]++;
 			forn(i,hijos) llegan[g[nod][i]]+=(llegan[nod]/hijos);
 		}
