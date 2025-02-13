@@ -9,12 +9,7 @@ template<typename T_container, typename T = typename enable_if<!is_same<T_contai
  
 void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
- 
-#ifdef LOCAL
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
-#else
-#define dbg(...)
-#endif
 
 typedef long long ll;
 typedef pair<ll,ll> ii;
@@ -28,14 +23,7 @@ typedef vector<ll> vi;
 #define fst first
 #define snd second
 #define SZ(x) int((x).size()) 
-#define DBG(x) cerr << #x << " = " << (x) << endl
-#define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define RAYA cerr << "===============================" << endl
-
-const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e5+5);
-
 
 
 void solve() {
