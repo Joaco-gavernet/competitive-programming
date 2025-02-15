@@ -1,0 +1,20 @@
+
+
+//~ ii f1(ii a, ii b) { return a; }
+//~ ii f2(ii a, ii b) { return {b.fs, a.ss}; }
+//~ ii f3(ii a, ii b) { return {b.fs +b.ss +a.ss, a.ss}; }
+//~ ii f4(ii a, ii b) { return {b.fs -b.ss -a.ss, a.ss}; }
+//~ ii f5(ii a, ii b) { return a; }
+//~ ii f6(ii a, ii b) { return {a.fs, b.ss}; }
+//~ ii f7(ii a, ii b) { return {a.fs, b.fs +b.ss -a.fs}; }
+//~ ii f8(ii a, ii b) { return {a.fs, b.ss -b.fs +b.fs}; }
+//~ ii f9(ii a, ii b) { return a; }
+//~ ii f10(ii a, ii b) { return {}; }
+//~ ii f11(ii a, ii b) { return {}; }
+//~ ii f12(ii a, ii b) { 
+  //~ int x1 = a.fs, y1 = a.ss, x2 = b.fs, y2 = b.ss; 
+  //~ if ((x2 +y2 +x1 -y1) %2 == 0 and (x2 +y2 +y1 -x1) %2 == 0) 
+    //~ return {(x2 +y2 +x1 -y1)/2, (x2 +y2 +y1 -x1)/2}; 
+  //~ else 
+    //~ return {INF, INF}; 
+//~ }
