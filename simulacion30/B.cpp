@@ -33,10 +33,32 @@ ll lis(vector<long double> &a, int strict = 0){
 
 int main() {
   FIN; 
+
+  int n; cin >> n; 
+
+  // solucion 1
+  // forn(i,n) cout << 2*355*(i -25000) << '\n'; 
+
+  // solucion 2
+  /*
   vector<long double> senos(1e7,0);
   forn(i,1e7) senos[i]=sinl(i);
   forn(i,15) cout<<senos[i]<<"\n";
   cout<<lis(senos)<<"\n";
+  */
+
+  // solucion 3
+  const long double pi = acos(-1); 
+  DBG(pi); 
+  for (int i = 0; i < 2*n; i += 2) cout << int(226 *pi * (i -25000)) << '\n'; 
+
+
   return 0; 
 }
 
+/*
+-78539.8
+-78533.5
+-78527.2
+-78521
+*/
