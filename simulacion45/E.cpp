@@ -4,7 +4,6 @@ using namespace std;
 
 typedef long long ll;
 typedef vector<ll> vi;
-typedef vector<bool> vb;
 typedef pair<ll,ll> ii;
 typedef vector<ii> vii;
 #define FIN ios::sync_with_stdio(0); cin.tie(0); cout.tie(0)
@@ -15,7 +14,8 @@ typedef vector<ii> vii;
 #define SZ(x) int((x).size())
 #define RAYA cerr << "===========================\n"
 #define DBG(x) cerr << #x << " = " << x << endl
-#define DBGV(v,n) cerr << #v << " = "; forn(_,n) cerr << v[_] << ' '; cerr << '\n'
+#define DBGV(v) cerr << #v << " = "; forn(_,SZ(v)) cerr << v[_] << ' '; cerr << '\n'
+
 
 int get_num(int i, string &s) {
   int x = 0;
@@ -26,46 +26,53 @@ int get_num(int i, string &s) {
   return x;
 }
 
-bool iguales(int l, int r, string s) {
-  l++;
-  int x = get_num(l, s); 
-  vi v = {x}; 
-  l += SZ(to_string(x)); 
-  while (s[l] != ')') {
-    if (s[l] == ',') l++;
-    else {
-      x = get_num(l, s); 
-      v.pb(x); 
-      l += SZ(to_string(x)); 
-    }
-  }
-  if (SZ(v) == 1) return true; 
-  while (l <= r and v[l -1] == v[l]) l++; 
-  return (l != r); 
+bool iguales(int l, int r, vi &v) {
+  if (l == r) return true; 
+  l++; 
+  for (; l <= r and v[l -1] == v[l]; l++) {}
+  return (l > r); 
 }
 
-vii get_par(string a) {
+void ordenar(vi &va, int l, int r) {
+  vi aux; 
+  forr(i,l,r+1) aux.pb(va[i]);
+  sort(all(aux));
+  forn(i, r -l +1) va[l +i] = aux[i]; 
+}
+
+void get_vector_and_par(string a, vi &va, set<ii> &fina, vii &ans) {
   stack<int> st;
-  vii ans;
-  forn(i,SZ(a)) {
-    if (i > 0 and a[i-1] == 't') continue; 
-
-    if (a[i] == '(') {
+  int check = -1; 
+  forn(i, SZ(a)) {
+    if (48 <= a[i] and a[i] <= 57) {
+      int x = get_num(i, a);
+      i += SZ(to_string(x)) -1;
+      fina.insert({i,SZ(va)});
+      va.pb(x);
+    } else if (a[i] == '(') {
       st.push(i);
+      if (a[i-1] != 't' and check == -1) check = SZ(st);
     } else if (a[i] == ')') {
-      if (SZ(st) == 1) {
-        if (a[st.top()-1] == 'd') ans.pb({st.top(), i}); 
-        else if (!iguales(st.top(), i, a)) ans.pb({st.top(), i});
+      if (SZ(st) == check) {
+        check = -1; 
+        int vl = (*fina.lower_bound({st.top(), 0})).second; 
+        int vr = (*(--fina.lower_bound({i, 0}))).second;
+        if (!iguales(vl, vr, va)) {
+          ordenar(va, vl, vr);
+          if (a[st.top()-1] == 'e') ans.pb({vl, vr});
+        }
       }
-      if (SZ(st)) st.pop();
+      st.pop();
     }
   }
-  return ans;
 }
 
-void ordenar(vi &s, int l, int r) {
-  // cerr << l << ' ' << r << '\n';
-  sort(s.begin() +l, s.begin() +r +1);
+bool valid_intervals(vi &va, vi &vb, ii &interval) {
+  unordered_map<int,int> mp; 
+  forr(i, interval.first, interval.second +1) mp[va[i]]++;
+  forr(i, interval.first, interval.second +1) mp[vb[i]]--;
+  for (auto [k, v]: mp) if (v != 0) return false;
+  return true; 
 }
 
 int main() {
@@ -73,74 +80,27 @@ int main() {
 
   string a, b; cin >> a >> b;
 
-  vi va, vb;
+  // Declarations 
   set<ii> fina, finb;
-
-  // step 1: build vector of numbers
-  forn(i, SZ(a)) {
-    if (48 <= a[i] and a[i] <= 57) {
-      int x = get_num(i, a);
-      i += SZ(to_string(x)) -1;
-      fina.insert({i,SZ(va)});
-      va.pb(x);
-    }
-  }
-  forn(i, SZ(b)) {
-    if (48 <= b[i] and b[i] <= 57) {
-      int x = get_num(i, b);
-      i += SZ(to_string(x)) -1;
-      finb.insert({i,SZ(vb)});
-      vb.pb(x);
-    }
-  }
-  if (SZ(va) != SZ(vb)) { cout << "not equal\n"; return 0; }
-
-  // step 2: map closing parentheses
-  vii ma = get_par(a);
-  vii mb = get_par(b);
-  sort(all(ma)), sort(all(mb)); 
-  // for (auto [k, v]: ma) cerr << k << ' ' << v << '\n'; 
-  // for (auto [k, v]: mb) cerr << k << ' ' << v << '\n'; 
-
-  // step 3: determine sorted() and shuffle() intervals
+  vi va, vb; 
   vii shua, shub; 
-  for (auto [l, r]: ma) {
-    // cerr << "ma " << l << ' ' << r << '\n'; 
-    int vl = (*fina.lower_bound({l, 0})).second; 
-    auto pvr = fina.lower_bound({r, 0}); 
-    int vr = -1; 
-    if (pvr == fina.end()) vr = SZ(va) -1; 
-    else {
-      pvr--; 
-      vr = (*pvr).second; 
-    }
-    ordenar(va, vl, vr); 
-    if (a[l-1] == 'e') shua.pb({vl, vr}); 
-  }
-  // RAYA; 
-  for (auto [l, r]: mb) {
-    int vl = (*finb.lower_bound({l, 0})).second; 
-    auto pvr = finb.lower_bound({r, 0}); 
-    int vr = -1; 
-    if (pvr == finb.end()) vr = SZ(vb) -1; 
-    else {
-      pvr--; 
-      vr = (*pvr).second; 
-    }    
-    ordenar(vb, vl, vr); 
-    if (b[l-1] == 'e') shub.pb({vl, vr}); 
-  }
+
+  // step 1: build vector of numbers and map closing parentheses
+  get_vector_and_par(a, va, fina, shua);
+  get_vector_and_par(b, vb, finb, shub);
+  if (SZ(va) != SZ(vb)) goto fin; 
 
   // check shua == shub
-  if (SZ(shua) != SZ(shub)) { cout << "not equal\n"; return 0; }
-  forn(i,SZ(shua)) {
-    if (shua[i] != shub[i]) { cout << "not equal\n"; return 0; }
-  }
-  
-  // check identity va == vb final
-  forn(i,SZ(va)) if (va[i] != vb[i]) { cout << "not equal\n"; return 0; }
-  cout << "equal\n";
+  if (SZ(shua) != SZ(shub)) goto fin;
+  forn(i,SZ(shua))
+    if (shua[i] != shub[i] or !valid_intervals(va, vb, shua[i]))
+      goto fin; 
 
-  
+  // check identity va == vb final
+  forn(i,SZ(va)) if (va[i] != vb[i]) goto fin; 
+  cout << "equal\n";
+  return 0; 
+
+  fin: cout << "not equal\n";
   return 0;
 }

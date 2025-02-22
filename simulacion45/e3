@@ -1,0 +1,2 @@
+shuffle(concat([1,1]),sorted([1,10,100,1000]))
+shuffle(sorted([1,10,100,1000]),concat([1,1]))
