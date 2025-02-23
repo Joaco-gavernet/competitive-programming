@@ -11,41 +11,25 @@ typedef pair<ll,ll> ii;
 #define SZ(x) int((x).size()) 
 #define DBG(x) cerr << #x << " = " << x << endl 
 #define RAYA cerr << "=================================\n" 
+#define DBGV(v) cerr << #v << " = "; forn(_,SZ(v)) cerr << v[_].first << ' ' << v[_].second << '\n'
 
-
-
+struct tup {
+  int d, s, id; 
+  bool operator < (tup b) {
+    if (d *b.s == b.d *s) return id < b.id;
+    else return d *b.s < b.d *s;
+  }
+}; 
 
 int main() {
   int t; cin >> t; 
   while (t--) {
     int n; cin >> n; 
-    vi d(n), s(n); 
-    ll S = 0; 
-    forn(i,n) cin >> d[i] >> s[i], S += s[i]; 
-    vector<ii> v; 
-    forn(i,n) v.pb({(S -s[i]) *d[i], i}); 
-    sort(all(v)); 
-    set<ii> st; 
-
-    vi ans; 
-    int day = 0; 
-    while (SZ(v)) {
-      DBG(day); 
-      for (auto [p, id]: v) cerr << id << ' ' << p << '\n'; 
-      auto [pb, idb] = *v.begin(); 
-      ans.pb(idb +1); 
-      S -= s[idb];
-      day += d[idb]; 
-
-      vector<ii> u; 
-      for (auto [p, id]: v) if (id != idb) u.pb({(S -s[id]) *max(0LL, (d[id] -day)), id}); 
-      sort(all(u));
-      v = u; 
-      RAYA; 
-    } 
-    for (auto x: ans) cout << x << ' '; 
-    cout << '\n'; 
-    RAYA; 
+    vector<tup> v(n); 
+    forn(i,n) cin >> v[i].d >> v[i].s, v[i].id = i+1; 
+    sort(all(v));
+    forn(i,n) cout << v[i].id << ' '; 
+    cout << '\n';
   } 
 
   return 0; 
