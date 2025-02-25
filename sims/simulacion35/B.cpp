@@ -47,7 +47,7 @@ ll BFS(int start, int n,int fin){
   ll ans=INF;
   visto[start]=true; dist[start]=0; q.push(start);
   while(!q.empty()){
-    int xx=q.front(); q.pop();
+    int xx=q.front(); q.pop();		//Desde acá hay que modificar
     for(auto u:g[xx]){
       if(visto[u.first]) continue;
       dist[u.first]=dist[xx]+u.second;
@@ -118,6 +118,7 @@ int main() {
   //~ sort(all(v));
   //~ int tam=SZ(v);
   ll ans=INF;
+  //FALLA ESTA PARTE
   forn(i,n){
     ll aux;
     aux=min(ans,BFS(1000*(d-1)+i,1000*n+6,1));

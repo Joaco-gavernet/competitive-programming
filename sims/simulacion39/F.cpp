@@ -93,7 +93,6 @@ int main() {
     if(first==false){
       ap=stringtoll(sap);
       //~ DBG(sap);
-      //~ if(ap==164610823730) DBG(ap);
       __int128 aux=(__int128)d*ap;
       if((aux)%c==0){
 	ll bp=0;

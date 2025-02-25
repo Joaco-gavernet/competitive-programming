@@ -157,8 +157,7 @@ int main() {
     if(p[j].id!=p[i].id){
       punto aux=p[i]-p[j];
       ans+=aux.mod();
-    }
-    else ans+=cono(v[p[i].id],p[i], p[j]);
+    } else ans += cono(v[p[i].id], p[i], p[j]);
   }
   cout << ans << "\n";
   return 0;
