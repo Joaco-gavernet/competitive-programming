@@ -2,7 +2,7 @@
 using namespace std;
 
 typedef long long ll;
-typedef vector<ll> vi;
+typedef vector<int> vi;
 typedef pair<ll,ll> ii;
 #define forr(i,a,b) for(int i = a; i < b; i++)
 #define forn(i,n) forr(i,0,n) 
@@ -16,19 +16,28 @@ typedef pair<ll,ll> ii;
 int main() {
   FIN; 
 
-  int n, a1, k, p; 
-  cin >> n >> a1 >> k >> p; 
+  ll n, r, k, p; 
+  cin >> n >> r >> k >> p; 
 
-  vi v = {a1}; 
-  forr(i,1,n) {
-    assert(i-1 >= 0 and i < n); 
-    v.pb((v.back() *k) %p);
+  vi v = {r}; 
+  vi ans = {r}; 
+
+  while (SZ(ans) < 5) {
+    r = (r * k) %p; 
+    ans.pb(r); 
   }
-  sort(all(v)); 
-  forn(i,5) cout << v[n -5 +i] << ' ';
+  auto it = min_element(all(ans)); 
+  forr(i,5,n) {
+    r = (r * k) %p; 
+    if (*it < r) {
+      *it = r; 
+      it = min_element(all(ans)); 
+    }
+  }
+
+  sort(all(ans)); 
+  for (auto x: ans) cout << x << ' ';
   cout << '\n'; 
-
-
 
   return 0;
 }
