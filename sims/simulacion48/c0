@@ -1,0 +1,11 @@
+9
+for i in range(10) do print i j end
+4
+3
+print j i
+2
+do print
+6
+k in range(10) do print k
+6
+k in range(10) do print j
