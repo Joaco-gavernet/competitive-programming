@@ -1,4 +1,7 @@
 
+def f():
+
+
 for _ in range(int(input())): 
     n, l, r = map(int, input().split()) 
     a = list(map(int, input().split())) 

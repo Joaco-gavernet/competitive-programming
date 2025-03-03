@@ -12,6 +12,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
 
 typedef long long ll;
+typedef unsigned long long llu;
 typedef pair<ll,ll> ii;
 typedef vector<bool> vb;
 typedef vector<int> vi;
@@ -27,17 +28,9 @@ typedef vector<int> vi;
 #define esta(v,x) (v).find(x) != (v).end() 
 
 
-const ll MAXN = 1e11; 
-vi st; 
-
-bool ispf(ll x) {
-  ll l = -1, r = x +1; 
-  while (l < r-1) {
-    ll mid = (l + r) /2; 
-    if (mid >= x /4 or mid * mid >= x) r = mid; 
-    else l = mid; 
-  } 
-  return r * r == x; 
+bool ispf(llu x) {
+  llu s = sqrt(x); 
+  return s * s == x; 
 }
 
 void solve() {
