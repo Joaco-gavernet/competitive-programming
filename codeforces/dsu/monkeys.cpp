@@ -28,12 +28,10 @@ typedef vector<ll> vi;
 // DSU struct con path compression y union por size
 // Complejidad: O(ack(n)) por operacion, donde ack(n) es la funcion inversa de Ackermann, casi O(1)
 struct DSU {
-  vi link, sz, ans;
-  vector<vi> childs; 
+  vi link, sz;
 
   DSU(int tam) {
     link.resize(tam+5), sz.resize(tam+5);
-    childs.resize(tam +5), ans.resize(tam +5);
     forn(i, tam+5) link[i] = i, sz[i] = 1;
   }
 
@@ -43,38 +41,61 @@ struct DSU {
   void join(ll a, ll b) {
     a = find(a), b = find(b);
     if(a == b) return;
-    if(sz[a] < sz[b]) swap(a,b);
+    if(sz[a] < sz[b] or b == 0) swap(a,b);
     sz[a] += sz[b];
     link[b] = a;
-    ans[b] -= ans[a]; 
   }
-
-  ll get(int x) {
-    if (link[x] == x) return ans[x]; 
-    else return ans[x] + get(link[x]); 
-  } 
 };
+
+void init(const int n, vector<ii> hands, DSU &ds, vector<ii> &ops, vector<vi> &g) {
+  for (auto [p, h]: ops) {
+    if (h == 1) hands[p].fst = -1; 
+    else hands[p].snd = -1; 
+  } 
+  forn(i,n) {
+    auto [l, r] = hands[i]; 
+    if (l >= 0) g[i].pb(l), g[l].pb(i), ds.join(i, l); 
+    if (r >= 0) g[i].pb(r), g[r].pb(i), ds.join(i, r); 
+  } 
+} 
+
+void dfs(int v, vi &ans, vector<vi> &g, vb &visto, int tim) {
+  visto[v] = true; 
+  ans[v] = tim; 
+  for (auto u: g[v]) if (visto[u] == false and u != 0) dfs(u, ans, g, visto, tim); 
+} 
+
+const int MAXN = 2e5+5; 
 
 int main(){
   FIN;
 
   int n, m; cin >> n >> m; 
-  DSU ds(n); 
-  vi ans(n); 
 
-  while (m--) {
-    string op; cin >> op; 
-    if (op == "join") {
-      int a, b; cin >> a >> b; 
-      ds.join(a, b); 
-    } else if (op == "add") {
-      int a, v; cin >> a >> v; 
-      ds.ans[ds.find(a)] += v; 
-    } else {
-      int x; cin >> x; 
-      cout << ds.get(x) << '\n'; 
-    } 
+  vector<ii> hands(n); 
+  forn(i,n) cin >> hands[i].fst >> hands[i].snd, hands[i].fst--, hands[i].snd--;  
+
+  DSU ds(n); 
+  vector<ii> ops(m); 
+  forn(i,m) cin >> ops[i].fst >> ops[i].snd, ops[i].fst--; 
+
+  vector<vi> g(MAXN); 
+  init(n, hands, ds, ops, g); 
+  reverse(all(ops)); 
+
+  vb visto(n, false); 
+  vi ans(n, -1); 
+  forn(i,m) {
+    auto [p, h] = ops[i]; 
+    auto aux = (h == 1 ? hands[p].fst : hands[p].snd);
+    if (ds.find(aux) != 0) swap(p, aux); 
+    bool fall = (ds.find(p) != 0); 
+    ds.join(p, aux); 
+    g[p].pb(aux);
+    g[aux].pb(p); 
+    if (ds.find(p) == 0 and fall) dfs(p, ans, g, visto, m -i -1); 
   } 
+  for (auto x: ans) cout << x << '\n'; 
 
   
   return 0;
