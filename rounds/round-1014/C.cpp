@@ -29,52 +29,22 @@ typedef vector<ll> vi;
 void solve() {
   int n; cin >> n; 
 
+  ll ans = 0; 
   vi odd, even; 
-  ll mx = -1; 
   forn(i,n) {
     int x; cin >> x; 
-    if (x > mx) {
-      if (mx != -1) {
-        if (mx %2) odd.pb(mx); 
-        else even.pb(mx); 
-      } 
-      mx = x; 
-    } else {
-      if (x %2) odd.pb(x); 
-      else even.pb(x); 
-    } 
+    ans += x; 
+    if (x %2) odd.pb(x); 
+    else even.pb(x); 
   } 
   sort(all(odd)); 
   sort(all(even)); 
 
-  int rest = 0; 
-  while (SZ(odd) or SZ(even)) {
-    if (mx %2) {
-      if (SZ(even) == 0) break; 
-      ll x = even.back(); even.pop_back(); 
-      if (SZ(odd) and odd.back() > even.back()) {
-        mx += x -1; 
-        rest++; 
-      } else {
-        mx += x; 
-      }
-    } else {
-      if (SZ(odd) == 0) break; 
-      ll x = odd.back(); odd.pop_back(); 
-      if (SZ(even) and even.back() > odd.back()) {
-        mx += x; 
-      } else {
-        mx += x -1; 
-        rest++; 
-      }
-    } 
-  } 
-  if (rest and mx %2 == 0) mx++; 
-  while (SZ(even) and mx %2) {
-    mx += even.back(); even.pop_back(); 
-  }
+  if (SZ(odd) == 0) ans = even.back(); 
+  else if (SZ(even) == 0) ans = odd.back(); 
+  else ans -= SZ(odd), ans++; 
 
-  cout << mx << '\n'; 
+  cout << ans << '\n'; 
 }
 
 
