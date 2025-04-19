@@ -29,35 +29,22 @@ typedef vector<ll> vi;
 void solve() {
   int n; cin >> n; 
   const int N = 2*n; 
-  map<int,bool> check; 
 
-  vi b(N); forn(i,N) cin >> b[i], check[b[i]] = true; 
-  sort(all(b)); 
-  reverse(all(b)); 
+  vi w(N); forn(i,N) cin >> w[i]; 
+  sort(all(w)); 
+  reverse(all(w)); 
 
   ll x = 0; 
-  forn(i,N) {
-    if (i&1) x -= b[i]; 
-    else x += b[i]; 
+  forn(i,n+1) x += w[i]; 
+  forr(i,n+1,N) x -= w[i]; 
+
+  vi b; 
+  forn(i,n) {
+    b.pb(w[i]); 
+    if (i == n-1) b.pb(x); 
+    b.pb(w[N-1-i]); 
   } 
 
-  if (check[x]) {
-    for (int k = N -1; k >= 0; k -= 2) {
-      ll val = 0;
-      for (int i = N -2; i >= 0; i -= 2) {
-        val = x + (b[i] >= 1 ? -1 : 1) *2 *b[i] + (b[k] >= 1 ? -1 : 1) *2 *b[k]; 
-        if (val >= 1 and check[val] == false) {
-          x = val; 
-          swap(b[i], b[k]); 
-          break; 
-        } else if (val <= 0 and b[k] <= 0) break; 
-      } 
-      if (x >= 1 and check[x] == false) break; 
-    } 
-  } 
-
-  assert(check[x] == false); 
-  cout << x << ' '; 
   for (auto &x: b) cout << x << ' '; 
   cout << '\n'; 
 }
