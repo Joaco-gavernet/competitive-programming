@@ -28,32 +28,24 @@ typedef vector<ll> vi;
 
 void solve() {
   int n; cin >> n; 
-  vi a(n); 
-  ll mx = -1; 
-  map<int,vi> step; 
-  forn(i,n) {
-    cin >> a[i]; 
-    mx = max(mx, a[i]); 
-    step[a[i]].pb(i); 
-  }
+  ll mx = 0; 
+  vi a(n), p(n); 
+  forn(i,n) cin >> a[i], mx = max(a[i], mx); 
+  forn(i,n) if (a[i] == -1) a[i] = mx +1; 
 
-  deque<int> dq; 
-  forn(i,n) dq.pb(i+1); 
-
-  vi ans(n); 
-  forr(i,1,mx+1) {
-    for (auto pos: step[i]) {
-      if (i&1) {
-        ans[pos] = dq.back(); 
-        dq.pop_back(); 
-      } else {
-        ans[pos] = dq.front(); 
-        dq.pop_front(); 
-      } 
+  int l = 1, r = n; 
+  forr(k,1,mx+2) {
+    int mr = n -1; 
+    while (mr >= 0 and a[mr] <= k) mr--; 
+    forn(i,mr) if (a[i] == k) {
+      p[i] = ((k&1) ? r-- : l++); 
+    } 
+    for (int i = n-1; i > mr; i--) if (a[i] == k) {
+      p[i] = ((k&1) ? r-- : l++); 
     } 
   } 
 
-  for (auto x: ans) cout << (x != 0 ? x : dq.front()) << ' '; 
+  for (auto x: p) cout << x << ' '; 
   cout << '\n'; 
 }
 
