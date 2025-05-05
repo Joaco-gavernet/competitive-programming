@@ -33,6 +33,7 @@ struct dev {
   } 
 }; 
 
+const double EPS = 1e-4; 
 
 int main(){
   FIN;
@@ -51,8 +52,27 @@ int main(){
     return 0; 
   } 
 
-  set<dev> off; 
-  forn(i,n) off.insert(v[i]); 
+  set<dev> st; 
+  forn(i,n) st.insert(v[i]); 
+
+  dbg(EPS); 
+  double tot = 0; 
+  while (true) {
+    double delta = 0; 
+    dev act = *st.begin(); st.erase(st.begin()); 
+    dev front = *st.begin(); 
+    delta = front.off -act.off; 
+    dbg(front.off, act.off); 
+    dbg(delta); 
+
+    if (delta < EPS) break; 
+
+    tot += delta; 
+    act.off += delta*p; 
+    st.insert(act); 
+  } 
+  cout << fixed << setprecision(10); 
+  cout << tot << '\n'; 
   
 
   return 0; 
