@@ -26,7 +26,12 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
-const int MAXN = 1e5+5; 
+
+int query(int x) {
+  cout << "? " << x << endl; 
+  int val; cin >> val; 
+  return val; 
+} 
 
 int main(){
   int n; cin >> n; 
@@ -36,17 +41,39 @@ int main(){
     return 0; 
   } 
 
-  vi a(MAXN); 
-  cout << "? " << 1 << endl; 
-  cin >> a[0]; 
-  cout << "? " << 2 << endl; 
-  cin >> a[1]; 
-  if (a[0] < a[1]) {
+  vi a(n+10, -1); 
+  a[1] = query(1); 
+  a[2] = query(2); 
+  if (a[1] < a[2]) {
     cout << "! " << 1 << endl; 
     return 0; 
   } 
 
+  a[n] = query(n); 
+  a[n-1] = query(n-1); 
+  if (a[n-1] > a[n]) {
+    cout << "! " << n << endl; 
+    return 0; 
+  } 
 
+
+  int l = 2, r = n-1; 
+  while (l + 2 < r) {
+    int mid = (l + r) /2; 
+    a[mid] = query(mid); 
+    a[mid+1] = query(mid+1); 
+
+    if (a[mid] < a[mid+1]) r = mid +1; 
+    else l = mid; 
+  } 
+
+  int pos = l -1, mn = 1<<30, ans = -1; 
+  forn(i,5) {
+    int aux = query(pos +i); 
+    if (aux < mn) mn = aux, ans = pos +i; 
+  } 
+
+  cout << "! " << ans << endl; 
 
 
 

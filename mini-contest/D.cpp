@@ -33,6 +33,10 @@ struct dev {
   } 
 }; 
 
+ostream &operator << (ostream &os, const dev &x) {
+  return os << "(" << x.a << ',' << x.b << ',' << x.off << ")"; 
+} 
+
 const double EPS = 1e-4; 
 
 int main(){
@@ -54,24 +58,30 @@ int main(){
 
   set<dev> st; 
   forn(i,n) st.insert(v[i]); 
-
+  dbg(v); 
   dbg(EPS); 
+
   double tot = 0; 
-  while (true) {
-    double delta = 0; 
-    dev act = *st.begin(); st.erase(st.begin()); 
-    dev front = *st.begin(); 
-    delta = front.off -act.off; 
-    dbg(front.off, act.off); 
-    dbg(delta); 
-
-    if (delta < EPS) break; 
-
-    tot += delta; 
-    act.off += delta*p; 
-    st.insert(act); 
-  } 
   cout << fixed << setprecision(10); 
+  while (SZ(st) > 1) {
+    RAYA; 
+    dbg(tot); 
+    double delta = 0; 
+    dev x = *st.begin(); st.erase(st.begin()); 
+    dev &y = *st.begin(); 
+    dbg(x); 
+    dbg(y); 
+
+    double off = double(y.b) / y.a; 
+    double charge_time = double(x.a * off - x.b) / p;
+    if (tot + charge_time > off) {
+      charge_time = off -tot;
+      cout << tot + charge_time * (p - x.b) << '\n'; 
+      return 0; 
+    } 
+
+    tot += charge_time; 
+  } 
   cout << tot << '\n'; 
   
 
