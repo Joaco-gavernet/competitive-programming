@@ -25,9 +25,10 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+typedef long double tipo; 
+
 struct dev {
-  int a, b; 
-  double off; 
+  tipo a, b, off; 
   bool operator < (const dev b) const {
     return off < b.off; 
   } 
@@ -37,53 +38,35 @@ ostream &operator << (ostream &os, const dev &x) {
   return os << "(" << x.a << ',' << x.b << ',' << x.off << ")"; 
 } 
 
-const double EPS = 1e-4; 
 
 int main(){
   FIN;
 
   int n, p; cin >> n >> p; 
-  vector<dev> v(n); 
-  forn(i,n) cin >> v[i].a >> v[i].b, v[i].off = (double)(v[i].b) /v[i].a; 
+  vector<dev> v(n); forn(i,n) cin >> v[i].a >> v[i].b; 
 
-  bool check = true; 
-  forn(i,n) {
-    if (v[i].b < (n-1)*v[i].a or (n-1)*v[i].a > p) 
-      check = false; 
-  }
-  if (check) {
-    cout << "-1\n"; 
-    return 0; 
-  } 
+  tipo l = 0, r = 1e20; 
+  forn(_,100) {
+    tipo mid = (l + r) /2; 
 
-  set<dev> st; 
-  forn(i,n) st.insert(v[i]); 
-  dbg(v); 
-  dbg(EPS); 
-
-  double tot = 0; 
-  cout << fixed << setprecision(10); 
-  while (SZ(st) > 1) {
-    RAYA; 
-    dbg(tot); 
-    double delta = 0; 
-    dev x = *st.begin(); st.erase(st.begin()); 
-    dev &y = *st.begin(); 
-    dbg(x); 
-    dbg(y); 
-
-    double off = double(y.b) / y.a; 
-    double charge_time = double(x.a * off - x.b) / p;
-    if (tot + charge_time > off) {
-      charge_time = off -tot;
-      cout << tot + charge_time * (p - x.b) << '\n'; 
-      return 0; 
+    bool ok = true; 
+    tipo charge_time = mid * p; 
+    forn(i,n) {
+      tipo kill = v[i].b / v[i].a;
+      if (kill < mid) { 
+        tipo time = (v[i].a * mid - v[i].b); 
+        charge_time -= time; 
+        if (charge_time < 0) break; 
+      }
     } 
 
-    tot += charge_time; 
+    if (charge_time < 0) r = mid; 
+    else l = mid; 
   } 
-  cout << tot << '\n'; 
-  
+  if (l >= 1e18) l = -1; 
+  cout << fixed << setprecision(10); 
+  cout << l << '\n'; 
+
 
   return 0; 
 }
