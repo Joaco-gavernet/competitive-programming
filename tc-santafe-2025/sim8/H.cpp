@@ -28,21 +28,13 @@ typedef vector<ll> vi;
 
 
 int dfs(int v, vector<vi> &g, vector<ii> &ans, int prev = -1) {
-  // dbg(v); 
-  if (SZ(g[v]) == 1) return v; 
-
   int rest = -1; 
   for (auto u: g[v]) if (u != prev) {
     int aux = dfs(u, g, ans, v); 
-    // dbg(u, rest, aux); 
-    if (aux != -1) {
-      if (rest == -1) rest = aux;
-      else {
-        ans.pb({rest, aux}); 
-        rest = -1; 
-      }
-    }
-  }
+    if (rest == -1) rest = aux; 
+    else ans.pb({rest, aux}), rest = -1; 
+  } 
+  if (rest == -1) rest = v;
   return rest; 
 } 
 
@@ -52,12 +44,9 @@ void solve() {
   vi deg(n); 
   forn(i,n-1) {
     int u, v; cin >> u >> v; 
-    g[--u].pb(--v); 
-    g[v].pb(u); 
+    g[--u].pb(--v); g[v].pb(u); 
     deg[v]++, deg[u]++; 
   }
-  // forn(v,n) dbg(v, g[v]); 
-  // RAYA; 
 
   int start = -1; 
   forn(v,n) if (deg[v] %2 == 0) {
@@ -67,11 +56,9 @@ void solve() {
 
   vector<ii> ans; 
   int rest = -1; 
-  dbg(start); 
-  if (start != -1) rest = dfs(start, g, ans); 
-
   if (start == -1) cout << "-1\n"; 
   else {
+    dfs(start, g, ans); 
     cout << SZ(ans) << '\n'; 
     for (auto [a, b]: ans) {
       cout << a +1 << ' ' << b +1 << '\n'; 
