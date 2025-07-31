@@ -33,36 +33,33 @@ int dy[] = {-1, 0};
 
 
 int main(){
-  FIN;
+    FIN;
 
-  int n, m; cin >> n >> m; 
-  vector<string> mat(n); 
-  forn(i,n) cin >> mat[i]; 
+    int n, m; cin >> n >> m; 
+    vector<string> mat(n); 
+    forn(i,n) cin >> mat[i]; 
 
-  forn(y,n) {
-      forn(x,m) {
-          vi v = {mat[y][x]}; 
-          forn(k,2) {
-              int xi = x +dx[k]; 
-              int yi = y +dy[k]; 
-              if (xi < 0 or xi >= m) continue; 
-              if (yi < 0 or yi >= n) continue; 
-              v.pb(mat[yi][xi]); 
-          }
-          sort(all(v)); 
-          v.erase(unique(all(v)), v.end()); 
-          mat[y][x]++; 
-          if (mat[y][x] == 'E') mat[y][x] = 'A'; 
-          for (auto &c: v) if (c == mat[y][x]) {
-              mat[y][x]++; 
-              if (mat[y][x] == 'E') mat[y][x] = 'A'; 
-          }
-      }
-  }
+    forn(y,n) {
+        forn(x,m) {
+            map<char,bool> mp; 
+            mp[mat[y][x]] = true; 
+            forn(k,2) {
+                int xi = x +dx[k]; 
+                int yi = y +dy[k]; 
+                if (xi < 0 or xi >= m) continue; 
+                if (yi < 0 or yi >= n) continue; 
+                mp[mat[yi][xi]] = true; 
+            }
+            forn(i,4) {
+                char c = 'A' +i; 
+                if (mp[c] == false) mat[y][x] = c; 
+            }
+        }
+    }
 
-  forn(y,n) cout << mat[y] << '\n'; 
+    forn(y,n) cout << mat[y] << '\n'; 
 
 
 
-  return 0;
+    return 0;
 }
