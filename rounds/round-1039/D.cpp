@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
-using namespace __gnu_pbds;
 //freopen("input.txt", "r", stdin);
 //freopen("output.txt", "w", stdout);
 
@@ -22,36 +20,27 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define ff first
-#define ss second
+#define fst first
+#define snd second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-typedef tree<ll,null_type,less<ll>,rb_tree_tag,tree_order_statistics_node_update> oset;
 
 void solve() {
   int n; cin >> n; 
-  const int N = 2*n; 
   vi p(n); forn(i,n) cin >> p[i]; 
-
-  int l = -1, r = 2*n; 
-  while (l +1 < r) {
-    int mid = (l + r) /2; 
-
-    // check 
-    oset up, down; 
-    vector<ii> dp(n, {0, 0}); 
-    dp[0].ff == dp[0].ss = 0; 
-    up.insert(p[i]); down.insert(N -p[i]);  
-    forr(i,1,n) {
-    } 
-
-    // update binsearch 
-    ll best = min(dp.back().ff, dp.back().ss); 
-    if (best <= mid) r = mid; 
-    else l = mid; 
+  vi dp(n); 
+  ll tot = 0, pre = 0; 
+  dp[0] = dp[1] = 1; 
+  forr(i,0,n) {
+    if (i >= 1 and p[i-1] > p[i]) dp[i] = max(dp[i], dp[i-1] +1); 
+    if (i >= 2 and p[i-2] > p[i]) dp[i] = max(dp[i], dp[i-2] +1); 
+    tot += (i +1) *dp[i];
+    pre += dp[i] -1; 
+    tot -= pre; 
   } 
-  cout << r << '\n'; 
+
+  cout << tot << '\n'; 
 }
 
 
