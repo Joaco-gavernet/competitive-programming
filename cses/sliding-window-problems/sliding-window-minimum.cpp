@@ -31,36 +31,22 @@ int main(){
 
   int n, k; cin >> n >> k; 
   int x, a, b, c; cin >> x >> a >> b >> c; 
-  vi v = {x}; 
-  forn(i,n-1) v.pb((a*v.back() +b) %c); 
+  vector<int> v = {x}; 
+  forn(i,n-1) v.pb((((ll)(a)*v.back()) +b) %c); 
 
-  ll ans = 0; 
-  priority_queue<ll> st; 
-  forn(i,k) st.push(-v[i]); 
+  int ans = 0; 
+  priority_queue<int, vector<int>, greater<int>> st; 
+  forn(i,k-1) st.push(v[i]); 
   unordered_map<int,int> toerase; 
-  dbg(v); 
   forn(i,n-k+1) {
-      dbg(SZ(st), st.top()); 
-      while (toerase[-st.top()] > 0) toerase[-st.top()]--, st.pop(); 
-      ll aux = -st.top(); 
-      dbg(i, aux); 
-      ans ^= aux; 
-      if (i+k+1 < n) toerase[v[i+k+1]]++; 
+    st.push(v[i+k-1]); 
+    int tp = st.top(); 
+    while (toerase[tp] > 0) toerase[tp]--, st.pop(), tp = st.top(); 
+    ans ^= tp; 
+    toerase[v[i]]++; 
   }
   cout << ans << '\n'; 
 
   return 0;
 }
-
-  /*
-  ll ans = 0; 
-  multiset<ll> st; 
-  forn(i,k) st.insert(v[i]); 
-  forn(i,n-k+1) {
-      ll aux = *st.begin(); 
-      ans ^= aux; 
-      st.erase(st.find(v[i])); 
-      if (i+k+1 < n) st.insert(v[i+k+1]); 
-  }
-  */ 
 
