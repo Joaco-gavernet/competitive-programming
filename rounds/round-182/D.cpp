@@ -25,25 +25,37 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+const int MAXN = 2e5+5; 
+const ll INF = 1LL<<60; 
 
 void solve() {
   ll n, y; cin >> n >> y; 
-  map<int,int> mp; 
-  vi c(n); forn(i,n) cin >> c[i], mp[c[i]]++; 
-  int mx = max_element(all(c)); 
+  ll mx = 0; 
+  vi cnt(MAXN), pref(MAXN); 
+  vi c(n); forn(i,n) cin >> c[i], mx = max(mx, c[i]), cnt[c[i]]++; 
+  forr(i,1,MAXN) pref[i] = pref[i-1] +cnt[i]; 
 
-  ll best = 0; 
-  map<int,int> cp = mp; 
-  forr(x,2,mx) {
+  ll best = -INF; 
+  forr(x,2,max(mx,2LL)+1) {
+      ll aux = 0; 
+      const int up = (mx +x -1) /x;  
+      forr(p,1,up+1) {
+          ll need = pref[min(p*x, (ll)(MAXN -1))] -pref[(p-1)*x]; 
+          aux += p*need -y*max(0LL, need -cnt[p]); 
+          // dbg(p, need, cnt[p]); 
+      }
+      // dbg(x, aux); 
+      best = max(best, aux); 
   } 
 
+  cout << best << '\n'; 
 }
 
 
 int main(){
-  FIN;
-  int t = 1; 
-  cin >> t;
-  while (t--) solve();
-  return 0;
+    FIN;
+    int t = 1; 
+    cin >> t;
+    while (t--) solve();
+    return 0;
 }
