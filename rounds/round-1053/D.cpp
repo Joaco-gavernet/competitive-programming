@@ -64,29 +64,28 @@ void solve() {
 
   if (acc != n) cout << "0\n";
   else {
-    vi dp(n); 
-    ll z = n; 
-    forr(i,0,n) {
+    ll ans = 1;
+    ll z = 0; 
+    for (int i = n-1; i >= 0; i--) {
+      if (i < n/2) z += 2; 
+      else if (2*(i+1) == n+1) z++; 
+
       if (z > 0) {
-        int aux = min(min(2LL, z), a[i]);  
-        z -= aux; 
-        a[i] -= aux; 
-        if (z < a[i] or (aux == 1 and z > 0)) {
+        if (z < a[i]) {
           cout << "0\n";
           return; 
         }
 
         // nCk mod MOD with modular inverse 
-        // intended: dp[i] = fact[z] / (fact[a[i]] * fact[z-a[i]]); 
-        dp[i] = fact[z]; 
-        dp[i] = dp[i] * inv_mod(fact[a[i]], MOD) % MOD; 
-        dp[i] = dp[i] * inv_mod(fact[z - a[i]], MOD) % MOD; 
-        if (i > 0) dp[i] = dp[i] * dp[i-1] % MOD;
+        (ans *= fact[z]) %= MOD; 
+        (ans *= inv_mod(fact[a[i]], MOD)) %= MOD; 
+        (ans *= inv_mod(fact[z - a[i]], MOD)) %= MOD; 
+
         z -= a[i]; 
-      } else dp[i] = dp[i-1]; 
+      } else if (a[i] > 0) ans *= 0; 
     }
 
-    cout << dp.back() << '\n'; 
+    cout << ans << '\n'; 
   } 
 }
 
