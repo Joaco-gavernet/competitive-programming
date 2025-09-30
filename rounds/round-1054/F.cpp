@@ -25,21 +25,26 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+const int MAXN = 1e9+5; 
+// const int MAXN = 100; 
+
+bool check(int mid, int h, int d) {
+  int a = d / mid; 
+  int rest = d % mid; 
+  ll spend = 1LL *mid *a *(a +1) /2 + (a +1) *rest;
+  return (spend < (h +mid -1) or d < mid);
+} 
 
 void solve() {
   ll h, d; cin >> h >> d; 
 
-  ll turns = 2*d; 
-  int stops = d; 
-  while (h > 2) {
-
-    while (h > 2 and stops > d/2) {
-      h -= 2;
-      turns--;  
-    } 
+  int l = 0, r = MAXN; 
+  while (l +1 < r) {
+    int mid = (l + r) /2; 
+    if (check(mid, h, d)) r = mid; 
+    else l = mid; 
   } 
-
-  cout << turns << '\n'; 
+  cout << d +r -1 << '\n'; 
 }
 
 
