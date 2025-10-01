@@ -37,7 +37,7 @@ struct nodo {
   bool operator < (const nodo &x) const { return d > x.d; }
 };
 
-vector<nodo> Dijkstra(int start, int n, vector<vector<pair<int, tipo>>> &g) {
+vector<nodo> Dijkstra(ll start, int n, vector<vector<pair<int, tipo>>> &g) {
   vector<nodo> ans(n);
   vb visto(n, false);
   priority_queue<nodo> p; p.push({0, start, -1}); 
@@ -46,8 +46,8 @@ vector<nodo> Dijkstra(int start, int n, vector<vector<pair<int, tipo>>> &g) {
     if (visto[it.v]) continue;
     else {
       ans[it.v] = it; visto[it.v] = true; 
-      for (arista u: g[it.v]) {
-        if (!visto[u.x]) p.push({it.d +u.w, u.x, it.v}); 
+      for (auto u: g[it.v]) {
+        if (!visto[u.ff]) p.push({it.d +u.ss, u.ff, it.v}); 
       }
     }
   }
@@ -58,7 +58,7 @@ bool check(int s, vector<vector<pair<int, tipo>>> &g, int m) {
   const int n = SZ(g); 
   vector<tipo> dist(n, -1); 
   vector<nodo> ans = Dijkstra(s, n, g);
-  forn(i,n) if (i != s and ans[i] > m) return false; 
+  forn(i,n) if (i != s and ans[i].d > m) return false; 
   return true; 
 }
 
