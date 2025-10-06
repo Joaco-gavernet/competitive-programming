@@ -25,43 +25,43 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-// const ll MAXN = 1e7+5; 
-const ll MAXN = 100; 
-vi pref(MAXN, 0); 
+const ll INF = 1LL<<60; 
+const ll MAXN = 1e7+5; 
+// const ll MAXN = 100; 
+vi crib;
 
+vi min_prime; // min_prime[i] contiene el menor primo que divide a i, util para factorizar en log(i)
 vi criba(ll n) {
   vb prime(n+1,true);
+  min_prime.resize(n+1,INF);
   vi primos;
   for(ll p=2; p*p<=n; p++){
     if(!prime[p]) continue;
-    int sq = sqrt(p); 
-    if (sq*sq != p) sq = -1; 
-    dbg(p); 
-    pref[p] = 1;
-    for(ll i=p*p, j = 0; i<=n; i += p, j++) {
-      if (j %2 == 0 or (sq != -1 and prime[i /p])) {
-        dbg(p, i);
-        pref[i]++; 
-      }
+    for(ll i=p*p; i<=n; i += p) {
       prime[i] = false;
+      min_prime[i] = min(min_prime[i],p);
     }
   }
-  forn(i,MAXN-1) pref[i+1] += pref[i]; 
-  forr(i, 2, n+1) if(prime[i]) primos.pb(i);
+  forr(i, 2, n+1){
+    if(prime[i]) primos.pb(i), min_prime[i] = i;
+  }
   return primos; // lista de primos hasta n
 }
 
 void solve() {
   int n; cin >> n; 
-  dbg(n); 
-  cout << pref[n] << '\n'; 
+  ll tot = 0;
+  auto up = upper_bound(all(crib), n); 
+  for (auto it = crib.begin(); it != up; it++) {
+    tot += n /(*it);
+  } 
+  cout << tot << '\n'; 
 }
 
 
 int main(){
   FIN;
-  vi crib = criba(MAXN); 
-  dbg(pref); 
+  crib = criba(MAXN); 
   int t = 1; 
   cin >> t;
   while (t--) solve();
