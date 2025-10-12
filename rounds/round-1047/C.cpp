@@ -29,10 +29,18 @@ typedef vector<ll> vi;
 void solve() {
   ll a, b; cin >> a >> b; 
 
-  vi divs; 
-  for (ll d = 1; d*d <= b; d++) {
+  ll k = -1; 
+  if (a&1) {
+    if (b&1) k = b; 
+    else {
+      if (b %4 == 0) k = b/2;
+    } 
+  } else {
+    if (b&1) k = -1; 
+    else k = b/2; 
   } 
 
+  cout << max(-1LL, a*k + b/k) << "\n"; 
 }
 
 
