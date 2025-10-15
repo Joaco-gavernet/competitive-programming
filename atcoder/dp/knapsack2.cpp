@@ -25,23 +25,26 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+const ll INF = 1LL<<60; 
+const int V = 1e5+5;
 
 void solve() {
   int n, W; cin >> n >> W; 
   vi w(n), v(n); 
   forn(i,n) cin >> w[i] >> v[i]; 
 
-  set<ll> consider = {0}; 
-  map<ll,ll> dp; 
+  vi dp(V, INF); 
+  dp[0] = 0;
   forn(k,n) {
-    for (auto x: consider) if ((x*=-1)+w[k] <= W) {
-      dp[x+w[k]] = max(dp[x+w[k]], dp[x]+v[k]); 
-      consider.insert(-(x+w[k])); 
-    } 
+    for (int i = V-1; i >= 0; i--) 
+      if (i -v[k] >= 0 and dp[i-v[k]] < INF) 
+        dp[i] = min(dp[i], dp[i-v[k]] +w[k]); 
   } 
-  ll ans = -1;
-  for (auto [x,y]: dp) ans = max(ans, y); 
-  cout << ans << '\n'; 
+
+  for (int i = V-1; i >= 0; i--) if (dp[i] <= W) {
+    cout << i << '\n'; 
+    return; 
+  }
 }
 
 
