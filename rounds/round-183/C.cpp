@@ -20,51 +20,42 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+const ll INF = 1LL<<60;  
 
 void solve() {
   int n; cin >> n;
   string s; cin >> s; 
+  vi pref(n+1); 
 
-  int as = 0, bs = 0;
   forn(i,n) {
-    if (s[i] == 'a') as++; 
-    else bs++; 
+    pref[i+1] = pref[i]; 
+    if (s[i] == 'a') pref[i+1]++; 
+    else pref[i+1]--; 
   } 
 
-  if (as == bs) {
-    cout << "0\n"; 
-    return; 
-  } else if (as > bs) {
-    int dif = as -bs; 
-    if (dif < n) {
-      forn(i,n) {
-        int cont = 0; 
-        for (int j = 0; j < dif; j++) if (i+j < n) cont += (s[i+j] == 'a');
-        if (cont == dif) {
-          cout << dif << '\n'; 
-          return;
-        } 
+  if (pref.back() == 0) cout << "0\n"; 
+  else {
+    int dif = pref.back(); 
+    set<ii> st; 
+    ll ans = INF; 
+    forr(i,0,n+1) {
+      // dif = pref[i] -(*it).ff;
+      auto it = st.lower_bound({pref[i] -dif,-INF}); 
+      if (it != st.end()) {
+        if (dif == pref[i] -it->ff) ans = min(ans, i +it->ss); 
       } 
-    }
-  } else {
-    int dif = bs -as; 
-    if (dif < n) {
-      forn(i,n) {
-        int cont = 0; 
-        forn(j,dif) if (i+j < n) cont += (s[i+j] == 'b');
-        if (cont == dif) {
-          cout << dif << '\n'; 
-          return;
-        } 
-      } 
-    }
-  } 
-  cout << "-1\n"; 
+
+      st.insert({pref[i],-i}); 
+    } 
+
+    if (ans == n or ans == INF) ans = -1;
+    cout << ans << '\n'; 
+  }
 }
 
 
