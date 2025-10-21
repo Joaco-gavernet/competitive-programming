@@ -28,7 +28,7 @@ typedef vector<ll> vi;
 const int MOD = 998244353;
 const int MAXN = 2e5+5;
 // const int MAXN = 10;
-vi fact, invfact; 
+vi fact; 
 
 ll mod_pow(ll a, ll e) {
   ll r = 1 % MOD;
@@ -43,10 +43,7 @@ ll mod_pow(ll a, ll e) {
 
 void init_fact(int N) {
   fact.assign(N + 1, 1);
-  invfact.assign(N + 1, 1);
   for (int i = 1; i <= N; ++i) fact[i] = fact[i - 1] * i % MOD;
-  invfact[N] = mod_pow(fact[N], MOD - 2);       
-  for (int i = N; i >= 1; --i) invfact[i - 1] = invfact[i] * i % MOD;
 }
 
 ll be_it(ll b, ll e, ll m) {
@@ -59,7 +56,7 @@ ll inv_mod(ll x, ll m) {return be_it(x,m-2,m);}
 
 void solve() {
   int n; cin >> n; 
-  int acc = 0; 
+  ll acc = 0; 
   vi a(n); forn(i,n) cin >> a[i], acc += a[i]; 
 
   if (acc != n) cout << "0\n";
@@ -84,8 +81,13 @@ void solve() {
         z -= a[i]; 
       } else if (a[i] > 0) ans *= 0; 
     }
+<<<<<<< Updated upstream
 
     cout << ans << '\n'; 
+=======
+    if (z > 0) cout << "0\n"; 
+    else cout << dp.back() << '\n'; 
+>>>>>>> Stashed changes
   } 
 }
 

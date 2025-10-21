@@ -6,7 +6,7 @@ using namespace std;
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
 template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
- 
+
 void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
@@ -27,26 +27,24 @@ typedef vector<ll> vi;
 
 
 int main(){
-  FIN;
+    FIN;
 
-  int n, k; cin >> n >> k; 
-  int x, a, b, c; cin >> x >> a >> b >> c; 
-  vector<int> v = {x}; 
-  forn(i,n-1) v.pb((((ll)(a)*v.back()) +b) %c); 
+    int n, k; cin >> n >> k; 
+    int x, a, b, c; cin >> x >> a >> b >> c; 
+    vector<int> v = {x}; 
+    v.reserve(n); 
+    forn(i,n-1) v.pb((((ll)(a)*v.back()) +b) %c); 
 
-  int ans = 0; 
-  priority_queue<int, vector<int>, greater<int>> st; 
-  forn(i,k-1) st.push(v[i]); 
-  unordered_map<int,int> toerase; 
-  forn(i,n-k+1) {
-    st.push(v[i+k-1]); 
-    int tp = st.top(); 
-    while (toerase[tp] > 0) toerase[tp]--, st.pop(), tp = st.top(); 
-    ans ^= tp; 
-    toerase[v[i]]++; 
-  }
-  cout << ans << '\n'; 
+    int ans = 0; 
+    deque<int> dq; // stores indices
+    for (int i = 0; i < n; i++) {
+        while (!dq.empty() and v[dq.back()] >= v[i]) dq.pop_back();
+        dq.push_back(i);
+        if (dq.front() <= i - k) dq.pop_front();
+        if (i >= k - 1) ans ^= v[dq.front()];
+    }
+    cout << ans << '\n'; 
 
-  return 0;
+    return 0;
 }
 
