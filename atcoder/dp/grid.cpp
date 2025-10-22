@@ -6,7 +6,7 @@ using namespace std;
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
 template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
-
+ 
 void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
@@ -25,26 +25,37 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+int dy[] = {0,1}; 
+int dx[] = {1,0};
+
+const int MOD = 1e9+7; 
+
+void solve() {
+    int h, w; cin >> h >> w; 
+    vector<string> tab(h); forn(i,h) cin >> tab[i]; 
+    vector<vi> dp(h, vi(w)); 
+    dp[0][0] = 1; 
+    forn(y,h) {
+        forn(x,w) {
+            if (tab[y][x] == '#') continue; 
+            forn(k,2) {
+                int yi = y +dy[k]; 
+                int xi = x +dx[k]; 
+                if (yi < 0 or yi >= h) continue; 
+                if (xi < 0 or xi >= w) continue; 
+                if (tab[yi][xi] == '#') continue; 
+                (dp[yi][xi] += dp[y][x]) %= MOD; 
+            }
+        }
+    }
+    cout << dp[h-1][w-1] << '\n'; 
+}
+
 
 int main(){
     FIN;
-
-    int n, k; cin >> n >> k; 
-    int x, a, b, c; cin >> x >> a >> b >> c; 
-    vector<int> v = {x}; 
-    v.reserve(n); 
-    forn(i,n-1) v.pb((((ll)(a)*v.back()) +b) %c); 
-
-    int ans = 0; 
-    deque<int> dq; // stores indices
-    for (int i = 0; i < n; i++) {
-        while (!dq.empty() and v[dq.back()] >= v[i]) dq.pop_back();
-        dq.push_back(i);
-        if (dq.front() <= i - k) dq.pop_front();
-        if (i >= k - 1) ans ^= v[dq.front()];
-    }
-    cout << ans << '\n'; 
-
+    int t = 1; 
+    // cin >> t;
+    while (t--) solve();
     return 0;
 }
-

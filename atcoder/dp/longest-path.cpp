@@ -25,78 +25,35 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const int MOD = 998244353;
-const int MAXN = 2e5+5;
-// const int MAXN = 10;
-vi fact; 
-
-ll mod_pow(ll a, ll e) {
-  ll r = 1 % MOD;
-  a %= MOD;
-  while (e) {
-    if (e & 1) r = (r * a) % MOD;
-    a = (a * a) % MOD;
-    e >>= 1;
-  }
-  return r;
-}
-
-void init_fact(int N) {
-  fact.assign(N + 1, 1);
-  for (int i = 1; i <= N; ++i) fact[i] = fact[i - 1] * i % MOD;
-}
-
-ll be_it(ll b, ll e, ll m) {
-  ll r=1; b%=m;
-  while(e){if(e&1LL)r=r*b%m;b=b*b%m;e/=2;}
-  return r;
-}
-
-ll inv_mod(ll x, ll m) {return be_it(x,m-2,m);}
 
 void solve() {
-  int n; cin >> n; 
-  ll acc = 0; 
-  vi a(n); forn(i,n) cin >> a[i], acc += a[i]; 
-
-  if (acc != n) cout << "0\n";
-  else {
-    ll ans = 1;
-    ll z = 0; 
-    for (int i = n-1; i >= 0; i--) {
-      if (i < n/2) z += 2; 
-      else if (2*(i+1) == n+1) z++; 
-
-      if (z > 0) {
-        if (z < a[i]) {
-          cout << "0\n";
-          return; 
-        }
-
-        // nCk mod MOD with modular inverse 
-        (ans *= fact[z]) %= MOD; 
-        (ans *= inv_mod(fact[a[i]], MOD)) %= MOD; 
-        (ans *= inv_mod(fact[z - a[i]], MOD)) %= MOD; 
-
-        z -= a[i]; 
-      } else if (a[i] > 0) ans *= 0; 
+    int n, m; cin >> n >> m; 
+    vector<vi> g(n); 
+    vi in(n); 
+    forn(_,m) {
+        int x, y; cin >> x >> y;
+        g[--x].pb(--y); 
+        in[y]++; 
     }
-<<<<<<< Updated upstream
+    queue<int> q; 
+    forn(i,n) if (in[i] == 0) q.push(i); 
+    vi dp(n); 
+    while (SZ(q)) {
+        auto v = q.front(); q.pop(); 
+        for (auto u: g[v]) {
+            dp[u] = max(dp[u], dp[v] +1); 
+            if (--in[u] == 0) q.push(u);
+        }
+    }
 
-    cout << ans << '\n'; 
-=======
-    if (z > 0) cout << "0\n"; 
-    else cout << dp.back() << '\n'; 
->>>>>>> Stashed changes
-  } 
+    cout << *max_element(all(dp)) << '\n'; 
 }
 
 
 int main(){
   FIN;
   int t = 1; 
-  cin >> t;
-  init_fact(MAXN); 
+  // cin >> t;
   while (t--) solve();
   return 0;
 }
