@@ -28,64 +28,60 @@ typedef vector<ll> vi;
 const int MOD = 676'767'677;
 const int MAXN = 1e5+5;
 
-//~ Solucion O(N + Log N)
-
-vector<ll> fact, ifact;
-
-ll be(ll b, ll e, ll m = MOD) {
-  ll r=1; b%=m;
-  while(e){if(e&1LL)r=r*b%m;b=b*b%m;e/=2;}
-  return r;
-}
-ll inv_mod(ll x, ll m){ return be(x,m-2,m); }
-
-void init_fact(int maxn){
-  fact.resize(maxn), ifact.resize(maxn);
-  fact[0] = 1; forr(i, 1, maxn) fact[i] = (fact[i-1]*i)%MOD;
-  ifact[maxn-1] = inv_mod(fact[maxn-1], MOD);
-  for(int i = maxn-2; i >= 0; i--) ifact[i] = (ifact[i+1]*(i+1))%MOD;
-}
-
-ll binom(ll n, ll k){
-  if(n < 0 or k < 0 or n < k) return 0;
-  ll ans = fact[n];
-  ans *= ifact[k]; ans %= MOD;
-  ans *= ifact[n-k]; ans %= MOD;
-  return ans;
-}
-
-bool impossible(int n, vi &a) {
-  int mx = *max_element(all(a)); 
-  int tot = 0;
-  forn(i,n) {
-    if (a[i] == mx) tot++; 
-    if (i < n-1 and abs(a[i]-a[i+1]) != 1 and a[i] != mx) return true; 
-  } 
-  forn(i,n) {
-    if (a[i] == mx) {
-      int r = i; 
-      while (r < n and a[r] == mx) r++; 
-      if (r -i < tot) return true; 
-      break; 
-    } 
-  } 
-  return false; 
+int ret() {
+  cout << "0\n"; 
+  return 0;
 } 
 
-void solve() {
+bool check(vi ops, vi &a) {
+  const int n = SZ(ops); 
+  forn(i,n-1) if (ops[i+1] == 2) ops[i+1] = 1^ops[i]; 
+
+  // check if valid 
+  vi sl(n), sr(n); 
+  sl[0] = sr[0] = 0;
+  for (int i = 1; i < n; i++) sl[i] = sl[i-1] + (ops[i-1] == 1);
+  for (int i = n-2; i >= 0; i--) sr[i] = sr[i+1] + (ops[i+1] == 0);
+  forn(i,n) if (sl[i] + sr[i] +1 != a[i]) return false;
+  return true; 
+} 
+
+int solve() {
   int n; cin >> n;
   vi a(n); forn(i,n) cin >> a[i]; 
 
-  if (impossible(n, a)) cout << "0\n"; 
-  else {
-    cout << "boca" << '\n'; 
+  vi ops(n,-1); 
+  // -1 - not fixed
+  // 0  - )
+  // 1  - (
+  // 2  - ) or (
+  forn(i,n-1) {
+    int dif = a[i+1] -a[i]; 
+    if (dif == 0) {
+      if (ops[i] == -1 or ops[i] == 2) ops[i] = ops[i+1] = 2; 
+      else ops[i+1] = 1^ops[i]; 
+    } else if (dif == 1) {
+      if (ops[i] == 0) return ret(); 
+      ops[i+1] = 1;
+    } else if (dif == -1) {
+      if (ops[i] == 1) return ret(); 
+      ops[i+1] = 0;
+    } else return ret(); 
   }
+
+  // attempt two possible cases 
+  ops[0] = 0; 
+  bool ok0 = check(ops, a); 
+  ops[0] = 1; 
+  bool ok1 = check(ops, a); 
+
+  cout << int(ok0) + int(ok1) << '\n'; 
+  return 0;
 }
 
 
 int main(){
   FIN;
-  init_fact(MAXN); 
   int t = 1; 
   cin >> t;
   while (t--) solve();
