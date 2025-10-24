@@ -20,69 +20,48 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const int MOD = 676'767'677;
-const int MAXN = 1e5+5;
+const int MAXN = 2e5+5;
+vector<vi> facts(MAXN);
+void build_factors(ll n = MAXN) {
+  for (int p = 2; p <= n; p++) {
+    if (SZ(facts[p])) continue; 
+    for (int j = p; j <= n; j += p) facts[j].pb(p); 
+  } 
+}
 
-int ret() {
-  cout << "0\n"; 
-  return 0;
-} 
-
-bool check(vi ops, vi &a) {
-  const int n = SZ(ops); 
-  forn(i,n-1) if (ops[i+1] == 2) ops[i+1] = 1^ops[i]; 
-
-  // check if valid 
-  vi sl(n), sr(n); 
-  sl[0] = sr[0] = 0;
-  for (int i = 1; i < n; i++) sl[i] = sl[i-1] + (ops[i-1] == 1);
-  for (int i = n-2; i >= 0; i--) sr[i] = sr[i+1] + (ops[i+1] == 0);
-  forn(i,n) if (sl[i] + sr[i] +1 != a[i]) return false;
-  return true; 
-} 
-
-int solve() {
-  int n; cin >> n;
+void solve() {
+  int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
+  vi b(n); forn(i,n) cin >> b[i]; 
 
-  vi ops(n,-1); 
-  // -1 - not fixed
-  // 0  - )
-  // 1  - (
-  // 2  - ) or (
-  forn(i,n-1) {
-    int dif = a[i+1] -a[i]; 
-    if (dif == 0) {
-      if (ops[i] == -1 or ops[i] == 2) ops[i] = ops[i+1] = 2; 
-      else ops[i+1] = 1^ops[i]; 
-    } else if (dif == 1) {
-      if (ops[i] == 0) return ret(); 
-      ops[i+1] = 1;
-    } else if (dif == -1) {
-      if (ops[i] == 1) return ret(); 
-      ops[i+1] = 0;
-    } else return ret(); 
-  }
+  ll ok = 2; 
+  map<int,int> cnt; 
+  forn(i,n) {
+    for (auto x: facts[a[i]]) {
+      if (cnt[x] > 0) ok = 0; 
+      cnt[x]++; 
+    }
+  } 
 
-  // attempt two possible cases 
-  ops[0] = 0; 
-  bool ok0 = check(ops, a); 
-  ops[0] = 1; 
-  bool ok1 = check(ops, a); 
+  forn(i,n) {
+    for (auto x: facts[a[i]]) cnt[x]--; 
+    for (auto x: facts[a[i]+1]) if (cnt[x] > 0) ok = min(ok, 1LL); 
+    for (auto x: facts[a[i]]) cnt[x]++; 
+  } 
 
-  cout << int(ok0) + int(ok1) << '\n'; 
-  return 0;
+  cout << ok << '\n'; 
 }
 
 
 int main(){
   FIN;
   int t = 1; 
+  build_factors(); 
   cin >> t;
   while (t--) solve();
   return 0;
