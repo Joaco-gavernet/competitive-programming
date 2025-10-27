@@ -83,31 +83,12 @@ struct max_flow {
     }
     return ans; 
   }
-
-  void debug() {
-    DBG("graph"); 
-    forn(v,n) {
-      cerr << v << "= "; 
-      for (auto u: g[v]) cerr << u << ' '; 
-      cerr << '\n'; 
-    } 
-    DBG("cap"); 
-    forn(v,n) {
-      cerr << v << "= "; 
-      for (auto u: cap[v]) cerr << u << ' '; 
-      cerr << '\n'; 
-    } 
-  } 
 };
 
+#define check(y,x) (deco[y+x] and t[y][x] != 2 and t[y][x] != 4)
 
 int main() {
   FIN; 
-
-  // TO-DO: 
-  // 1. add source and sink? (i think its unecessary) 
-  // 2. check some edge cases in old code 
-  // 3. debug current code 
 
   int n; cin >> n;
   vector<vi> t(n,vi(n)), c(n,vi(n));
@@ -121,15 +102,14 @@ int main() {
   forn(i,n) forn(j,n) cin >> c[i][j];
 
   max_flow flow(2*n*n +2); 
-  #define check(y,x) (deco[y+x] and (t[y][x] != 2 and t[y][x] != 4))
   forn(y,n) {
     forn(x,n) {
-      if (check(y,x) or t[y][x] == 0) continue; 
+      if (check(y,x)) continue; 
       int st = 2*(y*n +x);
       if (t[y][x] >= 3) flow.add_edge(st, st +1, INF);
       else if (t[y][x] >= 1) flow.add_edge(st, st +1, c[y][x]);
-      if (y +1 < n and t[y+1][x] and !check(y+1,x)) flow.add_edge(st +1, st +2*n, INF);
-      if (x +1 < n and t[y][x+1] and !check(y,x+1)) flow.add_edge(st +1, st +2, INF);
+      if (y +1 < n) flow.add_edge(st +1, st +2*n, INF);
+      if (x +1 < n) flow.add_edge(st +1, st +2, INF);
     } 
   } 
   assert(SZ(d)); 
@@ -139,12 +119,12 @@ int main() {
 
   if (mx == INF) cout << "-1 -1\n"; 
   else {
-    cout << mx << " " << SZ(cor) << "\n";
     vector<ii> toprint; 
-    for (auto [u, v]: cor) toprint.pb({(u/2) /n +1, (u/2) %n +1});
+    for (auto [v, u]: cor) if (v %2 == 0 and v +1 == u) toprint.pb({(v/2)/n, (v/2)%n});
     sort(all(toprint)); 
     toprint.erase(unique(all(toprint)), toprint.end()); 
-    for (auto [i, j]: toprint) cout << i << ' ' << j << '\n'; 
+    cout << mx << " " << SZ(toprint) << "\n";
+    for (auto [i, j]: toprint) cout << i +1 << ' ' << j +1 << '\n'; 
   } 
 
   return 0; 
