@@ -26,12 +26,53 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
+
+int query(int idx, int msk) {
+  cout << "? " << idx +1 << ' ' << msk << endl; 
+  int ans; cin >> ans; 
+  return ans; 
+}
+
 void solve() {
+  int n; cin >> n; 
+
+  vi ops, cand; 
+  forn(i,n-1) ops.pb(i); 
+  forn(i,n) cand.pb(i+1); 
+  int top = 32 -__builtin_clz(n); 
+
+  int ans = 0; 
+  forn(i,top) {
+    int msk = (1<<i), need = 0; 
+
+    vi id0, id1; 
+    for (auto x: cand) {
+      int aux = x; 
+      (x & msk ? id1 : id0).pb(x);
+    }
+
+    vi on, off; 
+    for (auto i: ops) {
+      if (query(i, msk)) on.pb(i); 
+      else off.pb(i); 
+    }
+
+    if (SZ(on) < SZ(id1)) {
+      ops = on; 
+      cand = id1; 
+      ans |= (1<<i); 
+    } else {
+      ops = off; 
+      cand = id0; 
+    }
+  }
+
+  cout << "! " << ans << endl; 
 }
 
 
 int main(){
-  FIN;
+  // FIN;
   int t = 1; 
   cin >> t;
   while (t--) solve();
