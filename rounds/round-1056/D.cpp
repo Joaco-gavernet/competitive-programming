@@ -27,11 +27,27 @@ typedef vector<ll> vi;
 
 
 void solve() {
+  int n; cin >> n; 
+
+  auto query = [&](int u, int v) -> auto {
+    cout << u +1 << ' ' << v +1 << endl; 
+    int ans; cin >> ans; 
+    return ans; 
+  };
+
+  bool ok = false; 
+  while (ok == false) {
+    for (int d = 1; d < n/2 +1 and ok == false; d++) {
+      for (int v = 0; v < n and ok == false; v++) {
+        ok |= query(v, (v+d) %n);
+      }
+    }
+  }
 }
 
 
 int main(){
-  FIN;
+  // FIN;
   int t = 1; 
   cin >> t;
   while (t--) solve();
