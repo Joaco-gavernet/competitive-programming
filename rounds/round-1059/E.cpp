@@ -31,28 +31,23 @@ bool cond(int fro, int prev, int last) {
 
 void solve() {
   int n, k; cin >> n >> k; 
-  vi a(n); forn(i,n) cin >> a[i]; 
+  map<int,int> mp; 
+  vi a(n); forn(i,n) cin >> a[i], mp[a[i]]++; 
 
-  deque<int> ops(n); 
-  forn(i,n) ops[i] = i+1; 
-
-  int i;
-  int prev = -1;
-  for (i = n-2; i >= 0 and a[i] == a[i+1]; i--) {
-  }
-  if (i >= 0) prev = a[i]; 
-
-  forn(i,k) {
-    for (int i = 0; i < 3 and cond(ops.front(), prev, a.back()); i++) {
-      ops.push_back(ops.front()); 
-      ops.pop_front(); 
+  ll x[] = {a[0], a[1], a[(n > 2 ? 2 : 0)]}; 
+  if (SZ(mp) < n) {
+    forr(k,1,n+1) if (mp[k] == 0) {
+      x[0] = k; 
+      break; 
     }
-    prev = a.back(); 
-    a.pb(ops.front());
-    ops.push_back(ops.front()); 
-    ops.pop_front(); 
+    x[2] = a.back(); 
+    forr(u,1,n+1) if (u != x[0] and u != x[2]) {
+      x[1] = u; 
+      break; 
+    }
   }
-  forr(i,n,SZ(a)) cout << a[i] << ' ';
+
+  forn(i,k) cout << x[i%3] << ' '; 
   cout << '\n'; 
 }
 

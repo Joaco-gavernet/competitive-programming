@@ -27,72 +27,61 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
-int check(vector<vi> &who) {
-  const int n = SZ(who); 
-  set<int> st; 
-  int pos = -1, cand = -1; 
-  forn(i,n) {
-    int j = 0;
-    for (; j < SZ(who[i]) and who[i][j] > 0; j++) {
-      int x = who[i][j]; 
-      st.insert(x); 
-    }
-    if (esta(st, cand)) return i-1;
-    else cand = -1;
-    if (SZ(st) == 1) cand = *st.begin(); 
-    for (; j < SZ(who[i]); j++) {
-      int x = who[i][j]; 
-      st.erase(-x); 
-    }
-  } 
-  return pos; 
-} 
+int f(vector<vi> &which, const int n) {
+  vi skip(n, false); 
+  forn(x,n-1) {
+    for (auto sz: which[x]) skip[x+sz-1] = true; 
+    if (skip[x]) continue; 
+    return x; 
+  }
+  return -1;
+}
 
 void solve() {
   int n, m; cin >> n >> m;
 
   vi evt(n);
-  vector<vi> who(n); 
+  vector<vi> who(n), which(n), whichr(n); 
   forn(i,m) {
     int l, r; cin >> l >> r; 
-    evt[--l]++; 
-    who[l].pb(i+1);
+    evt[l-1]++; 
     if (r < n) evt[r]--;
-    who[r-1].pb(-(i+1));
+    which[l-1].pb(r-l+1);
+    whichr[r-1].pb(r-l+1); 
   } 
-  forr(i,1,n) evt[i] += evt[i-1]; 
-  int mx = *max_element(all(evt));
+  reverse(all(whichr)); 
 
-  vi ans(n); 
-  forn(i,n) ans[i] = i; 
-  forn(i,n) sort(all(who[i])), reverse(all(who[i])); 
+  forr(i,1,n) evt[i] += evt[i-1]; 
+  int ini = 0, mx = *max_element(all(evt));
+  vi ans(n, -1); 
 
   if (mx == m) {
     forn(i,n) if (evt[i] == mx) {
-      swap(ans[0], ans[i]);
+      ans[i] = ini++;
       break; 
     } 
   } else {
-    int pos = check(who); 
-    forn(i,n) {
-      forn(j,SZ(who[i])) who[i][j] *= -1; 
-      reverse(all(who[i])); 
-    }
-    reverse(all(who)); 
-    int poss = check(who); 
+    int pos = f(which, n); 
+    int poss = f(whichr, n); 
     if (poss > -1) poss = n -1 -poss; 
 
+    // dbg(pos, poss); 
     if (pos > -1) {
-      swap(ans[1], ans[pos+1]); 
-      swap(ans[0], ans[pos]); 
+      assert(pos +1 < n); 
+      ans[pos] = ini++;
+      ans[pos+1] = ini++;
     } else if (poss > -1) {
-      swap(ans[0], ans[poss]); 
-      swap(ans[1], ans[poss-1]); 
-    } 
-
-    if (pos == -1 and poss == -1) swap(ans[1], ans[n-1]); 
+      assert(0 <= poss -1); 
+      ans[poss] = ini++;
+      ans[poss-1] = ini++;
+    } else {
+      ans[0] = ini++;
+      ans[2] = ini++;
+      ans[1] = ini++; 
+    }
   } 
 
+  forn(i,n) if (ans[i] == -1) ans[i] = ini++; 
   for (auto &x: ans) cout << x << ' ';
   cout << '\n'; 
 }
