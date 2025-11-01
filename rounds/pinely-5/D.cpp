@@ -28,31 +28,37 @@ typedef vector<ll> vi;
 
 void solve() {
   int n; cin >> n; 
-  vi a(n); forn(i,n) cin >> a[i]; 
+  vi a(n);
+  vector<ii> b(n); 
+  forn(i,n) cin >> a[i], b[i] = {a[i], i}; 
 
-  vi w, aux; 
-  forn(i,n) {
-    aux.pb(a[i]); 
-    w.pb(1); 
-    int j = i+1; 
-    while (j < n and a[i] == a[j]) w.back()++, j++; 
-    i = j-1; 
-  }
-  a = aux; 
-  n = SZ(a); 
-  vi ww = w; 
+  sort(all(b), [&](ii x, ii y) -> bool {
+    if (x.ff != y.ff) return x.ff < y.ff; 
+    else return x.ss > y.ss; 
+  }); 
 
-  ll tot = 0; 
-  vi dp(n); 
+  vi dp(n, 1); 
+  ll maxl = 0, l = 0; 
+  ll maxj = 0, j = 0; 
+  ll maxi = 0; 
   forr(i,1,n) {
-    if (a[i-1] +1 == a[i]) {
-      dp[i-1] += w[i]; 
-      if (i > 1) dp[i] = dp[i-2]; 
-      if (i == 1 or a[i-2] +1 != a[i-1]) dp[i] += ww[i-1]; 
-      if (i > 1 and a[i-2] == a[i]) ww[i] += ww[i-2]; 
-    } else dp[i] = dp[i-1]; 
+    if (b[i-1].ff == b[i].ff -1) {
+      maxj = maxi = 0; 
+      j = i-1; 
+      while (j >= 0 and b[j].ff == b[i].ff-1) j--; 
+      j++; 
+    } else maxi = max(maxi, dp[i-1]); 
+    while (l < i and b[l].ff < b[i].ff -1) maxl = max(maxl, dp[l++]); 
+    while (j < i and b[j].ff == b[i].ff -1 and b[j].ss > b[i].ss) maxj = max(maxj, dp[j++]); 
+
+    // update curr state 
+    ll best = max(maxl, maxj); 
+    best = max(best, maxi); 
+    dp[i] = max(1LL, best +1); 
+    maxi = dp[i]; 
   }
-  cout << min(dp[n-2], dp[n-1]) << '\n'; 
+
+  cout << n -*max_element(all(dp)) << '\n'; 
 }
 
 
