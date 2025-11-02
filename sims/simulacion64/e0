@@ -1,0 +1,8 @@
+15
+6
+pizza_tomato pizza_base tomato 1 2
+pizza_cheese pizza_base cheese 5 10
+pizza_classic pizza_tomato cheese 5 5
+pizza_classic pizza_cheese tomato 1 2
+pizza_salami pizza_classic salami 7 6
+pizza_spicy pizza_tomato chili 3 1
