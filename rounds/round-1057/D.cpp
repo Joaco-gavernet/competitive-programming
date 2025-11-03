@@ -25,18 +25,41 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+const ll INF = 1LL<<60; 
+
+ll cost(vi v) {
+  sort(all(v)); 
+  return v.back() -v.front(); 
+}
+
+ll calc(vi &a, int n) {
+  vi dp(n+1, INF); 
+  dp[0] = 0, dp[1] = INF, dp[2] = cost({a[0], a[1]}); 
+  forr(i,3,n+1) {
+    dp[i] = min(dp[i-2] +cost({a[i-2], a[i-1]}), dp[i-3] +cost({a[i-3], a[i-2], a[i-1]}));
+  }
+  return dp.back(); 
+}
 
 void solve() {
   int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
 
-}
+  vi b(n), c(n); 
+  forn(i,n) {
+    b[(i+1) %n] = a[i]; 
+    c[(i+2) %n] = a[i]; 
+  }
 
+  ll ans = calc(a, n); 
+  ans = min(ans, calc(b, n)); 
+  ans = min(ans, calc(c, n)); 
+  cout << ans << '\n'; 
+}
 
 int main(){
   FIN;
-  int t = 1; 
-  cin >> t;
+  int t = 1; cin >> t;
   while (t--) solve();
   return 0;
 }
