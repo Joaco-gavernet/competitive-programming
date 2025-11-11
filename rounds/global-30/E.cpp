@@ -74,47 +74,32 @@ void solve() {
   if (odds) {
     // 1. build reconstruction tree 
     DSU ds(n); 
-    vector<vi> tree(n+m), treer(n+m);  
+    vector<vi> treer(n+m);  
     vi top(n); 
     iota(all(top), 0); // each node is it's own top at first 
     // from [0..n) represent a vertex
     // from [n..n+m) represent an edge 
+    vi fathers, pend(n); 
     forn(e, m) {
       auto [u, v, w] = edg[e]; 
       if (ds.same(u, v) == false) {
-        tree[top[ds.find(u)]].pb(n+e); 
-        tree[top[ds.find(v)]].pb(n+e);
         treer[n+e].pb(top[ds.find(u)]); 
         treer[n+e].pb(top[ds.find(v)]); 
-        ds.join(u, v); 
-      } else {
-        tree[top[ds.find(u)]].pb(n+e); 
-        treer[n+e].pb(top[ds.find(u)]); 
-      }
+
+        if (ds.sz[u] == 1 and deg[u]&1) pend[u] = 1;
+        if (ds.sz[v] == 1 and deg[v]&1) pend[v] = 1;
+        if (pend[ds.find(u)] + pend[ds.find(v)] == 2) {
+          pend[ds.find(u)] = pend[ds.find(v)] = 0; 
+          fathers.pb(n+e); 
+          ds.join(u, v); 
+        } else {
+          int aux = pend[ds.find(u)] + pend[ds.find(v)]; 
+          ds.join(u, v); 
+          pend[ds.find(u)] = aux; 
+        } 
+
+      } else treer[n+e].pb(top[ds.find(u)]); 
       top[ds.find(u)] = n+e; 
-    }
-
-    // 2. find best pairings of odd vertices, (bottom to top) 
-    vi depth(n, -1); 
-    function<void(int,int)> dfs = [&](int x, int act) {
-      if (SZ(treer[x]) == 0) depth[x] = act++; 
-      for (auto y: treer[x]) dfs(y, act +1); 
-    }; 
-    dfs(n+m-1, 0); 
-
-    priority_queue<ii> pq; 
-    forn(v, n) if (deg[v]&1) pq.push({depth[v], v}); 
-    assert(SZ(pq) %2 == 0); 
-    vi fathers; 
-    while (SZ(pq)) {
-      auto act = pq.top(); pq.pop(); 
-      if (pq.top() == act) {
-        fathers.pb(act.ss); 
-        pq.pop(); 
-      } else {
-        auto [de, v] = act; 
-        pq.push({de-1, tree[v].back()});
-      }
     }
 
     // 3. find best cost for each LCA of the defined pairs 
