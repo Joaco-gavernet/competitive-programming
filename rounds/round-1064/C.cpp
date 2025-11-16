@@ -30,58 +30,14 @@ void solve() {
   int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
 
+  vi edges; 
+  forn(i,n) edges.pb(max(a[i], a[(i+1) %n])); 
+
   ll cost = 0;
-
-  // compressing
-  vi b = {a[0]};
-  int i = 1;
-  while (i < n) {
-    if (b.back() == a[i]) cost += a[i];
-    else b.pb(a[i]);
-    i++;
-  }
-  while (b[0] == b.back()) cost += b.back(), b.pop_back();
-  a = b;
-  n = SZ(a);
-  dbg(a); 
-
-  int mn = *min_element(all(a)); 
-  vector<vi> g(n); 
-  vi source; 
-  forn(i,n) {
-    g[i].pb((i+1)%n); 
-    g[(i+1)%n].pb(i); 
-    if (a[i] == mn) source.pb(i); 
-  } 
-
-  auto bfs = [&]() {
-    priority_queue<ii, vector<ii>, greater<ii>> pq; 
-    vb visto(n); 
-    forn(id,n) pq.push({a[id], id}); 
-
-    while (SZ(pq)) {
-      auto [x, v] = pq.top(); pq.pop(); 
-      if (visto[v]) continue; 
-      visto[v] = true; 
-      dbg(v, cost); 
-
-      int mn = -1; 
-      forn(u,SZ(g[v])) if (visto[g[v][u]] == false) {
-        if (mn == -1) mn = u;
-        else if (a[g[v][mn]] > a[g[v][u]]) mn = u; 
-      }
-
-      if (mn > -1) {
-        x = max(x, a[g[v][mn]]); 
-        cost += x;
-        pq.push({x, g[v][mn]}); 
-      } 
-    } 
-  }; 
-  bfs(); 
+  sort(all(edges)); 
+  forn(i,n-1) cost += edges[i]; 
 
   cout << cost << '\n'; 
-  RAYA; 
 }
 
 
