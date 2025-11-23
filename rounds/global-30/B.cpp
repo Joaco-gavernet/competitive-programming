@@ -30,26 +30,34 @@ void solve() {
   int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
 
-  int on = n, off = n; 
+  vi evs, odd; 
   forn(i,n) {
-    if (a[i]&1) {
-      if (on == n) on = i; 
-    } else {
-      if (off == n) off = i; 
-    }
-    if (on < n and off < n) break; 
+    if ((a[i]&1) == 0) evs.pb(i); 
+    else odd.pb(i); 
   }
-
-  forr(i,on+1,n) if (a[i]&1) {
-    cout << a[on] << ' ' << a[i] << '\n'; 
+  if (SZ(evs) > 1) {
+    cout << a[evs[0]] << ' ' << a[evs[1]] << '\n'; 
     return; 
-  }
-  forr(i,off+1,n) if (a[i]&1 == 0) {
-    cout << a[off] << ' ' << a[i] << '\n'; 
-    return; 
-  }
+  } 
 
-  cout << "-1\n"; 
+  int k = SZ(odd); 
+  if (SZ(evs) == 1) {
+    odd.pb(evs[0]); 
+    sort(all(odd)); 
+    k++; 
+  } 
+
+  forn(i,k) {
+    forr(j,i+1,k) {
+      int aux = a[odd[j]] % a[odd[i]];
+      if ((aux %2) == 0) {
+        cout << a[odd[i]] << ' ' << a[odd[j]] << '\n'; 
+        return; 
+      } 
+    } 
+  } 
+
+  cout << -1 << '\n'; 
 }
 
 
