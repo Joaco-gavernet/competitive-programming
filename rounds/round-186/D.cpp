@@ -72,7 +72,7 @@ void solve() {
     if (a[0] > n) a[0] %= n;
     forr(i,1,N) if (a[i] == rounds) up++; 
 
-    ll tot = fact[up] *invfact[up-a[0]] *fact[n -a[0]];
+    ll tot = fact[up + a[0]] *invfact[a[0]] *fact[n -up];
     cout << tot % MOD << '\n'; 
   } 
 }
