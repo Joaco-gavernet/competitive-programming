@@ -27,24 +27,6 @@ typedef vector<ll> vi;
 
 const ll MOD = 998244353;
 
-long long modpow(long long a, long long e) {
-  long long r = 1 % MOD;
-  a %= MOD;
-  while (e > 0) {
-    if (e & 1) r = (r * a) % MOD;
-    a = (a * a) % MOD;
-    e >>= 1;
-  }
-  return r;
-}
-
-vi pre(int N, ll M) {
-  vi fact(N + 1);
-  fact[0] = 1;
-  for (int i = 1; i <= N; ++i) fact[i] = (fact[i - 1] * i) % M;
-  return fact;
-}
-
 const int MAXN = 55; // n <= 50
 vi fact(MAXN), invfact(MAXN); 
 
@@ -90,6 +72,13 @@ void solve() {
   } 
 }
 
+ll be(ll x, ll y) {
+  if (y == 0) return 1; 
+  ll p = be(x, y/2) % MOD; 
+  p = (p * p) % MOD; 
+  if (y%2 == 1) p = (x * p) % MOD; 
+  return p; 
+} 
 
 int main(){
   FIN;
@@ -97,11 +86,10 @@ int main(){
   cin >> t;
 
   fact[0] = 1;
-  for (int i = 1; i < MAXN; i++) fact[i] = fact[i - 1] * i % MOD;
-  invfact[MAXN - 1] = modpow(fact[MAXN - 1], MOD - 2);
-  for (int i = MAXN - 2; i >= 0; i--) invfact[i] = invfact[i + 1] * (i + 1) % MOD;
-  dbg(fact);
-  dbg(invfact); 
+  forr(i,1,MAXN) fact[i] = fact[i-1] * i % MOD; 
+
+  invfact[MAXN-1] = be(fact[MAXN-1], MOD -2); 
+  forr(i,1,MAXN) invfact[MAXN -i -1] = invfact[MAXN -i] * (MAXN -i) % MOD; 
 
   while (t--) solve();
   return 0;
