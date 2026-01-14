@@ -1,0 +1,488 @@
+D.cpp:19:9: error: 'lond' does not name a type; did you mean 'long'?
+   19 | typedef lond double ld;
+      |         ^~~~
+      |         long
+D.cpp:20:9: error: 'ld' does not name a type; did you mean 'll'?
+   20 | typedef ld tipo;
+      |         ^~
+      |         ll
+D.cpp:23:3: error: 'tipo' does not name a type
+   23 |   tipo x, y;
+      |   ^~~~
+D.cpp:26:3: error: 'tipo' does not name a type
+   26 |   tipo operator ^ (const punto &p) const { return x*p.y - y*p.x; }
+      |   ^~~~
+D.cpp: In member function 'const punto punto::operator+(const punto&) const':
+D.cpp:24:59: error: 'x' was not declared in this scope
+   24 |   punto const operator + (const punto &p) const { return {x+p.x, y +p.y}; }
+      |                                                           ^
+D.cpp:24:63: error: 'const struct punto' has no member named 'x'
+   24 |   punto const operator + (const punto &p) const { return {x+p.x, y +p.y}; }
+      |                                                               ^
+D.cpp:24:66: error: 'y' was not declared in this scope; did you mean 'yn'?
+   24 |   punto const operator + (const punto &p) const { return {x+p.x, y +p.y}; }
+      |                                                                  ^
+      |                                                                  yn
+D.cpp:24:71: error: 'const struct punto' has no member named 'y'
+   24 |   punto const operator + (const punto &p) const { return {x+p.x, y +p.y}; }
+      |                                                                       ^
+D.cpp:24:72: error: could not convert '{<expression error>, <expression error>}' from '<brace-enclosed initializer list>' to 'const punto'
+   24 |   punto const operator + (const punto &p) const { return {x+p.x, y +p.y}; }
+      |                                                                        ^
+      |                                                                        |
+      |                                                                        <brace-enclosed initializer list>
+D.cpp: In member function 'const punto punto::operator-(const punto&) const':
+D.cpp:25:59: error: 'x' was not declared in this scope
+   25 |   punto const operator - (const punto &p) const { return {x-p.x, y -p.y}; }
+      |                                                           ^
+D.cpp:25:63: error: 'const struct punto' has no member named 'x'
+   25 |   punto const operator - (const punto &p) const { return {x-p.x, y -p.y}; }
+      |                                                               ^
+D.cpp:25:66: error: 'y' was not declared in this scope; did you mean 'yn'?
+   25 |   punto const operator - (const punto &p) const { return {x-p.x, y -p.y}; }
+      |                                                                  ^
+      |                                                                  yn
+D.cpp:25:71: error: 'const struct punto' has no member named 'y'
+   25 |   punto const operator - (const punto &p) const { return {x-p.x, y -p.y}; }
+      |                                                                       ^
+D.cpp:25:72: error: could not convert '{<expression error>, <expression error>}' from '<brace-enclosed initializer list>' to 'const punto'
+   25 |   punto const operator - (const punto &p) const { return {x-p.x, y -p.y}; }
+      |                                                                        ^
+      |                                                                        |
+      |                                                                        <brace-enclosed initializer list>
+D.cpp: At global scope:
+D.cpp:29:1: error: 'ld' does not name a type; did you mean 'll'?
+   29 | ld callipers(vector<punto> p, int n) {
+      | ^~
+      | ll
+D.cpp:39:7: error: 'ld' does not name a type; did you mean 'll'?
+   39 | const ld EPS = 1e-10;
+      |       ^~
+      |       ll
+D.cpp: In function 'void convex_hull(std::vector<punto>&)':
+D.cpp:48:40: error: no match for 'operator^' (operand types are 'const punto' and 'const punto')
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                       ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+      |                               |              |
+      |                               const punto    const punto
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:66,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bitset:1453:5: note: candidate: 'template<long long unsigned int _Nb> std::bitset<_Nb> std::operator^(const std::bitset<_Nb>&, const std::bitset<_Nb>&)'
+ 1453 |     operator^(const bitset<_Nb>& __x, const bitset<_Nb>& __y) _GLIBCXX_NOEXCEPT
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bitset:1453:5: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::bitset<_Nb>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom1, class _Dom2> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Expr, std::_Expr, _Dom1, _Dom2>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const std::_Expr<_Dom2, typename _Dom2::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Expr, std::_Constant, _Dom, typename _Dom::value_type>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const typename _Dom::value_type&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Constant, std::_Expr, typename _Dom::value_type, _Dom>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const typename _Dom::value_type&, const std::_Expr<_Dom1, typename _Dom1::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Expr, std::_ValArray, _Dom, typename _Dom::value_type>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const std::valarray<typename _Dom::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_ValArray, std::_Expr, typename _Dom::value_type, _Dom>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::valarray<typename _Dom::value_type>&, const std::_Expr<_Dom1, typename _Dom1::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note: candidate: 'template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_ValArray, std::_ValArray, _Tp, _Tp>, typename std::__fun<std::__bitwise_xor, _Tp>::result_type> std::operator^(const std::valarray<_Tp>&, const std::valarray<_Tp>&)'
+ 1190 | _DEFINE_BINARY_OPERATOR(^, __bitwise_xor)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::valarray<_Tp>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note: candidate: 'template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_ValArray, std::_Constant, _Tp, _Tp>, typename std::__fun<std::__bitwise_xor, _Tp>::result_type> std::operator^(const std::valarray<_Tp>&, const typename std::valarray<_Tp>::value_type&)'
+ 1190 | _DEFINE_BINARY_OPERATOR(^, __bitwise_xor)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::valarray<_Tp>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note: candidate: 'template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Constant, std::_ValArray, _Tp, _Tp>, typename std::__fun<std::__bitwise_xor, _Tp>::result_type> std::operator^(const typename std::valarray<_Tp>::value_type&, const std::valarray<_Tp>&)'
+ 1190 | _DEFINE_BINARY_OPERATOR(^, __bitwise_xor)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note:   template argument deduction/substitution failed:
+D.cpp:48:54: note:   'const punto' is not derived from 'const std::valarray<_Tp>'
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                      ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:45,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\cstddef:142:3: note: candidate: 'constexpr std::byte std::operator^(std::byte, std::byte)'
+  142 |   operator^(byte __l, byte __r) noexcept
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\cstddef:142:18: note:   no known conversion for argument 1 from 'const punto' to 'std::byte'
+  142 |   operator^(byte __l, byte __r) noexcept
+      |             ~~~~~^~~
+In file included from c:\mingw\include\c++\11.2.0\ios:42,
+                 from c:\mingw\include\c++\11.2.0\istream:38,
+                 from c:\mingw\include\c++\11.2.0\sstream:38,
+                 from c:\mingw\include\c++\11.2.0\complex:45,
+                 from c:\mingw\include\c++\11.2.0\ccomplex:39,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:54,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:91:3: note: candidate: 'constexpr std::_Ios_Fmtflags std::operator^(std::_Ios_Fmtflags, std::_Ios_Fmtflags)'
+   91 |   operator^(_Ios_Fmtflags __a, _Ios_Fmtflags __b)
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:91:27: note:   no known conversion for argument 1 from 'const punto' to 'std::_Ios_Fmtflags'
+   91 |   operator^(_Ios_Fmtflags __a, _Ios_Fmtflags __b)
+      |             ~~~~~~~~~~~~~~^~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:133:3: note: candidate: 'constexpr std::_Ios_Openmode std::operator^(std::_Ios_Openmode, std::_Ios_Openmode)'
+  133 |   operator^(_Ios_Openmode __a, _Ios_Openmode __b)
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:133:27: note:   no known conversion for argument 1 from 'const punto' to 'std::_Ios_Openmode'
+  133 |   operator^(_Ios_Openmode __a, _Ios_Openmode __b)
+      |             ~~~~~~~~~~~~~~^~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:173:3: note: candidate: 'constexpr std::_Ios_Iostate std::operator^(std::_Ios_Iostate, std::_Ios_Iostate)'
+  173 |   operator^(_Ios_Iostate __a, _Ios_Iostate __b)
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:173:26: note:   no known conversion for argument 1 from 'const punto' to 'std::_Ios_Iostate'
+  173 |   operator^(_Ios_Iostate __a, _Ios_Iostate __b)
+      |             ~~~~~~~~~~~~~^~~
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:105,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\future:154:20: note: candidate: 'constexpr std::launch std::operator^(std::launch, std::launch)'
+  154 |   constexpr launch operator^(launch __x, launch __y)
+      |                    ^~~~~~~~
+c:\mingw\include\c++\11.2.0\future:154:37: note:   no known conversion for argument 1 from 'const punto' to 'std::launch'
+  154 |   constexpr launch operator^(launch __x, launch __y)
+      |                              ~~~~~~~^~~
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:127,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\charconv:673:3: note: candidate: 'constexpr std::chars_format std::operator^(std::chars_format, std::chars_format)'
+  673 |   operator^(chars_format __lhs, chars_format __rhs) noexcept
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\charconv:673:26: note:   no known conversion for argument 1 from 'const punto' to 'std::chars_format'
+  673 |   operator^(chars_format __lhs, chars_format __rhs) noexcept
+      |             ~~~~~~~~~~~~~^~~~~
+D.cpp:48:61: error: 'EPS' was not declared in this scope
+   48 |     while (n > 1 and ((up[n-1]-up[n-2])^(a[i]-up[n-1])) >= -EPS) {
+      |                                                             ^~~
+D.cpp:51:44: error: no match for 'operator^' (operand types are 'const punto' and 'const punto')
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+      |                                 |                |
+      |                                 const punto      const punto
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:66,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bitset:1453:5: note: candidate: 'template<long long unsigned int _Nb> std::bitset<_Nb> std::operator^(const std::bitset<_Nb>&, const std::bitset<_Nb>&)'
+ 1453 |     operator^(const bitset<_Nb>& __x, const bitset<_Nb>& __y) _GLIBCXX_NOEXCEPT
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bitset:1453:5: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::bitset<_Nb>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom1, class _Dom2> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Expr, std::_Expr, _Dom1, _Dom2>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const std::_Expr<_Dom2, typename _Dom2::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Expr, std::_Constant, _Dom, typename _Dom::value_type>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const typename _Dom::value_type&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Constant, std::_Expr, typename _Dom::value_type, _Dom>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const typename _Dom::value_type&, const std::_Expr<_Dom1, typename _Dom1::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Expr, std::_ValArray, _Dom, typename _Dom::value_type>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::_Expr<_Dom1, typename _Dom1::value_type>&, const std::valarray<typename _Dom::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\valarray:603,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note: candidate: 'template<class _Dom> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_ValArray, std::_Expr, typename _Dom::value_type, _Dom>, typename std::__fun<std::__bitwise_xor, typename _Dom1::value_type>::result_type> std::operator^(const std::valarray<typename _Dom::value_type>&, const std::_Expr<_Dom1, typename _Dom1::value_type>&)'
+  410 |     _DEFINE_EXPR_BINARY_OPERATOR(^, struct std::__bitwise_xor)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\valarray_after.h:410:5: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::_Expr<_Dom1, typename _Dom1::value_type>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note: candidate: 'template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_ValArray, std::_ValArray, _Tp, _Tp>, typename std::__fun<std::__bitwise_xor, _Tp>::result_type> std::operator^(const std::valarray<_Tp>&, const std::valarray<_Tp>&)'
+ 1190 | _DEFINE_BINARY_OPERATOR(^, __bitwise_xor)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::valarray<_Tp>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note: candidate: 'template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_ValArray, std::_Constant, _Tp, _Tp>, typename std::__fun<std::__bitwise_xor, _Tp>::result_type> std::operator^(const std::valarray<_Tp>&, const typename std::valarray<_Tp>::value_type&)'
+ 1190 | _DEFINE_BINARY_OPERATOR(^, __bitwise_xor)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::valarray<_Tp>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:95,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note: candidate: 'template<class _Tp> std::_Expr<std::__detail::_BinClos<std::__bitwise_xor, std::_Constant, std::_ValArray, _Tp, _Tp>, typename std::__fun<std::__bitwise_xor, _Tp>::result_type> std::operator^(const typename std::valarray<_Tp>::value_type&, const std::valarray<_Tp>&)'
+ 1190 | _DEFINE_BINARY_OPERATOR(^, __bitwise_xor)
+      | ^~~~~~~~~~~~~~~~~~~~~~~
+c:\mingw\include\c++\11.2.0\valarray:1190:1: note:   template argument deduction/substitution failed:
+D.cpp:51:60: note:   'const punto' is not derived from 'const std::valarray<_Tp>'
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                            ^
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:45,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\cstddef:142:3: note: candidate: 'constexpr std::byte std::operator^(std::byte, std::byte)'
+  142 |   operator^(byte __l, byte __r) noexcept
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\cstddef:142:18: note:   no known conversion for argument 1 from 'const punto' to 'std::byte'
+  142 |   operator^(byte __l, byte __r) noexcept
+      |             ~~~~~^~~
+In file included from c:\mingw\include\c++\11.2.0\ios:42,
+                 from c:\mingw\include\c++\11.2.0\istream:38,
+                 from c:\mingw\include\c++\11.2.0\sstream:38,
+                 from c:\mingw\include\c++\11.2.0\complex:45,
+                 from c:\mingw\include\c++\11.2.0\ccomplex:39,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:54,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:91:3: note: candidate: 'constexpr std::_Ios_Fmtflags std::operator^(std::_Ios_Fmtflags, std::_Ios_Fmtflags)'
+   91 |   operator^(_Ios_Fmtflags __a, _Ios_Fmtflags __b)
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:91:27: note:   no known conversion for argument 1 from 'const punto' to 'std::_Ios_Fmtflags'
+   91 |   operator^(_Ios_Fmtflags __a, _Ios_Fmtflags __b)
+      |             ~~~~~~~~~~~~~~^~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:133:3: note: candidate: 'constexpr std::_Ios_Openmode std::operator^(std::_Ios_Openmode, std::_Ios_Openmode)'
+  133 |   operator^(_Ios_Openmode __a, _Ios_Openmode __b)
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:133:27: note:   no known conversion for argument 1 from 'const punto' to 'std::_Ios_Openmode'
+  133 |   operator^(_Ios_Openmode __a, _Ios_Openmode __b)
+      |             ~~~~~~~~~~~~~~^~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:173:3: note: candidate: 'constexpr std::_Ios_Iostate std::operator^(std::_Ios_Iostate, std::_Ios_Iostate)'
+  173 |   operator^(_Ios_Iostate __a, _Ios_Iostate __b)
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\ios_base.h:173:26: note:   no known conversion for argument 1 from 'const punto' to 'std::_Ios_Iostate'
+  173 |   operator^(_Ios_Iostate __a, _Ios_Iostate __b)
+      |             ~~~~~~~~~~~~~^~~
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:105,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\future:154:20: note: candidate: 'constexpr std::launch std::operator^(std::launch, std::launch)'
+  154 |   constexpr launch operator^(launch __x, launch __y)
+      |                    ^~~~~~~~
+c:\mingw\include\c++\11.2.0\future:154:37: note:   no known conversion for argument 1 from 'const punto' to 'std::launch'
+  154 |   constexpr launch operator^(launch __x, launch __y)
+      |                              ~~~~~~~^~~
+In file included from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:127,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\charconv:673:3: note: candidate: 'constexpr std::chars_format std::operator^(std::chars_format, std::chars_format)'
+  673 |   operator^(chars_format __lhs, chars_format __rhs) noexcept
+      |   ^~~~~~~~
+c:\mingw\include\c++\11.2.0\charconv:673:26: note:   no known conversion for argument 1 from 'const punto' to 'std::chars_format'
+  673 |   operator^(chars_format __lhs, chars_format __rhs) noexcept
+      |             ~~~~~~~~~~~~~^~~~~
+D.cpp:51:66: error: 'EPS' was not declared in this scope
+   51 |     while (m > 1 and ((down[m-1]-down[m-2])^(a[i]-down[m-1])) <= EPS) {
+      |                                                                  ^~~
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:71,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h: In instantiation of 'constexpr bool __gnu_cxx::__ops::_Iter_less_iter::operator()(_Iterator1, _Iterator2) const [with _Iterator1 = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Iterator2 = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >]':
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:82:17:   required from 'void std::__move_median_to_first(_Iterator, _Iterator, _Iterator, _Iterator, _Compare) [with _Iterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1904:34:   required from '_RandomAccessIterator std::__unguarded_partition_pivot(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1938:38:   required from 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Size = long long int; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1954:25:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:4842:18:   required from 'void std::sort(_RAIter, _RAIter) [with _RAIter = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >]'
+D.cpp:42:7:   required from here
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:45:23: error: no match for 'operator<' (operand types are 'punto' and 'punto')
+   45 |       { return *__it1 < *__it2; }
+      |                ~~~~~~~^~~~~~~~
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:67,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1153:5: note: candidate: 'template<class _IteratorL, class _IteratorR, class _Container> bool __gnu_cxx::operator<(const __gnu_cxx::__normal_iterator<_IteratorL, _Container>&, const __gnu_cxx::__normal_iterator<_IteratorR, _Container>&)'
+ 1153 |     operator<(const __normal_iterator<_IteratorL, _Container>& __lhs,
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1153:5: note:   template argument deduction/substitution failed:
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:71,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:45:23: note:   'punto' is not derived from 'const __gnu_cxx::__normal_iterator<_IteratorL, _Container>'
+   45 |       { return *__it1 < *__it2; }
+      |                ~~~~~~~^~~~~~~~
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:67,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1161:5: note: candidate: 'template<class _Iterator, class _Container> bool __gnu_cxx::operator<(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&)'
+ 1161 |     operator<(const __normal_iterator<_Iterator, _Container>& __lhs,
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1161:5: note:   template argument deduction/substitution failed:
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:71,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:45:23: note:   'punto' is not derived from 'const __gnu_cxx::__normal_iterator<_Iterator, _Container>'
+   45 |       { return *__it1 < *__it2; }
+      |                ~~~~~~~^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h: In instantiation of 'bool __gnu_cxx::__ops::_Val_less_iter::operator()(_Value&, _Iterator) const [with _Value = punto; _Iterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >]':
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1806:20:   required from 'void std::__unguarded_linear_insert(_RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Val_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1834:36:   required from 'void std::__insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1866:25:   required from 'void std::__final_insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1957:31:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:4842:18:   required from 'void std::sort(_RAIter, _RAIter) [with _RAIter = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >]'
+D.cpp:42:7:   required from here
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:98:22: error: no match for 'operator<' (operand types are 'punto' and 'punto')
+   98 |       { return __val < *__it; }
+      |                ~~~~~~^~~~~~~
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:67,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1153:5: note: candidate: 'template<class _IteratorL, class _IteratorR, class _Container> bool __gnu_cxx::operator<(const __gnu_cxx::__normal_iterator<_IteratorL, _Container>&, const __gnu_cxx::__normal_iterator<_IteratorR, _Container>&)'
+ 1153 |     operator<(const __normal_iterator<_IteratorL, _Container>& __lhs,
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1153:5: note:   template argument deduction/substitution failed:
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:71,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:98:22: note:   'punto' is not derived from 'const __gnu_cxx::__normal_iterator<_IteratorL, _Container>'
+   98 |       { return __val < *__it; }
+      |                ~~~~~~^~~~~~~
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:67,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1161:5: note: candidate: 'template<class _Iterator, class _Container> bool __gnu_cxx::operator<(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&)'
+ 1161 |     operator<(const __normal_iterator<_Iterator, _Container>& __lhs,
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1161:5: note:   template argument deduction/substitution failed:
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:71,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:98:22: note:   'punto' is not derived from 'const __gnu_cxx::__normal_iterator<_Iterator, _Container>'
+   98 |       { return __val < *__it; }
+      |                ~~~~~~^~~~~~~
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h: In instantiation of 'bool __gnu_cxx::__ops::_Iter_less_val::operator()(_Iterator, _Value&) const [with _Iterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Value = punto]':
+c:\mingw\include\c++\11.2.0\bits\stl_heap.h:139:48:   required from 'void std::__push_heap(_RandomAccessIterator, _Distance, _Distance, _Tp, _Compare&) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Distance = long long int; _Tp = punto; _Compare = __gnu_cxx::__ops::_Iter_less_val]'
+c:\mingw\include\c++\11.2.0\bits\stl_heap.h:246:23:   required from 'void std::__adjust_heap(_RandomAccessIterator, _Distance, _Distance, _Tp, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Distance = long long int; _Tp = punto; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_heap.h:355:22:   required from 'void std::__make_heap(_RandomAccessIterator, _RandomAccessIterator, _Compare&) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1646:23:   required from 'void std::__heap_select(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1917:25:   required from 'void std::__partial_sort(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1933:27:   required from 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Size = long long int; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:1954:25:   required from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >; _Compare = __gnu_cxx::__ops::_Iter_less_iter]'
+c:\mingw\include\c++\11.2.0\bits\stl_algo.h:4842:18:   required from 'void std::sort(_RAIter, _RAIter) [with _RAIter = __gnu_cxx::__normal_iterator<punto*, std::vector<punto> >]'
+D.cpp:42:7:   required from here
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:69:22: error: no match for 'operator<' (operand types are 'punto' and 'punto')
+   69 |       { return *__it < __val; }
+      |                ~~~~~~^~~~~~~
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:67,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1153:5: note: candidate: 'template<class _IteratorL, class _IteratorR, class _Container> bool __gnu_cxx::operator<(const __gnu_cxx::__normal_iterator<_IteratorL, _Container>&, const __gnu_cxx::__normal_iterator<_IteratorR, _Container>&)'
+ 1153 |     operator<(const __normal_iterator<_IteratorL, _Container>& __lhs,
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1153:5: note:   template argument deduction/substitution failed:
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:71,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:69:22: note:   'punto' is not derived from 'const __gnu_cxx::__normal_iterator<_IteratorL, _Container>'
+   69 |       { return *__it < __val; }
+      |                ~~~~~~^~~~~~~
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:67,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1161:5: note: candidate: 'template<class _Iterator, class _Container> bool __gnu_cxx::operator<(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&)'
+ 1161 |     operator<(const __normal_iterator<_Iterator, _Container>& __lhs,
+      |     ^~~~~~~~
+c:\mingw\include\c++\11.2.0\bits\stl_iterator.h:1161:5: note:   template argument deduction/substitution failed:
+In file included from c:\mingw\include\c++\11.2.0\bits\stl_algobase.h:71,
+                 from c:\mingw\include\c++\11.2.0\bits\specfun.h:45,
+                 from c:\mingw\include\c++\11.2.0\cmath:1927,
+                 from c:\mingw\include\c++\11.2.0\x86_64-w64-mingw32\bits\stdc++.h:41,
+                 from D.cpp:1:
+c:\mingw\include\c++\11.2.0\bits\predefined_ops.h:69:22: note:   'punto' is not derived from 'const __gnu_cxx::__normal_iterator<_Iterator, _Container>'
+   69 |       { return *__it < __val; }
+      |                ~~~~~~^~~~~~~
