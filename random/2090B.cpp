@@ -26,32 +26,33 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 int nan() {
-  cout << 0 << '\n'; 
+  cout << "NO\n"; 
   return 0; 
 } 
 
 int solve() {
-  int n, k; cin >> n >> k; 
-  vi a(n); forn(i,n) cin >> a[i]; 
-  vi b(n); forn(i,n) cin >> b[i]; 
+  int n, m; cin >> n >> m; 
+  vector<string> mat(n); forn(i,n) cin >> mat[i];  
 
-  ll cur = -1; 
-  ll mn = 1<<30, mx = -1; 
-  forn(i,n) {
-    if (b[i] > -1) {
-      if (cur == -1) cur = a[i] + b[i]; 
-      else if (a[i] + b[i] != cur) return nan(); 
-    } else {
-      mn = min(mn, a[i]); 
-      mx = max(mx, a[i]); 
+  vector<vi> valid(n, vi(m)); 
+  // check monotonicity for each row and column independently 
+  forn(y,n) valid[y][0] = true; 
+  forn(x,m) valid[0][x] = true; 
+
+  forn(y,n) {
+    forr(x,1,m) {
+      if (mat[y][x] == '1' and mat[y][x-1] == '1') valid[y][x] = true; 
+    } 
+  } 
+  forn(x,m) {
+    forr(y,1,n) {
+      if (mat[y][x] == '1' and mat[y-1][x] == '1') valid[y][x] = true; 
     } 
   } 
 
-  if (cur > -1) {
-    if (mn + k >= cur and mx <= cur) cout << 1 << '\n'; 
-    else cout << 0 << '\n'; 
-  } else if (mn + k >= mx) cout << mn + k - mx + 1 << '\n'; 
-  else cout << 0 << '\n'; 
+  forn(y,n) forn(x,m) if (mat[y][x] == '1' and valid[y][x] == false) return nan(); 
+
+  cout << "YES\n"; 
   return 0; 
 }
 
