@@ -1,5 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
+
+#include <cstdint> 
+#include <bit> 
+
 //freopen("input.txt", "r", stdin);
 //freopen("output.txt", "w", stdout);
 
@@ -25,8 +29,20 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+bool cmp(int a, int b) {
+  int ia = __builtin_ctz(~a), ib = __builtin_ctz(~b); 
+  return (ia == ib and a < b) or (ia > ib); 
+} 
 
 void solve() {
+  int n; cin >> n; 
+
+  vi v(1<<n); 
+  iota(all(v), 0); // inits vector starting from 0, incrementing by 1
+  sort(all(v), cmp); 
+
+  for (auto x: v) cout << x << ' '; 
+  cout << '\n'; 
 }
 
 

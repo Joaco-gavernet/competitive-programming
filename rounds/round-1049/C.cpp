@@ -33,24 +33,47 @@ void solve() {
   vi left, right; 
   left = right = a; 
   forn(i,n) {
-    right[i] -= i; 
-    left[i] -= (n -i -1); 
+    right[i] += i; 
+    left[i] += (n -i -1); 
   } 
-  dbg(right); 
-  dbg(left); 
+  for (int i = 0; i < n; i += 2) left[i] = right[i] = -INF; 
+  // dbg(right); 
+  // dbg(left); 
 
   vector<ii> bl(n), br(n); 
   bl[0] = {left[0], 0};
   br[n-1] = {right[n-1], n-1}; 
   forr(i,1,n) bl[i] = max(bl[i-1], {left[i], i}); 
   for (int i = n-2; i >= 0; i--) br[i] = max(br[i+1], {right[i], i}); 
+  // dbg(bl); 
+  // dbg(br); 
 
   ll best = 0; 
+  ii inds = {-1, -1}; 
   for (int i = 0; i < n; i += 2) {
-    if (i+1 < n) best = max(best, br[i+1].ff -i); 
-    if (i-1 >= 0) best = max(best, bl[i-1].ff -(n-1-i)); 
+    if (i+1 < n) {
+      ll aux = br[i+1].ff -i -(br[i+1].ss&1 ? a[i] : a[br[i+1].ss]);
+      if (best < aux) best = aux, inds = {i, br[i+1].ss}; 
+    }
+    if (i-1 >= 0) {
+      ll aux = bl[i-1].ff -(n-1-i) -(bl[i-1].ss&1 ? a[i] : a[bl[i-1].ss]); 
+      if (best < aux) best = aux, inds = {i, bl[i-1].ss}; 
+    }
+    // dbg(i, best); 
   } 
-  dbg(best); 
+  // dbg(a); 
+  ll base = 0; 
+  forn(i,n) base += (i&1 ? -a[i] : a[i]); 
+  if (n > 2) base += (n&1 ? n-1 : n-2);
+
+  ll acc = 0; 
+  if (best > 0) acc += abs(inds.ff - inds.ss), swap(a[inds.ff], a[inds.ss]); 
+  forn(i,n) acc += (i&1 ? -a[i] : a[i]); 
+
+  // dbg(inds); 
+  // dbg(a); 
+  cout << max(base, acc) << '\n'; 
+  // RAYA; 
 }
 
 

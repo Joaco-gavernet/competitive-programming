@@ -27,9 +27,21 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  int n; cin >> n; 
-  vi a(n); forn(i,n) cin >> a[i]; 
-
+  string s; cin >> s; 
+  const int n = SZ(s); 
+  forn(i,n-1) {
+    if (s[i] == s[i+1]) {
+      cout << s.substr(i,2) << '\n'; 
+      return; 
+    } 
+  } 
+  forn(i,n-2) {
+    if (s[i] != s[i+2] and s[i] != s[i+1]) {
+      cout << s.substr(i, 3) << '\n'; 
+      return; 
+    }
+  } 
+  cout << -1 << '\n'; 
 }
 
 

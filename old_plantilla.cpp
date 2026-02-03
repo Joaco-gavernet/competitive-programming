@@ -20,8 +20,8 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
