@@ -20,16 +20,39 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define ff first
-#define ss second
+#define fst first
+#define snd second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
 
 void solve() {
-  int n; cin >> n; 
-  vi a(n); forn(i,n) cin >> a[i]; 
+  int n, m; cin >> n >> m; 
+  vi a(m); forn(i,m) cin >> a[i]; 
+  sort(all(a)); 
 
+  vector<vi> ans(n); 
+  int l = 0, r = m-1; 
+  int i = 0;
+  while (l <= r) {
+    forn(j,6) {
+      if (j &1) {
+        ans[i].pb(a[r]);
+        if (i +1 < n) ans[i+1].pb(a[l]);
+      } else {
+        ans[i].pb(a[l]);
+        if (i +1 < n) ans[i+1].pb(a[r]);
+      } 
+    } 
+    i += 2;
+    if (i >= n) break; 
+    l++, r--; 
+  } 
+
+  for (auto &v: ans) {
+    for (auto &x: v) cout << x << ' '; 
+    cout << '\n'; 
+  } 
 }
 
 

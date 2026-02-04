@@ -20,16 +20,13 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define ff first
-#define ss second
+#define fst first
+#define snd second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
 
 void solve() {
-  int n; cin >> n; 
-  vi a(n); forn(i,n) cin >> a[i]; 
-
 }
 
 

@@ -34,23 +34,24 @@ int solve() {
   int n, m; cin >> n >> m; 
   vector<string> mat(n); forn(i,n) cin >> mat[i];  
 
-  vector<vi> valid(n, vi(m)); 
-  // check monotonicity for each row and column independently 
-  forn(y,n) valid[y][0] = true; 
-  forn(x,m) valid[0][x] = true; 
+  vector<vi> xvalid(n, vi(m)); 
+  vector<vi> yvalid(n, vi(m)); 
+  forn(y,n) xvalid[y][0] = true; 
+  forn(x,m) yvalid[0][x] = true; 
 
+  // check monotonicity for each row and column independently 
   forn(y,n) {
     forr(x,1,m) {
-      if (mat[y][x] == '1' and mat[y][x-1] == '1') valid[y][x] = true; 
+      if (mat[y][x] == '1' and mat[y][x-1] == '1' and xvalid[y][x-1]) xvalid[y][x] = true; 
     } 
   } 
   forn(x,m) {
     forr(y,1,n) {
-      if (mat[y][x] == '1' and mat[y-1][x] == '1') valid[y][x] = true; 
+      if (mat[y][x] == '1' and mat[y-1][x] == '1' and yvalid[y-1][x]) yvalid[y][x] = true; 
     } 
   } 
 
-  forn(y,n) forn(x,m) if (mat[y][x] == '1' and valid[y][x] == false) return nan(); 
+  forn(y,n) forn(x,m) if (mat[y][x] == '1' and !xvalid[y][x] and !yvalid[y][x]) return nan(); 
 
   cout << "YES\n"; 
   return 0; 

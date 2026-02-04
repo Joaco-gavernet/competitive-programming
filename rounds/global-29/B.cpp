@@ -28,23 +28,10 @@ typedef vector<ll> vi;
 
 void solve() {
     int n; cin >> n; 
-
-    for (int i = (n&1?n:n-1); i > 1; i-=2) 
-        cout << i << ' ';
-    cout << (n&1?n-1:n) << ' '; 
-    if (n > 3) cout << (n&1?n-1:n) -2 << ' '; 
-    for (int i = 3; i <= (n&1?n:n-1); i+=2) 
-        cout << i << ' ';
-    cout << 1 << ' ';
-    for (int i = (n&1:n-1:n)-4; i >= 2; i-=2)
-        cout << i << ' ';
-    cout << (n&1?n-1:n) << ' '; 
-    for (int i = (n&1?n-1:n) -2; i > 1; i-=2) 
-        cout << i << ' ';
-    for (int i = 2; i < (n&1?n-1:n); i+=2) 
-        cout << i << ' ';
-    cout << 1 << ' '; 
-
+    vi ans(2*n); 
+    ans[0] = ans[n] = n;
+    for (int x = n-1, j = 0; x >= 1; x--, j++) ans[1+j] = ans[2*n-1-j] = x;
+    for (auto x: ans) cout << x << ' '; 
     cout << '\n'; 
 }
 

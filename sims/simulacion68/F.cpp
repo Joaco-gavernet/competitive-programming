@@ -40,6 +40,7 @@ int main() {
 
   int n; cin >> n;
   vi a(n), b(n); 
+<<<<<<< Updated upstream
   forn(i,n) cin >> a[i]; 
   priority_queue<ii> pq; 
   forn(i,n) {
@@ -98,6 +99,52 @@ int main() {
     i++;
   }
 
+=======
+  forn(i,n) cin >> a[i];
+  priority_queue<ii> pq; 
+  forn(i,n) cin >> b[i], pq.push({b[i], i});
+
+  if (n == 1) {
+    if (a[0] or b[0]) cout << "impossible\n";
+    return 0; 
+  }
+
+  // checks
+  int A = 0, B = 0;
+  forn(i,n) A += a[i];
+  forn(i,n) B += b[i];
+
+  if (A != B) return nan();
+
+  // greedy for first version of the graph
+  vector<vi> dir(n), inv(n);
+  int i = 0;
+  while (i < n) {
+    if (i < n and a[i]) {
+      vi act;
+      while (SZ(pq) and a[i]) {
+        act.pb(pq.top().ss);
+        pq.pop(); 
+        if (act.back() != i) a[i]--;
+      }
+
+      if (a[i]) return nan();
+      while (SZ(act)) {
+        int k = act.back();
+        act.pop_back();
+        if (k != i) {
+          dir[i].pb(k);
+          inv[k].pb(i);
+          b[k]--;
+        }
+        pq.push({b[k], k});
+      }
+      if (a[i]) return nan();
+    }
+    i++;
+  }
+
+>>>>>>> Stashed changes
   // cerr << "graph dir debug: " << '\n';
   // forn(v,n) {
   //   cerr << v << ": ";
@@ -157,17 +204,22 @@ int main() {
     rec.pb({a, d}); 
     rec.pb({c, b}); 
 
+<<<<<<< Updated upstream
     if (SZ(x) != 0) { 
       unsigned int start = clock();
       while (clock() - start <= 30*CLOCKS_PER_SEC) {
         
       }
     } // x should be empty (SZ == 0) because otherwise it wouldn't be in alone[], rather in comp[]
+=======
+    assert(SZ(x) == 0); // x should be empty (SZ == 0) because otherwise it wouldn't be in alone[], rather in comp[]
+>>>>>>> Stashed changes
     for (auto [a, b]: rec) toprint.pb({a, b});
     if (SZ(give)) comp.pb({y, give});
     else for (auto [a, b]: y) toprint.pb({a, b});
   }
 
+<<<<<<< Updated upstream
   // DBG("cinco");
   // DBG(SZ(alone));
   // auto [rec, x] = alone.back();
@@ -178,6 +230,9 @@ int main() {
 
   if (SZ(alone) and SZ(comp)) return nan();
   if (SZ(comp) == 0) swap(comp, alone); 
+=======
+  if (SZ(alone)) return nan();
+>>>>>>> Stashed changes
   for (auto x: comp) {
     for (auto p: x.ff) toprint.pb(p);
     for (auto p: x.ss) toprint.pb(p);

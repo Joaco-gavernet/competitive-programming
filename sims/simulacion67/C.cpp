@@ -78,13 +78,15 @@ void solve(){
 				for (auto x: orig[u]) cout << x << ' ';
 				prox=connect[orig[u][m-1]];
 				auto it = find(all(ans), u);
-				ans.erase(it);
+				swap(ans[it -ans.begin()], ans[SZ(ans)-1]); 
+				ans.pop_back();
 				break;
 			}
 		}
 		forn(j,m/2) cout << orig[ans[0]][j] << ' ';
 	} else for (auto x: ans) for (auto y: orig[x]) cout << y << ' ';
 	cout << '\n';
+	return;
 }
 
 int main() {

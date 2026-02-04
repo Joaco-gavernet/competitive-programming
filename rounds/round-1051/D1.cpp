@@ -37,46 +37,55 @@ ll be(ll x, ll y, ll m) {
 void solve() {
   int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
+  dbg(a); 
 
+  ll resti = 0;
   ll tot = 1; // empty subseq
   int i = n-1; 
+  // inclusion-exclusion principle? 
   while (i >= 0) {
     tot += be(2, n -1 -i, MOD);
 
-    int j = i +1; 
-    while (j < n) {
+    int j = n-1; 
+    while (j > i) {
       if (a[i] <= a[j]) {  
-        j++; 
+        j--; 
         continue; 
       }
 
-      /*
-      int k = i +1; 
-      while (k < j) {
-        if (a[i] > a[k] and a[k] > a[j]) {
-          dbg(i, k, j); 
-          tot -= be(2, n -1 -j, MOD); 
+      int z = 0; 
+      int k = n-1; 
+      while (k > j) {
+        if (a[i] > a[k] and a[j] > a[k]) {
+          ll rest = be(2, n -2 -j -z, MOD); 
+          dbg(i, j, k, rest); 
+          resti += rest; 
+          tot -= rest; 
           (tot += MOD) %= MOD; 
+          z++; 
+        } 
+        k--; 
+      } 
+      /*
+      k = j +1; 
+      while (k < n) {
+        if (a[j] > a[k]) {
+          dbg(i, j, k); 
+          dbg(be(2, n -1 -i -2, MOD), rec);
+          tot -= be(2, n -1 -i -2, MOD) +rec; 
+          (tot += MOD) %= MOD; 
+          rec++; 
         } 
         k++; 
       } 
       */
-      int k = j +1; 
-      while (k < n) {
-        if (a[j] > a[k]) {
-          dbg(i, j, k); 
-          tot -= be(2, n -1 -i -2, MOD); 
-          dbg(k, be(2, n -1 -i -2, MOD)); 
-          (tot += MOD) %= MOD; 
-        } 
-        k++; 
-      } 
-      j++; 
+      j--; 
     } 
 
     i--; 
   } 
 
+  dbg(resti); 
   cout << tot << '\n'; 
   RAYA; 
 }
