@@ -20,45 +20,32 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll INF = 1LL<<60; 
+int reti() {
+  cout << "NO\n"; 
+  return 0; 
+} 
 
-void solve() {
-    ll x, y; cin >> x >> y; 
-    ll rest = x & y; 
-    ll pw = 32 -__builtin_clz(rest); 
+int solve() {
+  int n; cin >> n; 
+  vi a(n); forn(i,n) cin >> a[i]; 
 
-    assert(pw < 32); 
-    pw--; 
-    // option 1
-    ll i = x; 
-    while (i < (1LL<<31) and (i&(1LL<<pw)) > 0) i++; 
-    i &= ~y; 
-    ll dif1 = abs(i - x); 
+  forn(i,n-2) {
+    if (a[i] < 0) return reti(); 
+    if (a[i] > 0) {
+      a[i+1] -= 2 * a[i]; 
+      a[i+2] -= a[i]; 
+      a[i] = 0; 
+    }
+  } 
 
-    // option 2
-    ll j = y; 
-    while (j < (1LL<<31) and (j&(1LL<<pw)) > 0) j++; 
-    j &= ~x; 
-    ll dif2 = abs(j - y);
-
-    // option 3
-    ll a = x, b = y; 
-    a &= ~((1<<pw) -1); 
-    b |= ((1<<pw) -1); 
-    b &= ~(1<<pw); 
-    ll dif3 = abs(x - a) + abs(y - b); 
-
-    if (dif1 <= dif2 and dif1 <= dif3 and (i & y) == 0) x = i; 
-    else if (dif2 <= dif1 and dif2 <= dif3 and (x & j) == 0) y = j; 
-    else if (dif3 <= dif1 and dif3 <= dif2) x = a, y = b; 
-    else assert(0); 
-
-    cout << x <<  ' ' << y << '\n'; 
+  forn(i,n) if (a[i] != 0) return reti();  
+  cout << "YES\n"; 
+  return 0; 
 }
 
 

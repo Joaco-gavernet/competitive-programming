@@ -20,46 +20,28 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll INF = 1LL<<60; 
 
 void solve() {
-    ll x, y; cin >> x >> y; 
-    ll rest = x & y; 
-    ll pw = 32 -__builtin_clz(rest); 
+  int n; cin >> n; 
+  vi a(n); forn(i,n) cin >> a[i]; 
 
-    assert(pw < 32); 
-    pw--; 
-    // option 1
-    ll i = x; 
-    while (i < (1LL<<31) and (i&(1LL<<pw)) > 0) i++; 
-    i &= ~y; 
-    ll dif1 = abs(i - x); 
+  int l = 0; 
+  while (l + 1 < n and a[l] == a[l+1]) l++; 
 
-    // option 2
-    ll j = y; 
-    while (j < (1LL<<31) and (j&(1LL<<pw)) > 0) j++; 
-    j &= ~x; 
-    ll dif2 = abs(j - y);
+  reverse(all(a)); 
+  int r = 0; 
+  while (r + 1 < n and a[r] == a[r+1]) r++; 
 
-    // option 3
-    ll a = x, b = y; 
-    a &= ~((1<<pw) -1); 
-    b |= ((1<<pw) -1); 
-    b &= ~(1<<pw); 
-    ll dif3 = abs(x - a) + abs(y - b); 
-
-    if (dif1 <= dif2 and dif1 <= dif3 and (i & y) == 0) x = i; 
-    else if (dif2 <= dif1 and dif2 <= dif3 and (x & j) == 0) y = j; 
-    else if (dif3 <= dif1 and dif3 <= dif2) x = a, y = b; 
-    else assert(0); 
-
-    cout << x <<  ' ' << y << '\n'; 
+  int tot = min(n - r - 1, n - l - 1);
+  if (a[0] == a.back()) tot = (n - r) - l - 2;
+  cout << max(0, tot) << '\n'; 
 }
+
 
 
 int main(){

@@ -20,45 +20,22 @@ typedef vector<ll> vi;
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll INF = 1LL<<60; 
 
 void solve() {
-    ll x, y; cin >> x >> y; 
-    ll rest = x & y; 
-    ll pw = 32 -__builtin_clz(rest); 
-
-    assert(pw < 32); 
-    pw--; 
-    // option 1
-    ll i = x; 
-    while (i < (1LL<<31) and (i&(1LL<<pw)) > 0) i++; 
-    i &= ~y; 
-    ll dif1 = abs(i - x); 
-
-    // option 2
-    ll j = y; 
-    while (j < (1LL<<31) and (j&(1LL<<pw)) > 0) j++; 
-    j &= ~x; 
-    ll dif2 = abs(j - y);
-
-    // option 3
-    ll a = x, b = y; 
-    a &= ~((1<<pw) -1); 
-    b |= ((1<<pw) -1); 
-    b &= ~(1<<pw); 
-    ll dif3 = abs(x - a) + abs(y - b); 
-
-    if (dif1 <= dif2 and dif1 <= dif3 and (i & y) == 0) x = i; 
-    else if (dif2 <= dif1 and dif2 <= dif3 and (x & j) == 0) y = j; 
-    else if (dif3 <= dif1 and dif3 <= dif2) x = a, y = b; 
-    else assert(0); 
-
-    cout << x <<  ' ' << y << '\n'; 
+    int n; cin >> n; 
+    int l = 1, r = n; 
+    vi v; 
+    while (SZ(v) < n) {
+      if (SZ(v) % 2 == 0) v.pb(l++); 
+      else v.pb(r--); 
+    } 
+    for (auto &x: v) cout << x << ' '; 
+    cout << '\n'; 
 }
 
 
