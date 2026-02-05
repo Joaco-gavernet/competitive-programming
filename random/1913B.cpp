@@ -28,29 +28,18 @@ typedef vector<ll> vi;
 
 void solve() {
   string s; cin >> s; 
-  int cnt[2]; 
+  const int n = SZ(s); 
+  vi cnt(2, 0); 
   for (char c: s) cnt[c - '0']++; 
 
   if (cnt[0] == cnt[1]) cout << "0\n"; 
   else {
-    reverse(all(s)); 
-    int tot = 0;
-    if (cnt[0] < cnt[1]) {
-      for (int i = 0; i < SZ(s) and cnt[0] < cnt[1]; i++) {
-        tot++; 
-        if (s[i] == '0') tot++; 
-        else cnt[1]--; 
-      } 
-      tot += cnt[1]; 
-    } else {
-      for (int i = 0; i < SZ(s) and cnt[1] < cnt[0]; i++) {
-        tot++; 
-        if (s[i] == '1') tot++; 
-        else cnt[0]--; 
-      } 
-      tot += cnt[0]; 
-    } 
-    cout << tot << '\n'; 
+    int del = abs(cnt[0] - cnt[1]); 
+    char c = char('0' + (cnt[0] < cnt[1])); 
+    while (SZ(s) and s.back() == c and del) del--, s.pop_back(); 
+    int i = SZ(s) - 1; 
+    while (i >= 0 and del) del -= (s[i] == c), i--; 
+    cout << n - i - 1 << '\n'; 
   } 
 }
 
