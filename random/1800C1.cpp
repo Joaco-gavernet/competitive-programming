@@ -27,17 +27,15 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  string l, r; cin >> l >> r; 
-  reverse(all(l)); 
-  reverse(all(r)); 
-  ll tot = 0; 
-  if (SZ(r) > SZ(l)) {
-    if (SZ(r)) tot += r.back() - '0', l.pop_back(), r.pop_back(); 
-  } else {
-    while (SZ(r) == SZ(l) and SZ(r) and l.back() == r.back()) l.pop_back(), r.pop_back(); 
-    if (SZ(r)) tot += r.back() - l.back(), l.pop_back(), r.pop_back(); 
+  int n; cin >> n; 
+  vi v(n); forn(i,n) cin >> v[i]; 
+
+  ll tot = 0;
+  priority_queue<ll> pq; 
+  forn(i,n) {
+    if (v[i] > 0) pq.push(v[i]); 
+    else if (SZ(pq) > 0) tot += pq.top(), pq.pop(); 
   } 
-  if (SZ(r) > 0) tot += SZ(r) * 9; 
   cout << tot << '\n'; 
 }
 

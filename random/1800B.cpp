@@ -27,17 +27,26 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  string l, r; cin >> l >> r; 
-  reverse(all(l)); 
-  reverse(all(r)); 
-  ll tot = 0; 
-  if (SZ(r) > SZ(l)) {
-    if (SZ(r)) tot += r.back() - '0', l.pop_back(), r.pop_back(); 
-  } else {
-    while (SZ(r) == SZ(l) and SZ(r) and l.back() == r.back()) l.pop_back(), r.pop_back(); 
-    if (SZ(r)) tot += r.back() - l.back(), l.pop_back(), r.pop_back(); 
-  } 
-  if (SZ(r) > 0) tot += SZ(r) * 9; 
+  ll n, k; cin >> n >> k; 
+  string s; cin >> s; 
+
+  map<char,int> x; 
+  map<char,int> y; 
+  for (char c: s) if (c >= 'a') x[c]++; 
+  for (char c: s) if (c <= 'Z') y[c]++; 
+
+  ll tot = 0;
+  forn(i,26) {
+    const char u = 'a' + i; 
+    const char U = 'A' + i; 
+    ll upd = min(x[u], y[U]); 
+    tot += upd, x[u] -= upd, y[U] -= upd; 
+    if (k > 0) {
+      ll dif = min(k, 1LL * max(x[u], y[U]) / 2); 
+      tot += dif; 
+      k -= dif; 
+    }
+  }
   cout << tot << '\n'; 
 }
 
