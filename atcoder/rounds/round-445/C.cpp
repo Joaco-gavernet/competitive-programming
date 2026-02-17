@@ -32,10 +32,18 @@ int main(){
   int n; cin >> n; 
   vi v(n); forn(i,n) cin >> v[i], v[i]--; 
 
+  function<int(int)> check; 
 
-  // sparse table 
-  vector<vi> st(n, 64); 
+  vi ans(n, -1); 
+  check = [&](int x) -> int {
+    if (v[x] == x) ans[x] = x;
+    else ans[x] = check(v[x]); 
+    return ans[x]; 
+  }; 
 
+  forn(i,n) if (ans[i] == -1) ans[i] = check(i); 
+  for (auto &x: ans) cout << x + 1 << ' ';
+  cout << '\n'; 
 
   return 0;
 }
