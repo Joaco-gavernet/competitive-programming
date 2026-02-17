@@ -30,23 +30,37 @@ int main(){
   FIN;
 
   int H, W, n; cin >> H >> W >> n; 
-  vector<ii> v(n); forn(i,n) cin >> v[i].ff >> v[i].ss; 
+  vector<ii> v(n), w(n), h(n); 
+  forn(i,n) cin >> v[i].ff >> v[i].ss, h[i].ff = v[i].ff, w[i].ff = v[i].ss, h[i].ss = w[i].ss = i; 
 
-  sort(all(v)); 
-  dbg(v); 
-
+  sort(all(w)); 
+  sort(all(h)); 
+  vb visto(n); 
   vector<ii> ans(n); 
-  while (SZ(v)) {
-    if (h + v.back().ss < h) h += v.back().ss, v.pop_back(); 
-    else break; 
+  int x = 0, y = 0; 
+  while (SZ(w) or SZ(h)) {
+    while (SZ(w) and w.back().ff == W - x) {
+      auto [wi, id] = w.back(); 
+      if (visto[id] == false) {
+        visto[id] = true; 
+        ans[id] = {y, x}; 
+        y += v[id].ff; 
+      } 
+      w.pop_back(); 
+    } 
+    while (SZ(h) and h.back().ff == H - y) {
+      auto [hi, id] = h.back(); 
+      if (visto[id] == false) {
+        visto[id] = true; 
+        ans[id] = {y, x}; 
+        x += v[id].ss; 
+      } 
+      h.pop_back(); 
+    } 
+    while (SZ(h) and visto[h.back().ss]) h.pop_back(); 
+    while (SZ(w) and visto[w.back().ss]) w.pop_back(); 
   } 
-
-  while (h < H) {
-    while (h + v.back().ss >= h) v.pop_back(); 
-  } 
-
-
-
+  for (auto [x, y]: ans) cout << x + 1 << ' ' << y + 1 << '\n'; 
 
   return 0;
 }
