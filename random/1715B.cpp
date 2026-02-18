@@ -26,43 +26,31 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
-void bfs(vector<vi> &g, vi &s, vi &d) {
-  const int n = SZ(g); 
-  vi visto(n); 
-  queue<ii> q; 
-  for (auto si: s) visto[si] = 1, q.push({si, -1}); 
-  while (SZ(q)) {
-    auto [x, id] = q.front(); q.pop(); 
-    dbg(x); 
-    for (auto y: g[x]) {
-      if (visto[y] == 2) continue; 
-      if (visto[y] == 1 and d[y] == 0) d[y] = dist + 1;
-      if (visto[y] == 0) {
-        d[y] = dist + 1; 
-        q.push({y, d[y]}); 
-        visto[y] = 2; 
-      }
-    } 
+void solve() {
+  ll n, k, b, s; cin >> n >> k >> b >> s; 
+  if (b < (s - max(0LL, (k-1)*(n-1))) / k or s / k < b) {
+    cout << "-1\n";
+    return; 
   } 
-} 
+
+  vi ans(n); 
+  ans[0] = min(s, (b + 1) * k - 1); 
+  ll rest = s - ans[0]; 
+
+  forr(i,1,n) {
+    ans[i] = min(rest, k - 1); 
+    rest -= ans[i]; 
+    if (rest == 0) break; 
+  } 
+  for (auto &x: ans) cout << x << ' ';  
+  cout << '\n'; 
+}
 
 
 int main(){
   FIN;
-
-  int n, m, k; cin >> n >> m >> k; 
-  vi s(k); forn(i,k) cin >> s[i], s[i]--; 
-  vector<vi> g(n); 
-  forn(i,m) {
-    int a, b; cin >> a >> b; 
-    --a, --b; 
-    g[a].pb(b); 
-    g[b].pb(a); 
-  }
-  vi dist(n); 
-  bfs(g, s, dist); 
-  for (auto &x: dist) cout << (x == 0 ? -1 : x) << ' ';
-  cout << '\n'; 
-
+  int t = 1; 
+  cin >> t;
+  while (t--) solve();
   return 0;
 }
