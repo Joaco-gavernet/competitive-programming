@@ -26,35 +26,6 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
-unordered_map<ll,unordered_map<ll,ll>> how; 
-
-unordered_map<ll,ll> dfs(int x, vector<vi> &g, vi &ans, vi &my, vi &add, vi &a) {
-  unordered_map<ll,ll> level; 
-  level[0] += a[x]; 
-  for (auto y : g[x]) {
-    unordered_map<ll,ll> li = dfs(y, g, ans, my, add, a); 
-    // if (SZ(level) < SZ(li)) swap(li, level); // small-to-large
-    if (x == 1) dbg(x, li); 
-    if (SZ(g[x]) == 1) {
-      for (auto [k, v]: how[g[x][0]]) {
-        how[x][k+1] += v; 
-        ans[x] += (k + 2) * v; 
-      }
-      how.erase(g[x][0]);
-    } else {
-      for (auto [k, v]: li) {
-        how[x][(y == my[x]) * add[x] + (k + 1)] += v; 
-        ans[x] += ((y == my[x]) * add[x] + (k + 1)) * v; 
-        how.erase(y); 
-        level[k + 1] += v;
-      } 
-      li.clear(); 
-    } 
-  }
-  dbg(x, level); 
-  return level; 
-} 
-
 void solve() {
   int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
@@ -64,30 +35,35 @@ void solve() {
     g[--u].pb(--v); 
   } 
 
-  vi toleaf(n, 1); 
-  vi my(n, -1), add(n), sum(n); 
+  vi cost(n), costop(n), sum(n), depth(n); 
   function<void(ll)> f = [&](ll x) {
-    vi bmx = {-1, -1}; 
+    vector<ii> ops; 
     sum[x] = a[x]; 
     for (auto y : g[x]) {
       f(y); 
-      toleaf[x] = max(toleaf[x], toleaf[y] + 1);  
+      depth[x] = max(depth[x], depth[y] + 1); 
+      cost[x] += cost[y] + sum[y]; 
+      costop[x] += cost[y] + sum[y]; 
       sum[x] += sum[y]; 
-      if (my[x] == -1 or sum[my[x]] < sum[y]) my[x] = y; 
-      if (bmx[0] == -1 or toleaf[bmx[0]] < toleaf[y]) bmx[0] = y; 
-      else if (bmx[1] == -1 or toleaf[bmx[1]] < toleaf[y]) bmx[1] = y; 
+      ops.pb({depth[y] + 1, y}); 
     } 
-    add[x] = (bmx[0] == -1 ? 0 : toleaf[bmx[0]]); 
-    if (my[x] == bmx[0]) add[x] = (bmx[1] == -1 ? 0 : toleaf[bmx[1]]); 
+
+    sort(all(ops)); 
+    dbg(x, ops); 
+    ll D = 0; 
+    if (SZ(ops)) D = ops.back().ff; 
+    dbg(D); 
+    dbg(x, cost[x], costop[x], sum[x]); 
+    for (auto [d, y]: ops) {
+      if (d == D and SZ(ops) > 1) D = ops[SZ(ops) - 2].ff; 
+      dbg(y, cost[y], costop[y], sum[y]); 
+      costop[x] = max(costop[x], costop[x] - cost[y] + costop[y]); 
+      costop[x] = max(costop[x], costop[x] + sum[y] * D - sum[y]); 
+    } 
   }; 
   f(0); 
-  dbg(my); 
-  dbg(add); 
 
-  vi ans(n); 
-  dfs(0, g, ans, my, add, a); 
-
-  for (auto x: ans) cout << x << ' '; 
+  for (auto x: costop) cout << x << ' '; 
   cout << '\n'; 
   RAYA; 
 }
