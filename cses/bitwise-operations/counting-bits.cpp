@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <bit>
 using namespace std;
 //freopen("input.txt", "r", stdin);
 //freopen("output.txt", "w", stdout);
@@ -27,9 +28,18 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  int tot = 0; 
-  int n; cin >> n; 
-  forr(i,1,n+1) tot += popcount(i); 
+  unsigned long long n; cin >> n; 
+
+  unsigned long long tot = 0; 
+  unsigned long long b = 63 - countl_zero(n); 
+  while (n > 0) {
+    tot += b * (1LL << (b - 1)) + (n - ((1LL<<b) - 1)); 
+    n ^= (1LL<<b); 
+    if (n == 0) break; 
+    b = 63 - countl_zero(n); 
+  } 
+  if (n == 1) tot++; 
+
   cout << tot << '\n'; 
 }
 
