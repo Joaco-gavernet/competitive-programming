@@ -26,46 +26,52 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
+// Stolen from fisher199
+struct maxer {
+	int id = -1;
+	int mx1 = -1, mx2 = -1;
+	void push(int i, int v) {
+		if (v > mx1) id = i, mx2 = mx1, mx1 = v;
+		else if (v > mx2) mx2 = v;
+	}
+	int get(int i) {
+		return i == id ? mx2 : mx1;
+	}
+};
+
 void solve() {
   int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
   vector<vi> g(n); 
   forn(i,n-1) {
     int u, v; cin >> u >> v; 
-    g[--u].pb(--v); 
+    --u, --v;
+    g[u].pb(v);
+    g[v].pb(u); 
   } 
 
   vi cost(n), costop(n), sum(n), depth(n); 
-  function<void(ll)> f = [&](ll x) {
-    vector<ii> ops; 
+  auto f = [&](auto &&f, ll x = 0, ll prev = -1) -> void {
     sum[x] = a[x]; 
-    for (auto y : g[x]) {
-      f(y); 
+    maxer D; 
+    vi cand; 
+    for (auto y : g[x]) if (y != prev) {
+      f(f, y, x); 
       depth[x] = max(depth[x], depth[y] + 1); 
       cost[x] += cost[y] + sum[y]; 
       costop[x] += cost[y] + sum[y]; 
       sum[x] += sum[y]; 
-      ops.pb({depth[y] + 1, y}); 
+      D.push(y, depth[y] + 1); 
     } 
-
-    sort(all(ops)); 
-    dbg(x, ops); 
-    ll D = 0; 
-    if (SZ(ops)) D = ops.back().ff; 
-    dbg(D); 
-    dbg(x, cost[x], costop[x], sum[x]); 
-    for (auto [d, y]: ops) {
-      if (d == D and SZ(ops) > 1) D = ops[SZ(ops) - 2].ff; 
-      dbg(y, cost[y], costop[y], sum[y]); 
-      costop[x] = max(costop[x], costop[x] - cost[y] + costop[y]); 
-      costop[x] = max(costop[x], costop[x] + sum[y] * D - sum[y]); 
+    for (auto y : g[x]) if (y != prev) {
+      costop[x] = max(costop[x], cost[x] - cost[y] + costop[y]); 
+      costop[x] = max(costop[x], cost[x] + sum[y] * D.get(y)); 
     } 
   }; 
-  f(0); 
+  f(f); 
 
   for (auto x: costop) cout << x << ' '; 
   cout << '\n'; 
-  RAYA; 
 }
 
 
