@@ -30,24 +30,23 @@ void solve() {
   int n; cin >> n;
   string s; cin >> s; 
 
-  vi cnt(2); 
-  for (char c: s) if (c != '?') cnt[c - 'a']++; 
-  int rem = n - cnt[0] - cnt[1]; 
-  dbg(cnt, rem); 
-
-  if (s[0] == 'b' and n % 2 == 1) {
+  reverse(all(s)); 
+  if (s.back() == 'b' and n % 2 == 1) {
     cout << "NO\n";
     return; 
-  }
+  } else if (n % 2) s.pop_back(); 
 
-  cnt[0] = (n+1)/2 - cnt[0]; 
-  cnt[1] = n/2 - cnt[1]; 
-  dbg(s); 
-  dbg(n, cnt); 
-
-  forn(i,n-1) {
-  }; 
-
+  // check by groups of two 
+  n = SZ(s); 
+  int cond = 'a' + 'b'; 
+  for (int i = 0; i < n; i += 2) {
+    if (cond == s[i] + s[i+1] or s[i] == '?' or s[i+1] == '?') continue;  
+    else {
+      cout << "NO\n"; 
+      return; 
+    }
+  } 
+  cout << "YES\n"; 
 }
 
 

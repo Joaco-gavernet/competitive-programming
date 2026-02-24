@@ -27,27 +27,60 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  int n; cin >> n;
-  string s; cin >> s; 
+  int n; cin >> n; 
+  vi a(n); forn(i,n) cin >> a[i]; 
 
-  vb dp = {true, false}; 
-  forr(k,1,n+1) {
-    vb ndp = {false, false}; 
-    forn(p,2) if (dp[p]) {
-      char left = (p == 0 ? 'a' : 'b'); 
-      int ri = (n + (k - 1) + p) & 1;
-      char right = (ri ? 'a' : 'b'); 
-
-      auto ok = [&](char c) {
-        return s[k-1] == '?' or s[k-1] == c; 
-      };  
-
-      if (ok(left)) ndp[p ^ 1] = true; 
-      if (ok(right)) ndp[p] = true; 
-    } 
-    dp = ndp; 
+  vi stk; 
+  set<ll> root; 
+  vi out(n); 
+  vector<vi> g(n); 
+  ll acc = 0, sum = 0;
+  forn(i,n) {
+    auto x = a[i]; 
+    if (SZ(stk) and a[stk.back()] + 1 == x) g[stk.back()].pb(i), stk.pb(i); 
+    else {
+      while (SZ(stk) and a[stk.back()] + 1 != x) {
+        auto r = stk.back(); 
+        out[r] = i; 
+        if (SZ(stk) == 1) acc += (out[r] - r) * SZ(root), sum += out[r] - r; 
+        stk.pop_back(); 
+      }
+      if (SZ(stk) == 0) root.insert(i); 
+      else g[stk.back()].pb(i); 
+      stk.pb(i); 
+    }
   } 
-  cout << (dp[0] or dp[1] ? "YES" : "NO") << '\n'; 
+  while (SZ(stk)) {
+    auto r = stk.back(); 
+    out[r] = n; 
+    if (SZ(stk) == 1) acc += (out[r] - r) * SZ(root), sum += out[r] - r; 
+    stk.pop_back(); 
+  }
+
+  ll tot = 0; 
+  while (SZ(root)) {
+    tot += acc;
+    auto i = *root.begin();
+    root.erase(root.begin()); 
+
+    // erase old root and update to new ones 
+    if (SZ(g[i]) == 0) acc -= sum;
+    else if (SZ(g[i]) == 1) acc--; 
+    else {
+      acc -= n - i;
+      acc += SZ(g[i]) * (n - out[i]);
+    }
+    sum--; 
+    ll rs = 1, acci = 0;
+    for (auto j: g[i]) {
+      if (SZ(g[i]) > 1) acci += rs * (out[j] - j); 
+      rs++; 
+      root.insert(j); 
+    } 
+    acc += acci; 
+  } 
+
+  cout << tot << '\n'; 
 }
 
 
