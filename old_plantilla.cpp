@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-//freopen("input.txt", "r", stdin);
-//freopen("output.txt", "w", stdout);
 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
@@ -15,7 +13,7 @@ typedef long long ll;
 typedef pair<ll,ll> ii;
 typedef vector<bool> vb;
 typedef vector<ll> vi;
-#define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+#define NaN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
@@ -31,7 +29,7 @@ void solve() {
 
 
 int main(){
-  FIN;
+  NaN;
   int t = 1; 
   cin >> t;
   while (t--) solve();
