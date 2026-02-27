@@ -23,7 +23,7 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size())
 #define RAYA cerr << "===============================" << endl
 
-void fill(vi &a, vi &dp, vb &on) {
+void f(vi &a, vi &dp, vb &on) {
   const int n = SZ(a);
   vi lis;
   forn(i,n) {
@@ -36,30 +36,32 @@ void fill(vi &a, vi &dp, vb &on) {
 
 void solve() {
   int n; cin >> n;
-  vi a(n); forn(i,n) cin >> a[i], a[i] *= -1;
-  dbg(a);
+  vi a(n); 
+  forn(i,n) cin >> a[i]; 
 
   vi dpl(n), dpr(n);
   vb onl(n), onr(n);
-  // dpl[i] = LIS finishing in i-th position from left.
-  // dpr[i] = LIS finishing in i-th position from right.
+  // dpl[i] = LIS in [0, i].
+  // dpr[i] = LDS in [i, n-1].
 
-  fill(a, dpl, onl);
-  reverse(all(a));
+  forn(i,n) a[i] *= -1; 
+  dbg(a);
+  f(a, dpl, onl);
 
-  fill(a, dpr, onr);
+  reverse(all(a)); 
+  dbg(a); 
+  f(a, dpr, onr);
   reverse(all(dpr)); 
   reverse(all(onr)); 
 
-  dbg(a);
   dbg(dpl);
   dbg(dpr);
 
   int mx = 0;
   forn(i,n) {
-    int aux = dpr[i];
-    if (i > 0) aux += dpl[i];
+    int aux = dpr[i] + dpl[i];
     if (onr[i] and onl[i]) aux--; 
+    dbg(i, aux); 
     mx = max(mx, aux);
   }
 
