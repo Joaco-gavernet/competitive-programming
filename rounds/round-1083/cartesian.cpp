@@ -82,23 +82,7 @@ CartesianTree build(const vector<int>& a) {
 
 
 void solve() {
-  int n; cin >> n;
-  vector<int> a(n); 
-  forn(i,n) cin >> a[i]; 
-
-  auto ctree = build(a); 
-
-  auto dfs = [&](auto &&dfs, int x) -> int {
-    if (x == -1) return 0; 
-    int tot = 1;
-    tot = max(tot, dfs(dfs, ctree.left[x]) + 1); 
-    tot = max(tot, dfs(dfs, ctree.right[x]) + 1); 
-    return tot; 
-  }; 
-
-  cout << n - dfs(dfs, ctree.root) << '\n'; 
 }
-
 
 int main(){
   NaN;
