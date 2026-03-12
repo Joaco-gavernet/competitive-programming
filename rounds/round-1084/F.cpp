@@ -23,48 +23,40 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-struct part {
-  ll x, y, id; 
-  bool operator < (part &b) const {
-    if (b.y == y) return x > b.x; 
-    return y < b.y;
-  }
-}; 
-
-ostream &operator << (ostream &os, const part &p) { //Para imprimir
-  return os << "(" << p.x << "," << p.y << "," << p.id << ")";
-}
 
 void solve() {
   int n, m; cin >> n >> m; 
-  vector<part> v(n); forn(i,n) cin >> v[i].x >> v[i].y, v[i].id = i; 
-  vector<part> u(m); forn(i,m) cin >> u[i].x >> u[i].y, u[i].id = i; 
+  vector<ii> v(n); forn(i,n) cin >> v[i].ss >> v[i].ff; 
+  vector<ii> u(m); forn(i,m) cin >> u[i].ss >> u[i].ff; 
 
   sort(all(v)); 
   reverse(all(v)); 
   dbg(v); 
 
-  vi dp(n + 5); 
-  forn(i,n) {
-    dbg(i, v[i]); 
-    auto [x, y, id] = v[i]; 
-    if (y > 0) dp[y] = max(dp[y], dp[y-1] + x); 
-    else dp[0] = max(dp[0], x); 
-    dbg(dp); 
-  } 
+  auto f = [&](vector<ii> &parts, vi &mx, int dif = 1) -> void {
+    const int n = SZ(parts); 
+    set<ii> st; 
+    ll s = 0, i = 0;
+    for (int k = n; k >= 0; k--) {
+      while (i < n and parts[i].ff >= k) s += parts[i].ss, st.insert({parts[i].ss, parts[i].ff}), i++; 
+      while (SZ(st) > k + dif) s -= st.begin()->ff, st.erase(st.begin()); 
+      mx[k] = s;
+    } 
+  }; 
 
+
+  vi mx(n+1); 
+  f(v, mx);
+  ll best = *max_element(all(mx)); 
+
+  vi mxor(n+1); 
+  f(v, mxor, 0); 
+  forn(i,n) mxor[i+1] = max(mxor[i], mxor[i+1]); 
 
   vi ans(m, -1); 
-  forn(i,m) {
-    dbg(i, u[i]); 
-    auto [x, y, id] = u[i]; 
-    if (y > 0) ans[i] = max(dp[y], dp[y-1] + x); 
-    else ans[i] = max(dp[0], x); 
-  } 
-
+  forn(i,m) ans[i] = max(best, u[i].ss + mxor[u[i].ff]); 
   for (auto x: ans) cout << x << ' ';
   cout << '\n';
-
   RAYA; 
 }
 
