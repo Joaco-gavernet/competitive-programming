@@ -31,33 +31,29 @@ void solve() {
 
   sort(all(v)); 
   reverse(all(v)); 
-  dbg(v); 
 
-  auto f = [&](vector<ii> &parts, vi &mx, int dif = 1) -> void {
-    const int n = SZ(parts); 
-    set<ii> st; 
+  auto f = [&](vi &mx, int dif = 1) -> void {
+    multiset<ll> st; 
     ll s = 0, i = 0;
     for (int k = n; k >= 0; k--) {
-      while (i < n and parts[i].ff >= k) s += parts[i].ss, st.insert({parts[i].ss, parts[i].ff}), i++; 
-      while (SZ(st) > k + dif) s -= st.begin()->ff, st.erase(st.begin()); 
+      while (i < n and v[i].ff >= k) s += v[i].ss, st.insert(v[i].ss), i++; 
+      while (SZ(st) > k + dif) s -= *st.begin(), st.erase(st.begin()); 
       mx[k] = s;
     } 
   }; 
 
-
   vi mx(n+1); 
-  f(v, mx);
+  f(mx);
   ll best = *max_element(all(mx)); 
 
   vi mxor(n+1); 
-  f(v, mxor, 0); 
+  f(mxor, 0); 
   forn(i,n) mxor[i+1] = max(mxor[i], mxor[i+1]); 
 
   vi ans(m, -1); 
   forn(i,m) ans[i] = max(best, u[i].ss + mxor[u[i].ff]); 
   for (auto x: ans) cout << x << ' ';
   cout << '\n';
-  RAYA; 
 }
 
 
