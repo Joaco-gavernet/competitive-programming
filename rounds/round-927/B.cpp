@@ -32,9 +32,9 @@ const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
 ll bs(ll prev, ll act) {
-  int l = 0, r = 1e6+3;
+  ll l = 0, r = 1e11+3;
   while (l < r -1) {
-    int mid = l + (r-l)/2;
+    ll mid = l + (r-l)/2;
     // dbg(l,mid,r);
     if (mid*act <= prev) l = mid;
     else r = mid;
@@ -42,17 +42,17 @@ ll bs(ll prev, ll act) {
   return (r*act);
 }
 
+void solve() {
+  int n; cin >> n;
+  vector<ll> v(n); forn(i,n) cin >> v[i];
+
+  forr(i,1,n) v[i] = bs(v[i-1],v[i]);
+  cout << v[n-1] << '\n';
+} 
+
 int main(){
   FIN;
-
   int t; cin >> t;
-  while (t--) {
-    int n; cin >> n;
-    vector<ll> v(n); forn(i,n) cin >> v[i];
-
-    forr(i,1,n) v[i] = bs(v[i-1],v[i]);
-    cout << v[n-1] << '\n';
-  }
-
+  while (t--) solve(); 
   return 0;
 }
