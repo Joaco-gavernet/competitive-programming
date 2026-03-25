@@ -2,13 +2,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#ifdef LOCAL
 #define DBG(x) cerr << #x << " = " << (x) << endl
 #define RAYA cerr << "===============================" << endl
-#else
-#define DBG(x)
-#define RAYA
-#endif
 
 typedef long long ll;
 typedef vector<ll> vi; typedef pair<ll,ll> ii;
@@ -27,49 +22,48 @@ const int MAXN  = 2e5+5;
 
 int main(){  
   FIN;
-  
+
   int t; cin >> t;
-  
+
   forn(_,t) {
-    int k; cin >> k;
+    int n; cin >> n;
     string s; cin >> s;
-    RAYA;
-    
-    int res = 0;
-    vector<int> v;
-    
-    forn(i,SZ(s)/2) {
-      if (res > 300) {
-	res = -1;
-	break;
-      }
-      
-      if (s[i] == s[SZ(s)-i-1]) {
-	if (s[i] == 0) {
-	  s.insert(SZ(s)-int(i)+1,"01");
-	  v.pb(SZ(s)-int(i)-1);
-	} else {
-	  s.insert(SZ(s)-int(i),"01");
-	  v.pb(SZ(s)-int(i)-2);
-	}
-	i--;
-	res++;
-      };
-    }
-    
-    if (SZ(s)%2 == 1) cout << -1 << endl;
-    else cout << res << endl;
-    
-    if (res > 0) {
-      for(int i : v) cout << i << "\n";
-    }
+
+    int cnt[2]; 
+    cnt[0] = cnt[1] = 0; 
+    for (char c: s) cnt[c - '0']++; 
+    if (cnt[0] != cnt[1]) {
+      cout << "-1\n";
+      continue; 
+    } 
+
+    deque<int> dq; 
+    for (char c: s) dq.push_back(c - '0'); 
+
+    int lef = 0; 
+    vi ops; 
+    while (SZ(dq)) {
+      if (dq.front() == dq.back()) {
+        if (dq.front() == 0) {
+          ops.pb(lef + SZ(dq)); 
+          dq.pop_front(); 
+          dq.push_back(0); 
+          lef++; 
+        } else {
+          ops.pb(lef); 
+          dq.pop_back(); 
+          dq.push_front(1); 
+          lef++; 
+        } 
+      } else lef++, dq.pop_front(), dq.pop_back(); 
+    } 
+
+    cout << SZ(ops) << '\n'; 
+    for (auto &x: ops) cout << x << ' '; 
+    cout << '\n'; 
   }
-  
-  
-  
-  
-  
-  
+
+
   return 0;
 }
 
