@@ -17,6 +17,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #endif
 
 typedef long long ll;
+typedef vector<ll> vi; 
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
@@ -31,27 +32,46 @@ const ll MOD = (ll)(1e9+7); // 998244353
 const ll INF = (ll)(1<<30); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
+ll ps[322][200400]; 
+ll psi[322][200400]; 
+
+void solve() {
+  int n, q; cin >> n >> q; 
+  vi a(n); forn(i,n) cin >> a[i]; 
+
+  int lim = 1; 
+  while (lim * lim < n) lim++; 
+
+  forn(i,lim) {
+    forn(j,i+1) ps[i][j] = psi[i][j] = 0; 
+
+    forn(j,n) {
+      ps[i][j + i + 1] = ps[i][j] + a[j]; 
+      psi[i][j + i + 1] = psi[i][j] + a[j] * (j / (i + 1) + 1); 
+    } 
+  } 
+
+  vi ans; 
+  while (q--) {
+    int s, d, k; cin >> s >> d >> k; 
+    s--; 
+
+    ll tot = 0; 
+    if (d >= lim) {
+      for (int i = s; i <= s + (d - 1) * k; i += d) tot += a[i] * ((i - s) / d + 1); 
+    } else {
+      tot = psi[d - 1][s + d * k] - psi[d - 1][s] - (ps[d - 1][s + d * k] - ps[d - 1][s]) * (s / d);
+    } 
+    ans.pb(tot); 
+  }  
+  for (auto &x: ans) cout << x << ' ';
+  cout << '\n'; 
+} 
 
 int main(){
   FIN;
-  
   int t; cin >> t;
-  while(t--) {
-    ll n, q; cin >> n >> q;
-    vector<ll> v(n); forn(i,n) cin >> v[i];
-    
-    ll s,d,k;
-    forn(_,q) {
-      cin >> s >> d >> k; s--;
-      ll cont = 1, ans = 0;
-      for (ll i = s; cont <= k; cont++, i += d) 
-	ans += v[i]*cont;
-      cout << ans << ' ';
-    }
-    cout << '\n';
-  }
-  
-  
+  while (t--) solve(); 
   return 0;
 }
 
