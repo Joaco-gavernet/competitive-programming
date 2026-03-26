@@ -17,6 +17,7 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #endif
 
 typedef long long ll;
+typedef vector<ll> vi; 
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
@@ -35,19 +36,19 @@ const int MAXN = (int)(2e5+5);
 int main(){
   FIN;
 
+  auto f = [&](int x) -> int {
+    int tot = 0; 
+    while (x > 0) tot += x % 10, x /= 10; 
+    return tot; 
+  }; 
+
+  vi pref(MAXN); 
+  forr(i,1,MAXN) pref[i] = pref[i-1] + f(i); 
+
   int t; cin >> t;
   while (t--) {
     int n; cin >> n;
-    int tot = 0, act;
-    forn(i,n+1) {
-      act = i;
-      while (act > 0) {
-        tot += (act%10); 
-        act /=10;
-      }
-    }
-
-    cout << tot << '\n';
+    cout << pref[n] << '\n';
   }
 
   return 0;

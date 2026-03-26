@@ -9,14 +9,11 @@ template<typename T_container, typename T = typename enable_if<!is_same<T_contai
  
 void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
- 
-#ifdef LOCAL
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
-#else
-#define dbg(...)
-#endif
 
 typedef long long ll;
+typedef vector<ll> vi; 
+typedef pair<ll,ll> ii; 
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
@@ -27,67 +24,53 @@ typedef long long ll;
 #define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
 #define esta(x,c) ((c).find(x) != (c).end())
 #define RAYA cerr << "===============================" << endl
+#define SZ(x) int((x).size()) 
 const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1<<30); // (1LL<<60)
+const ll INF = (ll)(1LL<<60); // (1LL<<60)
 const int MAXN = (int)(2e5+5);
 
-void dfs1(vector<vector<int>> &g, string &typ, int v = 0, int prev = -1) {
-  int p = 0, s = 0;
+// dp[x][0] = no water  
+// dp[x][1] = only P water  
+// dp[x][2] = only S water  
 
-  if (prev != -1) {
-    if (typ[prev] == 'P') p++;
-    else if (typ[prev] == 'S') s++;
+void dfs(int x, vector<vi> &g, string &typ, vector<vi> &dp, int prev = -1) {
+  if (typ[x] == 'P') dp[x][2] = INF; 
+  if (typ[x] == 'S') dp[x][1] = INF; 
+  ll tot = 0;
+
+  for (auto y: g[x]) if (y != prev) {
+    dfs(y, g, typ, dp, x); 
+    dp[x][1] += min({dp[y][1], dp[y][2] + 1, dp[y][0]}); 
+    dp[x][2] += min({dp[y][2], dp[y][1] + 1, dp[y][0]}); 
+    tot += dp[y][0]; 
+  } 
+
+  dp[x][0] = min(dp[x][1] + 1, dp[x][2] + 1); // take best option if chossing one side 
+  if (typ[x] == 'C') dp[x][0] = min(dp[x][0], tot); // only if we can leave this node undefined 
+} 
+
+void solve() {
+  int n; cin >> n;
+  vector<ii> adj(n);
+  vector<vi> g(n); 
+  vector<vi> dp(n, vi(3)); 
+
+  forr(a,1,n) {
+    int b; cin >> b; b--;
+    adj.pb({a, b}); 
+    g[a].pb(b); 
+    g[b].pb(a); 
   }
 
-  for (int u: g[v]) {
-    if (u != prev) {
-      dfs1(g,typ,u,v);
-      if (typ[u] == 'P') p++;
-      else if (typ[u] == 'S') s++;
-    }
-  }
-  if (typ[v] == 'C') {
-    if (p > s) typ[v] = 'P';
-    else if (p < s) typ[v] = 'S';
-    else ;
-  }
-}
+  string typ; cin >> typ;
+  dfs(0, g, typ, dp); 
 
-int dfs2(vector<vector<int>> &g, string &typ, int v = 0, int prev = -1) {
-  int tot = 0;
-  for (int u: g[v]) {
-    if (u != prev) {
-      if (typ[v] == 'S' and typ[u] == 'P') tot++;
-      else if (typ[v] == 'P' and typ[u] == 'S') tot++;
-      tot += dfs2(g,typ,u,v);
-    }
-  }
-  return tot;
-}
+  cout << *min_element(all(dp[0])) << '\n'; 
+} 
 
 int main(){
   FIN;
-
-  int t; cin >> t;
-  while (t--) {
-    int n; cin >> n;
-    vector<vector<int>> g(n);
-
-    int b;
-    forr(a,1,n) {
-      cin >> b;
-      g[a].pb(--b);
-      g[b].pb(a);
-    }
-
-    string typ; cin >> typ;
-
-    dfs1(g,typ);
-    int ans = dfs2(g,typ);
-    cout << ans << '\n';
-  }
-
-
-
+  int o; cin >> o;
+  while (o--) solve(); 
   return 0;
 }
