@@ -25,41 +25,55 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll INF = 1LL<<60; 
+const int INF = 1<<30; 
 
 void solve() {
   int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
-  
-  if (n == 1) {
-    cout << a[0] << '\n';
-    return; 
-  } 
-
-  vi odds, evens; 
+  vi left, right; 
+  left = right = a; 
   forn(i,n) {
-    if (i&1) odds.pb(a[i]);
-    else evens.pb(a[i]); 
+    right[i] += i; 
+    left[i] += (n -i -1); 
   } 
-  sort(all(odds)); 
-  sort(all(evens)); 
+  for (int i = 0; i < n; i += 2) left[i] = right[i] = -INF; 
+  // dbg(right); 
+  // dbg(left); 
 
-  ll best = n - 2 + (n&1); 
-  multiset<ll> left, right; 
-  for (int i = 1; i < n; i += 2) right.insert(2 * a[i] + i); 
+  vector<ii> bl(n), br(n); 
+  bl[0] = {left[0], 0};
+  br[n-1] = {right[n-1], n-1}; 
+  forr(i,1,n) bl[i] = max(bl[i-1], {left[i], i}); 
+  for (int i = n-2; i >= 0; i--) br[i] = max(br[i+1], {right[i], i}); 
+  // dbg(bl); 
+  // dbg(br); 
 
+  ll best = 0; 
+  ii inds = {-1, -1}; 
   for (int i = 0; i < n; i += 2) {
-    if (SZ(right)) best = max(best, *right.rbegin() - 2 * a[i] - i);
-    if (SZ(left)) best = max(best, *left.rbegin() - 2 * a[i] - (n - i + 1)); 
-    if (SZ(right)) {
-      right.erase(right.find(2 * a[i+1] + i + 1)); 
-      left.insert(2 * a[i+1] + (n - i)); 
-    } 
+    if (i+1 < n) {
+      ll aux = br[i+1].ff -i -(br[i+1].ss&1 ? a[i] : a[br[i+1].ss]);
+      if (best < aux) best = aux, inds = {i, br[i+1].ss}; 
+    }
+    if (i-1 >= 0) {
+      ll aux = bl[i-1].ff -(n-1-i) -(bl[i-1].ss&1 ? a[i] : a[bl[i-1].ss]); 
+      if (best < aux) best = aux, inds = {i, bl[i-1].ss}; 
+    }
+    // dbg(i, best); 
   } 
+  // dbg(a); 
+  ll base = 0; 
+  forn(i,n) base += (i&1 ? -a[i] : a[i]); 
+  if (n > 2) base += (n&1 ? n-1 : n-2);
 
-  ll tot = 0; 
-  forn(i,n) tot += (i&1 ? -1 : 1) * a[i]; 
-  cout << tot + best << '\n'; 
+  ll acc = 0; 
+  if (best > 0) acc += abs(inds.ff - inds.ss), swap(a[inds.ff], a[inds.ss]); 
+  forn(i,n) acc += (i&1 ? -a[i] : a[i]); 
+
+  // dbg(inds); 
+  // dbg(a); 
+  cout << max(base, acc) << '\n'; 
+  // RAYA; 
 }
 
 
