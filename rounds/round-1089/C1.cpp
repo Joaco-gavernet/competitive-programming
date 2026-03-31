@@ -29,11 +29,15 @@ void solve() {
   vi a(n); forn(i,n) cin >> a[i]; 
   vi b(n); forn(i,n) cin >> b[i]; 
 
-  vi gs; 
-  forn(i,n-1) gs.pb(__gcd(a[i], a[i+1])); 
-  dbg(gs); 
-
-
+  ll tot = 0;
+  if (__gcd(a[0], a[1]) < a[0]) tot++; 
+  if (__gcd(a[n-2], a[n-1]) < a[n-1]) tot++; 
+  forr(i,1,n-1) {
+    ll gl = __gcd(a[i-1], a[i]);
+    ll gr = __gcd(a[i], a[i+1]); 
+    if (gl * gr / __gcd(gl, gr) < a[i]) tot++; 
+  }
+  cout << tot << '\n'; 
 }
 
 
