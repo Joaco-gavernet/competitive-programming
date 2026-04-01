@@ -23,18 +23,21 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+ii f(ll n, ll k) {
+  if (n < k) return {0, 0}; 
+  ll tot = 0; 
+  auto [a, b] = f(n/2, k); 
+  tot += 2 * a; 
+  if (n&1) tot += (b + 1) * (n + 1) / 2; 
+  else tot += b * n / 2; 
+  b <<= 1;
+  b += n&1; 
+  return {tot, b}; 
+} 
 
 void solve() {
   ll n, k; cin >> n >> k; 
-
-  if (k == 1) {
-    cout << n * (n + 1) / 2 << '\n';
-    return; 
-  } 
-
-
-
-
+  cout << f(n, k).ff << '\n'; 
 }
 
 
