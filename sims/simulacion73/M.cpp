@@ -24,8 +24,7 @@ typedef pair<ll,ll> ii;
 
 
 struct plate {
-  ll s, t, x, c; 
-  ll w;
+  ll s, t, x, c, w;
 };
 
 int main() {
@@ -40,7 +39,7 @@ int main() {
   vector<plate> p(k); 
   forn(i,k) cin >> p[i].s >> p[i].t >> p[i].x >> p[i].c, p[i].s--, p[i].t--; 
 
-  vi typ(k); 
+  vi typ(m); 
   forn(i,k) typ[p[i].t] += p[i].x; 
   forn(i,m) {
     if (typ[i] < a[i] + b[i]) {
@@ -76,12 +75,13 @@ int main() {
   }; 
   
   // find minimum seconds to solve "r"
-  ll l = 0, r = n;
+  ll l = -1, r = n;
   while (l + 1 < r) {
     ll mid = (l + r) / 2;
     if (check(mid)) r = mid;
     else l = mid; 
   }
+  check(r); 
 
   vector<ii> ops; 
   forn(i,k) ops.push_back({p[i].c, i}); 
