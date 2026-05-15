@@ -23,23 +23,28 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const int M = 27; 
 
 void solve() {
-  int n; cin >> n; 
-  unordered_map<string, bool> is; 
-  vector<string> s(n); forn(i,n) cin >> s[i], is[s[i]] = true; 
-
-  string ok(n, '0'); 
+  int n; cin >> n;
+  vi a(n); 
+  vector<ii> valids; 
   forn(i,n) {
-    forr(j,1,SZ(s[i])) {
-      string a = s[i].substr(0, j); 
-      string b = s[i].substr(j); 
-      if (is[a] and is[b]) ok[i] = '1'; 
-    }
-  } 
+    cin >> a[i]; 
+    if (a[i] < i + 1) valids.pb({a[i], i}); 
+  }
+  sort(all(valids)); 
 
-  cout << ok << '\n'; 
+  ll tot = 0; 
+  forn(i,SZ(valids)) {
+    int l = 0, r = SZ(valids); 
+    while (l + 1 < r) {
+      int mid = l + (r - l) / 2; 
+      if (valids[i].ss + 1 < valids[mid].ff) r = mid; 
+      else l = mid; 
+    } 
+    tot += SZ(valids) - r; 
+  } 
+  cout << tot << '\n'; 
 }
 
 

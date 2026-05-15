@@ -23,23 +23,37 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const int M = 27; 
 
 void solve() {
   int n; cin >> n; 
-  unordered_map<string, bool> is; 
-  vector<string> s(n); forn(i,n) cin >> s[i], is[s[i]] = true; 
+  vector<string> v(n); 
+  forn(i,n) cin >> v[i]; 
 
-  string ok(n, '0'); 
-  forn(i,n) {
-    forr(j,1,SZ(s[i])) {
-      string a = s[i].substr(0, j); 
-      string b = s[i].substr(j); 
-      if (is[a] and is[b]) ok[i] = '1'; 
-    }
+  vector<vb> visto(n, vb(n)); 
+  int tot = 0; 
+  for (int y = 0; y < n; y++) {
+    for (int x = 0; x < n; x++) {
+      if (visto[y][x]) continue; 
+
+      int yi = y, xi = x; 
+      int state[] = {0, 0}; 
+      forn(j,4) {
+        if (visto[yi][xi]) break; 
+        state[v[yi][xi] == '1']++; 
+        visto[yi][xi] = true; 
+
+        // apply rotation transformation 
+        int z = xi; 
+        xi = n - 1 - yi; 
+        yi = z; 
+      } 
+
+      if (state[0] + state[1] == 1) continue; 
+      tot += min(state[0], state[1]);
+    } 
   } 
 
-  cout << ok << '\n'; 
+  cout << tot << '\n'; 
 }
 
 

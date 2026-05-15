@@ -23,23 +23,28 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const int M = 27; 
+const ll INF = 1LL<<60; 
 
 void solve() {
-  int n; cin >> n; 
-  unordered_map<string, bool> is; 
-  vector<string> s(n); forn(i,n) cin >> s[i], is[s[i]] = true; 
+  int n; ll k; cin >> n >> k; 
+  vi a(n); forn(i,n) cin >> a[i]; 
 
-  string ok(n, '0'); 
+  const ll B = 40; 
+  vi dp(B + 1, -INF), ndp(B + 1, -INF); 
+  dp[0] = 0; 
+
   forn(i,n) {
-    forr(j,1,SZ(s[i])) {
-      string a = s[i].substr(0, j); 
-      string b = s[i].substr(j); 
-      if (is[a] and is[b]) ok[i] = '1'; 
-    }
+    forn(j, B + 1) {
+      ndp[j] = max(ndp[j], dp[j] + (a[i] >> j) - k); 
+
+      int nj = min(B, j + 1); 
+      ndp[nj] = max(ndp[nj], dp[j] + (a[i] >> (j + 1))); 
+    } 
+    swap(dp, ndp); 
+    fill(all(ndp), -INF); 
   } 
 
-  cout << ok << '\n'; 
+  cout << *max_element(all(dp)) << '\n'; 
 }
 
 
