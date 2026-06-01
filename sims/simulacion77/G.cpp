@@ -24,9 +24,9 @@ int main() {
   vi x(p), y(q);
   forn(i,p) cin >> x[i];
   forn(i,q) cin >> y[i];
-  x.pb(INF); y.pb(INF);
+  // x.pb(-INF); y.pb(-INF);
   sort(all(x)); sort(all(y));
-
+  reverse(all(x)); reverse(all(y));
   ll l=-1, r=s+1;
   while(r-l>1){
     ll med=(r+l)/2;
@@ -34,40 +34,44 @@ int main() {
     // ll px=0,py=0;
     ll contpairs=0;
     multiset<ll> elemx,elemy;
-    for(auto u:x) elemx.insert(u);
-    for(auto u:y) elemy.insert(u);
+    for(auto u:x) elemx.insert(-u);
+    for(auto u:y) elemy.insert(-u);
     forn(i,2*n){
-      ll fx=*(elemx.begin());
-      ll fy=*(elemy.begin());
+      ll fx=-*(elemx.begin());
+      ll fy=-*(elemy.begin());
       if(fx == INF or fy == INF) break;
       // DBG(fx);
       // DBG(fy);
-      if(fx<fy){
-        ll maxelem=min(s-fx,fx+med);
-        auto it = elemy.lower_bound(maxelem+1);
-        if(it!=elemy.begin()){
-          it--;
+      if(fx>fy){
+        ll maxelem=max(s-fx,fx-med);
+        // DBG(maxelem);
+        auto it = elemy.lower_bound(-(maxelem));
+        if(it!=elemy.end() and (*it)+fx <=s and abs((*it)-fx)<=med){
+          // it--;
+          // DBG(*it);
           elemy.erase(it);
           elemx.erase(elemx.begin());
           contpairs++;
           if(contpairs==n) break;
         }else{
-          if(fx < INF) elemx.erase(elemx.begin());
+          elemx.erase(elemx.begin());
         }
       }else{
-        ll maxelem=min(s-fy,fy+med);
-        auto it = elemx.lower_bound(maxelem+1);
-        if(it!=elemx.begin()){
-          it--;
+        ll maxelem=max(s-fy,fy-med);
+        // DBG(maxelem);
+        auto it = elemx.lower_bound(-maxelem);
+        if(it!=elemx.end() and (*it)+fy <=s and abs((*it)-fy)<=med){
+          // it--;
+          // DBG(*it);
           elemx.erase(it);
           elemy.erase(elemy.begin());
           contpairs++;
           if(contpairs==n) break;
         }else{
-          if(fy < INF) elemy.erase(elemy.begin());
+          elemy.erase(elemy.begin());
         }
       }
-      if(SZ(elemx)==1 or SZ(elemy)==1) break;
+      if(SZ(elemx)==0 or SZ(elemy)==0) break;
       // RAYA;
     }
     // DBG(contpairs);

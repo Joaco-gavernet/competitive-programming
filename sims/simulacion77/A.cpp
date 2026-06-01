@@ -48,7 +48,7 @@ int main() {
   FIN;
   ll m, k; cin >> m >> k;
   if(m==1){cout << "3\n"; return 0;}
-  ll c=2*k+1;
+  ll c=1;
   vi phi(k+1);
   criba(k+5);
   forr(i,2,k+1){
@@ -56,6 +56,12 @@ int main() {
     else phi[i]=phi[i/min_prime[i]]*min_prime[i];
     c=(c+2*phi[i])%MOD;
   }
-  cout << (2*c*(be(2*k+1,m-1)-1)%MOD*be(2*k,MOD-2)%MOD+3)%MOD << "\n";
+  vi dp(m+1), dp2(m+1);
+  dp[1]=3; dp2[1]=2*c+1;
+  forr(i,2,m+1){
+    dp[i]=(dp[i-1]+2*dp2[i-1])%MOD;
+    dp2[i]=(dp2[i-1]+be(2*k+1,i-1)*c*2%MOD)%MOD;
+  }
+  cout << dp[m] << "\n";
   return 0;
 }
