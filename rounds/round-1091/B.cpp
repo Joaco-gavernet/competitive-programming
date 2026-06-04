@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-//freopen("input.txt", "r", stdin);
-//freopen("output.txt", "w", stdout);
 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
@@ -15,69 +13,44 @@ typedef long long ll;
 typedef pair<ll,ll> ii;
 typedef vector<bool> vb;
 typedef vector<ll> vi;
-#define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+#define NaN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
 
 void solve() {
-  ll n, m; cin >> n >> m; 
+  int n, k; cin >> n >> k; 
+  vi a(n); forn(i,n) cin >> a[i]; 
+  int p = -1; cin >> p; p--; 
+  int base = a[p]; 
 
-  if (m < n or n * (n +1) < m*2) {
-    cout << "-1\n"; 
-    return; 
-  } 
+  int mx = 0, tot = 0, x = 0; 
+  for (int i = n-1; p < i; i--) {
+    a[i] ^= x; 
+    if (a[i] != base) tot++, x ^= 1; 
+  }
+  mx = max(mx, tot + x); 
 
-  if (n == m) {
-    cout << "1\n";
-    forr(i,1,n) cout << i << ' ' << i + 1 << '\n'; 
-    return; 
-  } 
+  tot = 0;
+  x = 0; 
+  for (int i = 0; i < p; i++) {
+    a[i] ^= x; 
+    if (a[i] != base) tot++, x ^= 1; 
+  }
+  mx = max(mx, tot + x); 
 
-  vi ans; 
-  ll k = m - n, curr = 0; 
-  for (int i = n - 1; i >= 0 and curr < k; i--) {
-    if (curr + i <= k) {
-      curr += i; 
-      ans.pb(i + 1); 
-    } 
-  } 
-
-  ll cont = SZ(ans); 
-  forn(i,cont) ans.pb(1); 
-
-  vb vis(n + 1); 
-  cout << ans[0] << '\n'; 
-  vis[ans[0]] = true; 
-
-  forr(i,1,n+1) {
-    cout << ans[i - 1] << ' ' << ans[i] << '\n'; 
-    vis[ans[i - 1]] = vis[ans[i]] = true; 
-
-    if (ans[i] == 1) {
-      ll prev = 1; 
-      for (ll j = 2; j <= n; j++) {
-        if (vis[j] == false) {
-          cout << prev << ' ' << j << '\n'; 
-          prev = j; 
-        } 
-      } 
-      return; 
-    } 
-  } 
-
-
+  cout << mx << '\n'; 
 }
 
 
 int main(){
-  FIN;
+  NaN;
   int t = 1; 
   cin >> t;
   while (t--) solve();

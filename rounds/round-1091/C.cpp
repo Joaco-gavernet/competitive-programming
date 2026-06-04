@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-//freopen("input.txt", "r", stdin);
-//freopen("output.txt", "w", stdout);
 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
@@ -15,69 +13,26 @@ typedef long long ll;
 typedef pair<ll,ll> ii;
 typedef vector<bool> vb;
 typedef vector<ll> vi;
-#define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+#define NaN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
 
 void solve() {
-  ll n, m; cin >> n >> m; 
-
-  if (m < n or n * (n +1) < m*2) {
-    cout << "-1\n"; 
-    return; 
-  } 
-
-  if (n == m) {
-    cout << "1\n";
-    forr(i,1,n) cout << i << ' ' << i + 1 << '\n'; 
-    return; 
-  } 
-
-  vi ans; 
-  ll k = m - n, curr = 0; 
-  for (int i = n - 1; i >= 0 and curr < k; i--) {
-    if (curr + i <= k) {
-      curr += i; 
-      ans.pb(i + 1); 
-    } 
-  } 
-
-  ll cont = SZ(ans); 
-  forn(i,cont) ans.pb(1); 
-
-  vb vis(n + 1); 
-  cout << ans[0] << '\n'; 
-  vis[ans[0]] = true; 
-
-  forr(i,1,n+1) {
-    cout << ans[i - 1] << ' ' << ans[i] << '\n'; 
-    vis[ans[i - 1]] = vis[ans[i]] = true; 
-
-    if (ans[i] == 1) {
-      ll prev = 1; 
-      for (ll j = 2; j <= n; j++) {
-        if (vis[j] == false) {
-          cout << prev << ' ' << j << '\n'; 
-          prev = j; 
-        } 
-      } 
-      return; 
-    } 
-  } 
-
-
+  ll n, m, a, b; cin >> n >> m >> a >> b; 
+  if (__gcd(a,n) == 1 and __gcd(b,m) == 1 and __gcd(n,m) <= 2) cout << "YES\n";
+  else cout << "NO\n"; 
 }
 
 
 int main(){
-  FIN;
+  NaN;
   int t = 1; 
   cin >> t;
   while (t--) solve();

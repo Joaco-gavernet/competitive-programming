@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-//freopen("input.txt", "r", stdin);
-//freopen("output.txt", "w", stdout);
 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
@@ -15,71 +13,54 @@ typedef long long ll;
 typedef pair<ll,ll> ii;
 typedef vector<bool> vb;
 typedef vector<ll> vi;
-#define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+#define NaN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
+#define ff first
+#define ss second
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
 
-void solve() {
-  ll n, m; cin >> n >> m; 
-
-  if (m < n or n * (n +1) < m*2) {
-    cout << "-1\n"; 
-    return; 
-  } 
-
-  if (n == m) {
-    cout << "1\n";
-    forr(i,1,n) cout << i << ' ' << i + 1 << '\n'; 
-    return; 
-  } 
-
-  vi ans; 
-  ll k = m - n, curr = 0; 
-  for (int i = n - 1; i >= 0 and curr < k; i--) {
-    if (curr + i <= k) {
-      curr += i; 
-      ans.pb(i + 1); 
-    } 
-  } 
-
-  ll cont = SZ(ans); 
-  forn(i,cont) ans.pb(1); 
-
-  vb vis(n + 1); 
-  cout << ans[0] << '\n'; 
-  vis[ans[0]] = true; 
-
-  forr(i,1,n+1) {
-    cout << ans[i - 1] << ' ' << ans[i] << '\n'; 
-    vis[ans[i - 1]] = vis[ans[i]] = true; 
-
-    if (ans[i] == 1) {
-      ll prev = 1; 
-      for (ll j = 2; j <= n; j++) {
-        if (vis[j] == false) {
-          cout << prev << ' ' << j << '\n'; 
-          prev = j; 
-        } 
-      } 
-      return; 
-    } 
-  } 
-
-
-}
-
-
 int main(){
-  FIN;
-  int t = 1; 
-  cin >> t;
-  while (t--) solve();
+  NaN;
+
+  int n; cin >> n;
+  const int MAXN = 2e5+1;
+  vector<bool> visto(MAXN);
+  vector<int> v(n-2);
+  vi deg(n, 1); 
+  for (int i = 0; i < n-2; i++) cin >> v[i], v[i]--, deg[v[i]]++;
+  reverse(all(v)); 
+
+  priority_queue<int, vector<int>, greater<int>> pq; 
+  forn(x,n) if (deg[x] == 1) pq.push(x); 
+
+  vector<vi> g(n); 
+  while (SZ(v)) {
+    auto x = v.back(); v.pop_back();
+    auto y = pq.top(); pq.pop(); 
+    deg[x]--; 
+    if (deg[x] == 1) pq.push(x); 
+    g[x].pb(y);
+    g[y].pb(x); 
+  } 
+  assert(SZ(pq) == 2);
+  int a = pq.top(); pq.pop();
+  int b = pq.top(); pq.pop(); 
+  g[a].pb(b);
+  g[b].pb(a); 
+  auto dfs = [&](auto &&dfs, int x, int prev = -1) -> void {
+    for (auto y: g[x]) if (y != prev) {
+      cout << x + 1 << ' ' << y + 1 << '\n'; 
+      dfs(dfs, y, x); 
+    }
+  }; 
+  dfs(dfs, 0); 
+  cout << '\n'; 
+
+
   return 0;
 }
