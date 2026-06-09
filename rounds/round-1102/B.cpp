@@ -26,6 +26,11 @@ typedef vector<ll> vi;
 
 void solve() {
   ll n; cin >> n; 
+  ll r = n % 12; 
+
+  if (n == 10) cout << "-1\n";
+  else if (r == 10) cout << 22 << ' ' << n - 22 << '\n'; 
+  else cout << r << ' ' << n - r << '\n'; 
 }
 
 
