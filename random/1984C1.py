@@ -10,10 +10,9 @@ def solve():
     ndp = [0, 0]
     for x in a:
         ndp[0] = dp[0] + x
-        ndp[1] = max(dp[1] + x, abs(dp[0] + x)) 
+        ndp[1] = max(abs(dp[0] + x), abs(dp[1] + x)) 
         dp, ndp = ndp, dp
-        # print('dp', dp)
-    print(max(abs(dp[0]), dp[1]))
+    print(max(dp[0], dp[1]))
 
 def main():
     t = int(input())
