@@ -1,0 +1,15 @@
+{
+  "configurations": [
+    {
+      "name": "macOS",
+      "includePath": [
+        "${workspaceFolder}"
+      ],
+      "compilerPath": "/usr/bin/c++",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "macos-clang-arm64"
+    }
+  ],
+  "version": 4
+}
