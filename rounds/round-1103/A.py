@@ -3,23 +3,13 @@ import sys
 
 
 def solve():
-    n, x, y, z = map(int, input().split()) 
-    nn = n
-
-    # using AI 
-    a = 0
-    if n <= z * x:
-        a = (n + x - 1) // x 
-    else:
-        n -= z * x
-        a = z + (n + (x + y * 10) - 1) // (x + y * 10) 
-
-    # not using AI 
-    n = nn 
-    b = (n + (x + y) - 1) // (x + y) 
-
-    print(min(a, b)) 
-
+    n = int(input()) 
+    h = list(map(int, input().split())) 
+    mx = max(h) 
+    best = 1
+    for i in range(n):
+        best = max(best, mx - h[i] + 1) 
+    print(best) 
 
 
 def main():

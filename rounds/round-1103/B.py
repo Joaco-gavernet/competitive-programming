@@ -3,26 +3,21 @@ import sys
 
 
 def solve():
-    n = int(input()) 
+    n, k = map(int, input().split())
+    s = str(input()) 
 
-    a = [x + 1 for x in range(n)] 
+    for i in range(min(k, n)):
+        j = i 
+        xor = int(0)
+        while j < n:
+            xor ^= int(s[j])
+            j += k 
+        if xor == 1:
+            print("NO")
+            return 
+    print("YES") 
 
-    if n % 2 == 0:
-        print(*a)
-        a.reverse()
-        print(*a) 
-        a.reverse()
-        print(*a) 
-        print(*a) 
-    else:
-        print(*a) 
-        a.reverse()
-        print(*a) 
-        a.reverse() 
-        a = a[1:] + a[:1] 
-        print(*a) 
-        a.reverse() 
-        print(*a) 
+
 
 
 def main():
