@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <limits> 
 using namespace std;
 //freopen("input.txt", "r", stdin);
 //freopen("output.txt", "w", stdout);
@@ -25,94 +26,95 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+#define V vector
+#define rsz resize
+#define sz(x) int((x).size()) 
+#define FOR(i,n) forr(i,0,n) 
+#define f first
+#define s second 
+template <class T>
+bool ckmin(T& a, const T& b) {
+  return b < a ? a = b, true : false;
 
-typedef ll tipo;
-typedef ll tipo_cost;
-const int MAXN = 505;
-tipo INF = (tipo)(1e9+7);
-tipo_cost MAX_COST = (double)(1e16);
-
-struct arista {
-  int v; // Next node
-  tipo_cost c; // Cost
-};
-
-vector < vector<arista> > g(MAXN);
-map < pair<int,int>,tipo > cap;
-map < pair<int,int>,tipo_cost > cost;
-
-void add_edge(int x, int y, tipo z, tipo_cost c) {
-  g[x].pb({y,c});
-  g[y].pb({x,-1*c});
-  cap[{x,y}] += z;
-  cost[{x,y}] += c;
-  cost[{y,x}] -= c;
 }
 
-void Bellman_Ford(int s, int t, vector <int> &parent, vector <tipo_cost> &d) {
-  fill(all(parent),-1);
-  fill(all(d),MAX_COST);
-  vector <bool> inq(MAXN,false);
-  queue <int> q; q.push(s); parent[s] = s; inq[s] = true; d[s] = 0;
+const ll inf = 1LL<<60; 
 
-  while(q.size() > 0) {
-    int u = q.front(); q.pop(); inq[u] = false;
-    for(arista next : g[u]) {
-      if(cap[{u,next.v}]>0 && d[next.v] > d[u] + next.c) {
-        d[next.v] = d[u] + next.c;
-        parent[next.v] = u;
-        if(!inq[next.v]) {
-          inq[next.v] = true;
-          q.push(next.v);
-        }
+/**
+ * Description: Minimum-cost maximum flow, assumes no negative cycles. 
+ * It is possible to choose negative edge costs such that the first 
+ * run of Dijkstra is slow, but this hasn't been an issue in the past. 
+ * Edge weights $\ge 0$ for every subsequent run. To get flow through 
+ * original edges, assign ID's during \texttt{ae}.
+ * Time: Ignoring first run of Dijkstra, $O(FM\log M)$ 
+ * if caps are integers and $F$ is max flow.
+ * Source: GeeksForGeeks
+ * https://courses.csail.mit.edu/6.854/06/scribe/s12-minCostFlowAlg.pdf
+ * running time is only pseudo-polynomial; see https://codeforces.com/blog/entry/70740
+ * https://en.wikipedia.org/wiki/Johnson%27s_algorithm (to get non-negative weights)
+ * https://codeforces.com/contest/1316/submission/72472865 
+ * mango_lassi, min cost circulation w/ capacity scaling
+ * Verification: https://codeforces.com/contest/164/problem/C
+ * https://codeforces.com/contest/316/problem/C2
+ * TLEs, don't use priority queue
+ */
+
+struct MCMF { 
+  using F = ll; using C = ll; // flow type, cost type
+  struct Edge { int to; F flo, cap; C cost; };
+  int N; V<C> p, dist; vi pre; V<Edge> eds; V<vi> adj;
+  void init(int _N) { N = _N;
+    p.rsz(N), dist.rsz(N), pre.rsz(N), adj.rsz(N); }
+  void ae(int u, int v, F cap, C cost) { assert(cap >= 0); 
+    adj[u].pb(sz(eds)); eds.pb({v,0,cap,cost}); 
+    adj[v].pb(sz(eds)); eds.pb({u,0,0,-cost});
+  } // use asserts, don't try smth dumb
+  bool path(int s, int t) { // find lowest cost path to send flow through
+    const C inf = numeric_limits<C>::max(); forn(i,N) dist[i] = inf;
+    using T = pair<C,int>; priority_queue<T,vector<T>,greater<T>> todo; 
+    todo.push({dist[s] = 0,s}); 
+    while (sz(todo)) { // Dijkstra
+      T x = todo.top(); todo.pop(); if (x.f > dist[x.s]) continue;
+      for (auto e : adj[x.s]) { const Edge& E = eds[e]; // all weights should be non-negative
+        if (E.flo < E.cap && ckmin(dist[E.to],x.f+E.cost+p[x.s]-p[E.to]))
+          pre[E.to] = e, todo.push({dist[E.to],E.to});
       }
-    }
+    } // if costs are doubles, add some EPS so you 
+      // don't traverse ~0-weight cycle repeatedly
+    return dist[t] != inf; // return flow
   }
-}
-
-
-tipo_cost max_flow_min_cost(int s, int t) {
-  tipo flow = 0;
-  tipo_cost min_cost = 0;
-  vector <int> parent(MAXN);
-  vector <tipo_cost> d(MAXN);
-
-  while(true) {
-    Bellman_Ford(s,t,parent,d);
-    if(d[t] == MAX_COST) break;
-
-    tipo new_flow = INF;
-    int cur = t;
-    while(cur != s) {
-      new_flow = min(new_flow,cap[{parent[cur],cur}]);
-      cur = parent[cur];
-    }
-
-    flow += new_flow;
-    min_cost += d[t] * (tipo_cost)(new_flow);
-    cur = t;
-    while(cur != s) {
-      int prev = parent[cur];
-      cap[{prev,cur}] -= new_flow;
-      cap[{cur,prev}] += new_flow;
-      cur = prev;
-    }
+  pair<F,C> calc(int s, int t) { assert(s != t);
+    forn(_,N) forn(e,sz(eds)) { const Edge& E = eds[e]; // Bellman-Ford
+      if (E.cap) ckmin(p[E.to],p[eds[e^1].to]+E.cost); }
+    F totFlow = 0; C totCost = 0;
+    while (path(s,t)) { // p -> potentials for Dijkstra
+      forn(i,N) p[i] += dist[i]; // don't matter for unreachable nodes
+      F df = numeric_limits<F>::max();
+      for (int x = t; x != s; x = eds[pre[x]^1].to) {
+        const Edge& E = eds[pre[x]]; ckmin(df,E.cap-E.flo); }
+      totFlow += df; totCost += (p[t]-p[s])*df;
+      for (int x = t; x != s; x = eds[pre[x]^1].to)
+        eds[pre[x]].flo += df, eds[pre[x]^1].flo -= df;
+    } // get max flow you can send along path
+    return {totFlow,totCost};
   }
-  return min_cost;
-}
+};
 
 int main(){
   FIN;
 
   int n, m, k; cin >> n >> m >> k; 
-  add_edge(0, 1, k, 0);
+  MCMF mc; 
+  mc.init(n + 1); 
+  mc.ae(0, 1, k, 0); 
   forn(i,m) {
     int a, b, r, c; 
     cin >> a >> b >> r >> c; 
-    add_edge(a, b, r, c); 
+    mc.ae(a, b, r, c); 
   }
-  cout << max_flow_min_cost(0, n) << '\n'; 
-
+  auto [a, b] = mc.calc(0, n); 
+  if (a < k) cout << "-1\n";
+  else cout << b << '\n'; 
 
   return 0;
 }
