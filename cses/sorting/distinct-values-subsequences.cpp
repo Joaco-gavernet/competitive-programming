@@ -1,7 +1,6 @@
+/*   AUTHOR: Estufa en Piloto   */
 #include <bits/stdc++.h>
 using namespace std;
-//freopen("input.txt", "r", stdin);
-//freopen("output.txt", "w", stdout);
 
 // neal Debugger
 template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
@@ -12,40 +11,32 @@ template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
 
 typedef long long ll;
-typedef pair<ll,ll> ii;
-typedef vector<bool> vb;
-typedef vector<ll> vi;
+typedef vector<ll> vi; typedef pair<ll,ll> ii;
+typedef vector<ii> vii; typedef vector<bool> vb;
 #define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
+#define SZ(x) int((x).size())
 #define pb push_back
+#define mp make_pair
 #define all(c) (c).begin(),(c).end()
-#define fst first
-#define snd second
-#define SZ(x) int((x).size()) 
-#define DBG(x) cerr << #x << " = " << (x) << endl
-#define DBGV(v,n) forn(i,n) cout << v[i] << " "; cout << endl
-#define RAYA cerr << "===============================" << endl
+#define esta(x,c) ((c).find(x) != (c).end())
 
-const ll MOD = (ll)(1e9+7); // 998244353 
-const ll INF = (ll)(1<<30); // (1LL<<60)
-const int MAXN = (int)(2e5+5);
+const ll MOD = 1e9+7;  // const int MOD = 998244353;
 
-
-
-void solve() {
-  ll n, sum = 0; cin >> n; 
-  vi v(n); forn(i,n) cin >> v[i], v[i] %= 4, sum ^= v[i]; 
-
-  if (sum > 0) cout << "first\n"; 
-  else cout << "second\n"; 
-}
-
-
-int main(){
+int main(){  
   FIN;
-  int t = 1; 
-  cin >> t;
-  while (t--) solve();
+  
+  int n; cin >> n; 
+  vi x(n); 
+  unordered_map<ll,ll> h; 
+  forn(i,n) cin >> x[i], h[x[i]]++; 
+
+  ll tot = 1;
+  for (auto [k, v] : h) (tot *= (v + 1)) %= MOD;
+  tot--; 
+  if (tot < 0) tot += MOD; 
+  cout << tot << '\n'; 
+  
   return 0;
 }
