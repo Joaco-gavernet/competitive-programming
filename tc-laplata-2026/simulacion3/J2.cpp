@@ -16,42 +16,46 @@ typedef pair<ll,ll> ii;
 #define DBG(x) cerr << #x << " = " << x << endl
 #define RAYA cerr << "===============================\n"
 
-ll check(int x, vi &v){
-    int n=SZ(v);
-    ll mini=0, ans=-1e9, sum=0;
-    forn(i,n) if(i!=x){
-        sum+=v[i];
-        ans=max(ans,sum-mini);
-        mini=min(mini,sum);
-    }
-    return ans+max(0LL,v[x]);
-}
 
-void solve(){
+void solve() {
     int n, k; cin >> n >> k;
-    vi v(n);
-    forn(i,n) cin >> v[i];
-    ll mini=0, ans=-1e9, best=0, extra=0, sum=0;
-    forn(i,n){
-        sum=sum+v[i];
-        ans=max(ans,sum-mini);
-        mini=min(sum,mini);
-    }
-    if(ans<=0){cout << ans << "\n"; return;}
-    while(k--){
-        forn(i,n) {
-            ll aux=check(i,v);
-            if(aux+extra>ans) {ans=aux+extra; best=i;}
+    vi a(n); forn(i,n) cin >> a[i]; 
+
+    const ll INF = 1LL<<60; 
+    vector<vi> dp(k + 2, vi(3, -INF)); 
+    // dp[moves][phase] = 
+    // phase = where is the core answer? 
+    // moves = how many of the k's operations were used? 
+
+    dp[0][0] = 0;
+    forn(i,n) {
+        vector<vi> nxt(k + 2, vi(3, -INF)); 
+        forr(moves,0,k+1) {
+            // phase 0: core has not started 
+            nxt[moves][0] = max(nxt[moves][0], dp[moves][0]); // ignore 
+            nxt[moves][1] = max(nxt[moves][1], dp[moves][0] + a[i]); // start core 
+            nxt[moves + 1][0] = max(nxt[moves + 1][0], dp[moves][0] + a[i]); // import to future core 
+
+            // phase 1: currently inside the core 
+            nxt[moves][1] = max(nxt[moves][1], dp[moves][1] + a[i]); // keep 
+            nxt[moves][2] = max(nxt[moves][2], dp[moves][1]); // finish + ignore 
+            nxt[moves + 1][1] = max(nxt[moves + 1][1], dp[moves][1]); // remove 
+            nxt[moves + 1][2] = max(nxt[moves + 1][2], dp[moves][1] + a[i]); // finish + import 
+
+            // phase 2: core has already ended 
+            nxt[moves][2] = max(nxt[moves][2], dp[moves][2]); 
+            nxt[moves + 1][2] = max(nxt[moves + 1][2], dp[moves][2] + a[i]); 
         }
-        extra+=max(0LL,v[best]);
-        v[best]=0;
+        dp = nxt; 
     }
-    cout << ans << "\n";
-}
+    ll mx = *max_element(all(a)); 
+    forr(i,0,k+1) mx = max(mx, max(dp[i][1], dp[i][2])); 
+    cout << mx << '\n';
+} 
 
 int main() {
     FIN;
     int t; cin >> t;
-    while(t--) solve();
+    while (t--) solve();
     return 0; 
 }
