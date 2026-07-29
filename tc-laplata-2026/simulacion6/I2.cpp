@@ -27,16 +27,11 @@ typedef vector<ii> vii; typedef vector<bool> vb;
 using u128 = __uint128_t; 
 using i128 = __int128_t; 
 
-mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count()); 
-struct MyRandom {
-  uniform_int_distribution<ll> dist; 
-  MyRandom(ll l, ll r): dist(l, r) {} 
-  ll get() { return dist(rng); } 
-}; 
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+template<class T>
+T rnd(T l, T r) { return uniform_int_distribution<T>(l, r)(rng); }
+u128 rnd128() { return (u128(rng()) << 64) | rng(); }
 
-u128 random_u128() {
-  return (u128(rng()) << 64) | u128(rng());
-}
 
 ll solve(vi& a, vector<i128>& h, vector<i128>& H) {
   const int n = SZ(a); 
@@ -69,9 +64,8 @@ int main(){
   int n; cin >> n;  
   vi a(n); forn(i,n) cin >> a[i], a[i]--; 
 
-  MyRandom randi(0, 1LL<<60); 
   vector<i128> h(n), H(n + 1); 
-  forn(i,n) h[i] = random_u128(), H[i + 1] = H[i] ^ h[i]; 
+  forn(i,n) h[i] = rnd128(), H[i + 1] = H[i] ^ h[i]; 
 
   ll tot = 0;
   for (auto x : a) tot += x == 0; 
