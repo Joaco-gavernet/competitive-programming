@@ -17,18 +17,6 @@ using ii = pair<ll,ll>;
 #define RAYA cerr << "=============================\n"
 
 
-void dfs(int x, int k, vi& dp, vi& path, vector<vi>& g, int prev = -1){
-    if(SZ(g[x]) == 1) dp[path[max(0, SZ(path)-k)]]++;
-    path.pb(x);
-    ll aux = 0;
-    for(auto y : g[x]) if (prev != y) {
-        dfs(y, k, dp, path, g, x);
-        aux = max(aux, dp[y]);
-    }
-    dp[x] += aux;
-    path.pop_back();
-}
-
 int main() {
     FIN;
 
@@ -37,10 +25,14 @@ int main() {
     forn(i,n-1){
         int p; cin >> p; p--;
         g[p].pb(i+1);
-        g[i + 1].pb(p); 
     }
-    vi dp(n), path;
-    dfs(0, k, dp, path, g);
+
+    vi path; 
+    function<void(int, int)> dfs = [&](int x, int prev = -1) {
+      for (auto y : g[x]) if (y != prev) dfs(y, x); 
+    }; 
+    dfs(0); 
+
     cout << dp[0] << "\n";
     return 0;
 }
