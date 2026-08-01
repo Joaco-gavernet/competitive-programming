@@ -28,26 +28,19 @@ void solve() {
   int n, q; cin >> n >> q; 
   string s, t; cin >> s >> t; 
 
-  vi apref(n + 1), bpref(n + 1); 
-  forn(i,n) apref[i + 1] = apref[i] + (s[i] == '1'); 
-  forn(i,n) bpref[i + 1] = bpref[i] + (t[i] == '1'); 
-
-  vi lapref(n + 1), lbpref(n + 1); 
+  vi on(n + 1), lapref(n + 1), lbpref(n + 1); 
+  forn(i,n) on[i + 1] = on[i] + (s[i] == '1' and t[i] == '1'); 
   forn(i,n) lapref[i + 1] = lapref[i] + (s[i] != t[i] and s[i] == '1'); 
   forn(i,n) lbpref[i + 1] = lbpref[i] + (s[i] != t[i] and t[i] == '1'); 
 
   forn(i,q) {
     int l, r; cin >> l >> r; 
-    ll ca = apref[r] - apref[l - 1]; 
-    ll cb = bpref[r] - bpref[l - 1]; 
+    ll oni = on[r] - on[l - 1]; 
     ll lca = lapref[r] - lapref[l - 1]; 
     ll lcb = lbpref[r] - lbpref[l - 1]; 
-    if (ca > cb) swap(ca, cb), swap(lca, lcb); 
+    if (lca > lcb) swap(lca, lcb); 
     assert(lca <= lcb); 
-    assert(ca <= cb); 
-    ca -= lca; 
-    cb -= lca; 
-    if (cb <= 2 * ca) cout << "YES\n";
+    if (lcb - lca <= oni) cout << "YES\n";
     else cout << "NO\n"; 
   } 
 }
