@@ -23,23 +23,27 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll MAXN = 2e5+6; 
-const ll MOD = 1e9+7; 
-
 
 void solve() {
   int n; cin >> n;
-  vi a(n); forn(i,n) cin >> a[i]; 
+  vector<string> v(2); forn(i,2) cin >> v[i]; 
 
-  ll tot = 0; 
-  map<ll,ll> cnt; 
-	for (int i = 0; i < n; i++) {
-		tot += cnt[a[i]];
-		if (a[i] == 1) tot += cnt[2];
-		else if (a[i] == 2) tot += cnt[1];
-		cnt[a[i]]++;
-	}
-  cout << tot << '\n'; 
+  string path;
+  path += v[0][0]; 
+  int c = 1; 
+  while (c < n and (v[0][c] == '0' or (v[0][c] == '1' and v[1][c - 1] == '1'))) path += v[0][c++]; 
+  path += v[1][c-1]; 
+  while (c < n) path += v[1][c++]; 
+
+  vector<vi> dp(2, vi(n)); 
+  dp[0][0] = 1; 
+  forr(i,1,n) {
+    if (v[0][i] == path[i]) dp[0][i] += dp[0][i-1]; 
+    if (v[1][i-1] == path[i]) dp[1][i-1] += dp[0][i-1] + (i - 2 >= 0 ? dp[1][i-2] : 0LL); 
+  } 
+
+  cout << path << '\n'; 
+  cout << dp[0][n-1] + dp[1][n-2] << '\n'; 
 }
 
 

@@ -23,22 +23,20 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll MAXN = 2e5+6; 
-const ll MOD = 1e9+7; 
-
 
 void solve() {
-  int n; cin >> n;
-  vi a(n); forn(i,n) cin >> a[i]; 
+  int n; cin >> n; 
+  map<ll,ll> app; 
+  vi a(n); forn(i,n) cin >> a[i], app[a[i]]++; 
 
-  ll tot = 0; 
-  map<ll,ll> cnt; 
-	for (int i = 0; i < n; i++) {
-		tot += cnt[a[i]];
-		if (a[i] == 1) tot += cnt[2];
-		else if (a[i] == 2) tot += cnt[1];
-		cnt[a[i]]++;
-	}
+  ll tot = n; 
+  for (auto x: a) {
+    if (app[x]) {
+      app[x]--; 
+      ll y = x ^ ((1<<31) - 1);
+      if (app[y] > 0) tot--, app[y]--; 
+    }
+  } 
   cout << tot << '\n'; 
 }
 

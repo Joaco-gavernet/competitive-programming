@@ -23,23 +23,47 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll MAXN = 2e5+6; 
-const ll MOD = 1e9+7; 
 
+const ll INF = 1LL<<60; 
+
+vi f(vi a, int del = 1) {
+  const int n = SZ(a); 
+  vb jmp(n, false); 
+
+  jmp[0] = true; 
+  forr(i,1,n-1) if (a[i + 1] - a[i] < a[i] - a[i - 1]) jmp[i] = true;
+
+  forr(i,1,n) if (jmp[i - 1]) {
+    ll diff = -1; 
+    if (i + 1 < n) diff = a[i + 1] - a[i];
+    a[i] = a[i - 1] + del; 
+    if (jmp[i] == false and i + 1 < n) a[i + 1] = a[i] + del * diff; 
+  } 
+  return a; 
+} 
 
 void solve() {
-  int n; cin >> n;
+  int n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
 
-  ll tot = 0; 
-  map<ll,ll> cnt; 
-	for (int i = 0; i < n; i++) {
-		tot += cnt[a[i]];
-		if (a[i] == 1) tot += cnt[2];
-		else if (a[i] == 2) tot += cnt[1];
-		cnt[a[i]]++;
-	}
-  cout << tot << '\n'; 
+  vi l = f(a); 
+  dbg(a); 
+  dbg(l); 
+  reverse(all(a)); 
+
+  vi r = f(a, -1); 
+  dbg(a); 
+  dbg(r); 
+
+  int m; cin >> m; 
+  while (m--) {
+    int x, y; cin >> x >> y; 
+    x--, y--; 
+    dbg(x, y); 
+    if (x < y) cout << l[y] - l[x] << '\n'; 
+    else cout << r[y] - r[x] << '\n'; 
+  } 
+  RAYA; 
 }
 
 
