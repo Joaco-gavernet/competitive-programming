@@ -24,23 +24,47 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
+const ll INF = 1LL<<60; 
+
 void solve() {
-  int n, x, y; cin >> n >> x >> y; 
-  vi a(x); forn(i,x) cin >> a[i]; 
-  sort(all(a)); 
+  int n, m, k; cin >> n >> m >> k; 
+  vi a(n); forn(i,n) cin >> a[i], a[i]--; 
 
-  ll tot = x - 2; 
-  forr(i,1,x) tot += (a[i] - a[i - 1] == 2); 
-  tot += (a[x - 1] == n - 1 and a[0] == 1) or (a[x - 1] == n and a[0] == 2); 
+  vector<vi> g(n); 
+  forn(i,m) {
+    int x, y; cin >> x >> y;
+    x--, y--;
+    g[x].pb(y);
+    g[y].pb(x); 
+  } 
 
-  cout << tot << '\n'; 
+
+  vi dp(k, 0ll), d(n, INF); 
+  queue<ll> q; 
+  vb visto(n, false); 
+
+  q.push(0); 
+  visto[0] = true; 
+  d[0] = 0; 
+  while (SZ(q)) {
+    auto x = q.front(); q.pop(); 
+    dp[a[x]] = max(dp[a[x]], d[x]); 
+    for (auto y : g[x]) if (visto[y] == false) {
+      d[y] = min(d[y], d[x] + 1); 
+      q.push(y);
+      visto[y] = true; 
+    } 
+  } 
+
+  for (auto x : dp) cout << x << ' ';
+  cout << '\n'; 
 }
 
 
 int main(){
   NaN;
   int t = 1; 
-  cin >> t;
+  // cin >> t;
   while (t--) solve();
   return 0;
 }

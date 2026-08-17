@@ -26,20 +26,17 @@ typedef vector<ll> vi;
 
 const ll INF = 1LL<<60; 
 
-vi f(vi a, int del = 1) {
+vi f(vi& a, int del = 1) {
   const int n = SZ(a); 
   vb jmp(n, false); 
-
   jmp[0] = true; 
-  forr(i,1,n-1) if (a[i + 1] - a[i] < a[i] - a[i - 1]) jmp[i] = true;
-
-  forr(i,1,n) if (jmp[i - 1]) {
-    ll diff = -1; 
-    if (i + 1 < n) diff = a[i + 1] - a[i];
-    a[i] = a[i - 1] + del; 
-    if (jmp[i] == false and i + 1 < n) a[i + 1] = a[i] + del * diff; 
+  forr(i,1,n-1) if (del * (a[i + 1] - a[i]) < del * (a[i] - a[i - 1])) jmp[i] = true;
+  vi b = a; 
+  forn(i,n-1) {
+    if (jmp[i]) b[i + 1] = b[i] + del; 
+    else b[i + 1] = b[i] + (a[i + 1] - a[i]); 
   } 
-  return a; 
+  return b; 
 } 
 
 void solve() {
@@ -47,23 +44,18 @@ void solve() {
   vi a(n); forn(i,n) cin >> a[i]; 
 
   vi l = f(a); 
-  dbg(a); 
-  dbg(l); 
   reverse(all(a)); 
 
   vi r = f(a, -1); 
-  dbg(a); 
-  dbg(r); 
+  reverse(all(r)); 
 
   int m; cin >> m; 
   while (m--) {
     int x, y; cin >> x >> y; 
     x--, y--; 
-    dbg(x, y); 
     if (x < y) cout << l[y] - l[x] << '\n'; 
-    else cout << r[y] - r[x] << '\n'; 
+    else cout << r[x] - r[y] << '\n'; 
   } 
-  RAYA; 
 }
 
 

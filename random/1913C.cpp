@@ -23,24 +23,39 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+const ll B = 30; 
+
+bool check(ll x, vi v) {
+  forn(i,B) {
+    if (x&1) {
+      if (v[i] == 0) return false; 
+      else v[i]--; 
+    } 
+    if (i + 1 < 30) v[i + 1] += v[i] / 2; 
+    x >>= 1; 
+  } 
+  return true; 
+} 
 
 void solve() {
-  int n, x, y; cin >> n >> x >> y; 
-  vi a(x); forn(i,x) cin >> a[i]; 
-  sort(all(a)); 
+  int m; cin >> m; 
+  vi v(B); 
 
-  ll tot = x - 2; 
-  forr(i,1,x) tot += (a[i] - a[i - 1] == 2); 
-  tot += (a[x - 1] == n - 1 and a[0] == 1) or (a[x - 1] == n and a[0] == 2); 
-
-  cout << tot << '\n'; 
+  forn(_,m) {
+    ll op, x; cin >> op >> x; 
+    if (op == 1) v[x]++; 
+    else {
+      if (check(x, v)) cout << "YES\n";
+      else cout << "NO\n"; 
+    } 
+  } 
 }
 
 
 int main(){
   NaN;
   int t = 1; 
-  cin >> t;
+  // cin >> t;
   while (t--) solve();
   return 0;
 }

@@ -25,15 +25,22 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  int n, x, y; cin >> n >> x >> y; 
-  vi a(x); forn(i,x) cin >> a[i]; 
-  sort(all(a)); 
+  int n; cin >> n; 
+  n++; 
+  vi a(n); forr(i,1,n) cin >> a[i], a[i] *= (i&1 ? -1 : 1); 
 
-  ll tot = x - 2; 
-  forr(i,1,x) tot += (a[i] - a[i - 1] == 2); 
-  tot += (a[x - 1] == n - 1 and a[0] == 1) or (a[x - 1] == n and a[0] == 2); 
+  vi p(n); 
+  forr(i,1,n) p[i] = a[i] + p[i - 1]; 
 
-  cout << tot << '\n'; 
+  map<ll,ll> h; 
+  for (auto x : p) {
+    if (h[x] > 0) {
+      cout << "YES\n";
+      return; 
+    } 
+    h[x]++; 
+  } 
+  cout << "NO\n";
 }
 
 

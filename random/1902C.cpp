@@ -25,13 +25,28 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  int n, x, y; cin >> n >> x >> y; 
-  vi a(x); forn(i,x) cin >> a[i]; 
-  sort(all(a)); 
+  int n; cin >> n;
+  map<ll,bool> is; 
+  vi a(n); forn(i,n) cin >> a[i], is[a[i]] = true; 
 
-  ll tot = x - 2; 
-  forr(i,1,x) tot += (a[i] - a[i - 1] == 2); 
-  tot += (a[x - 1] == n - 1 and a[0] == 1) or (a[x - 1] == n and a[0] == 2); 
+  if (n == 1) {
+    cout << 1 << '\n';
+    return; 
+  } 
+
+  sort(all(a)); 
+  vi divs;  
+  for (auto x : a) divs.pb(a.back() - x); 
+  ll G = divs[0]; 
+  for (auto d : divs) G = __gcd(G, d); 
+
+  ll tot = 0; 
+  forn(i,n) tot += (a.back() - a[i]) / G; 
+
+  forr(i,1,n + 1) if (is[a.back() - i * G] == false) {
+    tot += i; 
+    break; 
+  } 
 
   cout << tot << '\n'; 
 }
