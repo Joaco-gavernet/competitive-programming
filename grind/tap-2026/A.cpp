@@ -9,30 +9,29 @@ void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
 
-typedef long long ll;
-typedef vector<ll> vi; typedef pair<ll,ll> ii;
-typedef vector<ii> vii; typedef vector<bool> vb;
-#define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+using ll = long long; 
+using vi = vector<ll>; 
+using vb = vector<bool>; 
+using ii = pair<ll,ll>; 
+#define NaN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define SZ(x) int((x).size())
 #define pb push_back
-#define mp make_pair
 #define all(c) (c).begin(),(c).end()
-#define esta(x,c) ((c).find(x) != (c).end())
-const int INF = 1<<30; // const ll INF = (1LL<<60);
-const int MOD = 1e9+7;  // const int MOD = 998244353;
-const int MAXN  = 2e5+5;
 
+
+const ll MID = 2 * 3600 + 1800; 
 
 int main(){  
-  FIN;
-
-  int n; cin >> n; 
-  vi r(n); forn(i,n) cin >> r[i]; 
-  forn(i,n) r[i] = (r[i] % 2 == 0 ? r[i] / 2 : 5 + (r[i] / 2)); 
-  for (auto x : r) cout << x << ' ';
-  cout << '\n'; 
+  NaN;
+  
+  ll h, m, s; cin >> h >> m >> s; 
+  ll tot = h * 3600 + m * 60 + s; 
+  if (tot < MID) cout << "-\n";
+  else if (tot == MID) cout << "=\n";
+  else if (tot > MID) cout << "+\n"; 
+  else assert(false); 
   
   return 0;
 }

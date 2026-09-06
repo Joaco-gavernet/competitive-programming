@@ -9,30 +9,45 @@ void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
 
-typedef long long ll;
-typedef vector<ll> vi; typedef pair<ll,ll> ii;
-typedef vector<ii> vii; typedef vector<bool> vb;
-#define FIN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
+using ll = long long; 
+using vi = vector<ll>; 
+using vb = vector<bool>; 
+using ii = pair<ll,ll>; 
+#define NaN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
 #define SZ(x) int((x).size())
 #define pb push_back
-#define mp make_pair
 #define all(c) (c).begin(),(c).end()
-#define esta(x,c) ((c).find(x) != (c).end())
-const int INF = 1<<30; // const ll INF = (1LL<<60);
-const int MOD = 1e9+7;  // const int MOD = 998244353;
-const int MAXN  = 2e5+5;
+
 
 
 int main(){  
-  FIN;
+  NaN;
+  
+  int n, m; cin >> n >> m; 
+  vi a(n); forn(i,n) cin >> a[i]; 
 
-  int n; cin >> n; 
-  vi r(n); forn(i,n) cin >> r[i]; 
-  forn(i,n) r[i] = (r[i] % 2 == 0 ? r[i] / 2 : 5 + (r[i] / 2)); 
-  for (auto x : r) cout << x << ' ';
-  cout << '\n'; 
+  vi aux = a; 
+  sort(all(aux)); 
+  aux.erase(unique(all(aux)), aux.end()); 
+  m = SZ(aux); 
+
+  map<ll,ll> t; 
+  forn(i,m) t[aux[i]] = i; 
+  for (auto &x : a) x = t[x];
+
+  // dp[inv][x] = "starting in x, best inc seq possible" 
+  vector<vi> dp(2, vi(m)); 
+  vi h(m); 
+  for (int i = n - 1; i >= 0; i--) {
+    dp[0][a[i]] = max(dp[0][a[i]], 1 + (a[i] + 1 < m ? dp[0][a[i] + 1] : 0)); 
+  } 
+  forn(i,n) dp[1][a[i]] = max(dp[1][a[i]], 1 + (a[i] + 1 < m ? dp[1][a[i] + 1] : 0)); 
+
+  ll tot = 0, x = 0; 
+  while (x < m) tot++, x += max(dp[0][x], dp[1][x]); 
+  cout << m << ' ' << tot << '\n'; 
   
   return 0;
 }
