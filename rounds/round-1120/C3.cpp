@@ -42,13 +42,11 @@ void solve() {
   ll MX = 1;
   forn(i,n) MX = max(MX, (a[i] + 1) * (i + 1) + 5); 
 
-  vi h(MX), evt(MX, INF);
+  vi h(MX);
   vector<vi> dp(MX); 
   forn(i,n) {
     ll in = (i + 1) * a[i]; 
     ll out = in + i + 1;  
-    ll pos = in - (i + 1); 
-    if (pos >= 0) evt[pos] = min(evt[pos], i + 1); 
 
     in = min(MX - 1, in); 
     out = min(MX - 1, out); 
@@ -65,21 +63,34 @@ void solve() {
     acc += h[i++]; 
   } 
 
-  dbg(evt); 
   acc = 0, prev = 0;
   ll tot = 1;
   forn(i, MX) {
     if (acc == 0 and h[i] > 0) {
-      ll j = i - 1, len = 1, post = INF; 
-      while (j >= prev) {
-        if (evt[j] > -1) {
-          if (post / evt[j] == j / evt[j]) tot *= max(1LL, be(2, len));  
-          else tot *= max(1LL, (be(2, len) - 1)); 
-          post = j; 
-          tot %= MOD; 
-          j--; 
-        } 
+      ll best = 1; 
+      for (auto x : dp[i]) {
+        ll aux = 1; 
+        ll len = i - prev; 
+        ll lef = (prev + x - 1) / x * x - prev; 
+        ll rig = i - i / x * x; 
+        ll mid = len - lef - rig;
+        ll k = mid / x; 
+
+        aux *= max(1LL, (k * (be(2, x) - 1))) % MOD; 
+        aux %= MOD; 
+
+        aux *= max(1LL, (be(2, lef) - 1)) % MOD; 
+        aux %= MOD; 
+
+        aux *= max(1LL, (be(2, rig) - 1)) % MOD; 
+        aux %= MOD; 
+
+        dbg(i, x, aux); 
+        dbg(lef, mid, rig); 
+        best = min(best, aux); 
       } 
+      tot *= best;
+      tot %= MOD; 
     } else if (h[i] < 0 and acc + h[i] == 0) prev = i; 
 
     acc += h[i]; 
