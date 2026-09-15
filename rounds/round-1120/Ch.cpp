@@ -26,66 +26,62 @@ typedef vector<ll> vi;
 
 const ll MOD = 1e9+7; 
 
-ll be(ll x, ll y, ll m = MOD) {
-  if (y == 0) return 1;
-  ll p = be(x, y/2, m) % m;
-  p = (p * p) % m;
-  return (y%2 == 0)? p : (x * p) % m;
-}
-
-const ll INF = 1LL<<60; 
-
 void solve() {
   ll n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
+  ll m = n - 1; 
 
-  ll MX = 1;
-  forn(i,n) MX = max(MX, (a[i] + 1) * (i + 1) + 5); 
-
-  vi h(MX), evt(MX, INF);
-  vector<vi> dp(MX); 
+  vector<ii> good, bad; 
   forn(i,n) {
-    ll in = (i + 1) * a[i]; 
-    ll out = in + i + 1;  
-    ll pos = in - (i + 1); 
-    if (pos >= 0) evt[pos] = min(evt[pos], i + 1); 
-
-    in = min(MX - 1, in); 
-    out = min(MX - 1, out); 
-
-    h[in]++;
-    if (in < out) h[out]--; 
-    dp[in].pb(i + 1); 
+    if ((i + 1) * a[i] <= m) 
+      bad.pb({(i + 1) * a[i], min(m, max(0ll, (i + 1) * (a[i] + 1) - 1))}); 
+    forn(j, a[i]) {
+      if ((i + 1) * j > n) return void(cout << "0\n"); 
+      good.pb({(i + 1) * j, min(m, (i + 1) * (j + 1) - 1)}); 
+    } 
   } 
 
-  ll acc = 0, i = 0, prev = 0;
-  while (i < MX) {
-    if (acc == 0 and h[i] > 0) prev = i; 
-    if (prev != i) for (auto x : dp[i]) dbg(prev, x), dp[prev].pb(x); 
-    acc += h[i++]; 
+  // discard redundant good intervals using monotonic stack 
+  auto cmp = [&](ii a, ii b) {
+    if (a.ff == b.ff) return a.ss > b.ss; 
+    else return a.ff < b.ff; 
+  };  
+  sort(all(good), cmp); 
+  vector<ii> stk; 
+  for (auto [l, r] : good) {
+    while (SZ(stk) and stk.back().ff <= l and r <= stk.back().ss) stk.pop_back(); 
+    stk.pb({l, r}); 
+  } 
+  good = stk; 
+
+  // find tot options 
+  vi diff(m + 2); 
+  for (auto [l, r] : bad) {
+    diff[l]++;
+    if (r + 1 <= m) diff[r + 1]--; 
   } 
 
-  dbg(evt); 
-  acc = 0, prev = 0;
-  ll tot = 1;
-  forn(i, MX) {
-    if (acc == 0 and h[i] > 0) {
-      ll j = i - 1, len = 1, post = INF; 
-      while (j >= prev) {
-        if (evt[j] > -1) {
-          if (post / evt[j] == j / evt[j]) tot *= max(1LL, be(2, len));  
-          else tot *= max(1LL, (be(2, len) - 1)); 
-          post = j; 
-          tot %= MOD; 
-          j--; 
-        } 
-      } 
-    } else if (h[i] < 0 and acc + h[i] == 0) prev = i; 
+  vi dp(m + 2), pref(m + 2); 
+  dp[0] = pref[0] = 1; 
+  ll sum = 0, ptr = 0, limit = -1; 
+  forr(x, 0, m + 1) {
+    sum += diff[x]; 
+    while (ptr < SZ(good) and good[ptr].ss < x) 
+      limit = max(limit, good[ptr++].ff); 
 
-    acc += h[i]; 
+    if (sum == 0) {
+      ll aux = pref[x]; 
+      if (limit >= 0) aux = (aux - pref[limit] % MOD + MOD) % MOD; 
+      dp[x + 1] = aux; 
+    } 
+    pref[x + 1] = (pref[x] + dp[x + 1]) % MOD; 
   } 
 
-  cout << tot << '\n'; 
+  ll ans = 0; 
+  ll l_max = SZ(good) ? good.back().ff : -1; 
+  forr(x, -1, m + 1) if (x >= l_max) ans = (ans + dp[x + 1]) % MOD; 
+
+  cout << ans << '\n'; 
 }
 
 

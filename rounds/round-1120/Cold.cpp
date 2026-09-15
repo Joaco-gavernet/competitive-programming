@@ -33,48 +33,56 @@ ll be(ll x, ll y, ll m = MOD) {
   return (y%2 == 0)? p : (x * p) % m;
 }
 
+const ll INF = 1LL<<60; 
+
 void solve() {
   ll n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
 
-  vi dp(n + 1, n); 
-  vi mn(n + 1, n); 
+  ll MX = 1;
+  forn(i,n) MX = max(MX, (a[i] + 1) * (i + 1) + 5); 
+
+  vi h(MX), evt(MX, INF);
+  vector<vi> dp(MX); 
   forn(i,n) {
-    ll bot = min((i + 1) * a[i], n); 
-    ll top = max(0LL, min(n, bot + i)); 
-    if (dp[top] == n) dp[top] = i + 1; 
-    mn[top] = min(mn[top], bot); 
+    ll in = (i + 1) * a[i]; 
+    ll out = in + i + 1;  
+    ll pos = in - (i + 1); 
+    if (pos >= 0) evt[pos] = min(evt[pos], i + 1); 
+
+    in = min(MX - 1, in); 
+    out = min(MX - 1, out); 
+
+    h[in]++;
+    if (in < out) h[out]--; 
+    dp[in].pb(i + 1); 
   } 
-  for (int i = n - 2; i >= 0; i--) {
-    if (mn[i + 1] <= i) mn[i] = min(mn[i], mn[i + 1]); 
-    dp[i] = min(dp[i], dp[i + 1]); 
+
+  ll acc = 0, i = 0, prev = 0;
+  while (i < MX) {
+    if (acc == 0 and h[i] > 0) prev = i; 
+    if (prev != i) for (auto x : dp[i]) dbg(prev, x), dp[prev].pb(x); 
+    acc += h[i++]; 
   } 
 
-  dbg(a); 
-  dbg(mn); 
-  dbg(dp); 
-  ll tot = 1, acc = 0; 
-  forr(i,0,n + 1) {
-    if (mn[i] == i) {
-      if (acc > 0) {
-        ll k = acc / dp[i]; 
-        ll base = be(2, dp[i]) - 1;
-        ll aux = max(1LL, k * base);
-        aux %= MOD; 
-
-        ll rem = acc % dp[i]; 
-        aux *= max(1LL, be(2, rem) - 1); 
-        aux %= MOD; 
-
-        dbg(i, dp[i], acc); 
-        dbg(k, rem, aux);
-
-        dbg(tot, aux); 
-        tot *= aux;
-        tot %= MOD; 
-        acc = 0; 
+  dbg(evt); 
+  acc = 0, prev = 0;
+  ll tot = 1;
+  forn(i, MX) {
+    if (acc == 0 and h[i] > 0) {
+      ll j = i - 1, len = 1, post = INF; 
+      while (j >= prev) {
+        if (evt[j] > -1) {
+          if (post / evt[j] == j / evt[j]) tot *= max(1LL, be(2, len));  
+          else tot *= max(1LL, (be(2, len) - 1)); 
+          post = j; 
+          tot %= MOD; 
+          j--; 
+        } 
       } 
-    } else acc++; 
+    } else if (h[i] < 0 and acc + h[i] == 0) prev = i; 
+
+    acc += h[i]; 
   } 
 
   cout << tot << '\n'; 
