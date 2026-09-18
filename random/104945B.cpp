@@ -23,6 +23,7 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
+const ll INF = 1LL<<60; 
 
 // Dinic: Max Flow en O(V^2 E). Para el grafo bipartito con source
 // y sink dummy, funciona en O(sqrt(V) E). Equivalente a Hopcroft-Karp.
@@ -82,6 +83,22 @@ int main(){
   NaN;
 
   int n, m; cin >> n >> m; 
+
+  Dinic din(n + m + 2); 
+
+  ll pins = m + 1; 
+  vector<vi> col(n); 
+  forn(i,n) {
+    ll k; cin >> k; 
+    col[i].resize(k); 
+    forn(j,k) {
+      cin >> col[i][j]; 
+      din.add_edge(col[i][j], pins + i, 1); 
+    } 
+  } 
+  forr(i, 1, m + 1) din.add_edge(0, i, 1); 
+  forr(i, m + 1, n + m + 1) din.add_edge(i, n + m + 1, 1); 
+  cout << din.max_flow(0, n + m + 1) << '\n'; 
 
 
   return 0;
