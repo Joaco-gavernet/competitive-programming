@@ -27,15 +27,29 @@ typedef vector<ll> vi;
 void solve() {
   ll n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
-  reverse(all(a)); 
+  sort(all(a)); 
 
-  ll tot = 0, stk = a[0]; 
-  forr(i,1,n) {
-    if (stk < a[i]) {
-      ll k = (stk + a[i] - 1) / stk; 
-      tot += k - 1; 
-      stk = a[i] / k; 
-    } else stk = a[i]; 
+  ll l = 0, r = n - 1; 
+  ll tot = 0, x = 0; 
+  while (l < r) {
+    if (x + a[l] < a[r]) x += a[l], tot += a[l], l++; 
+    else {
+      ll need = a[r] - x; 
+      a[l] -= need; 
+      tot += need; 
+
+      tot++;
+      x = 0; 
+      r--; 
+      l += a[l] == 0; 
+    } 
+  } 
+  if (l == r) {
+    ll rem = a[l]; 
+    ll k = max(0ll, (rem - x + 1) / 2); 
+    tot += k; 
+    rem -= k; 
+    tot += rem > 0; 
   } 
   cout << tot << '\n'; 
 }
