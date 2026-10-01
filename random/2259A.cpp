@@ -23,59 +23,26 @@ typedef vector<ll> vi;
 #define SZ(x) int((x).size()) 
 #define RAYA cerr << "===============================" << endl
 
-const ll INF = 1LL<<60; 
-const ll MAXN = 1e7+5; 
-
-// Criba lineal, obtiene los primos menores al parametro
-vi min_prime; // min_prime[i] contiene el menor primo que divide a i, util para factorizar en log(i)
-
-vi criba(ll n) {
-  vb prime(n+1,true);
-  min_prime.resize(n+1,INF);
-  vi primos;
-  for(ll p=2; p*p<=n; p++){
-    if(!prime[p]) continue;
-    for(ll i=p*p; i<=n; i += p) {
-      prime[i] = false;
-      min_prime[i] = min(min_prime[i],p);
-    }
-  }
-  forr(i, 2, n+1){
-    if(prime[i]) primos.pb(i), min_prime[i] = i;
-  }
-  return primos; // lista de primos hasta n
-}
 
 void solve() {
-  ll n; cin >> n; 
-  vi a(n); forn(i,n) cin >> a[i]; 
+  ll n, k; cin >> n >> k; 
+  string s; cin >> s; 
 
-  vector<vi> d(2, vi(n, -1)); 
-  forn(i,n) {
-    vi ops; 
-    while (a[i] > 1) ops.pb(min_prime[a[i]]), a[i] /= min_prime[a[i]]; 
-    ops.erase(unique(all(ops)), ops.end()); 
-    if (SZ(ops) == 1) continue; 
-    else {
-      d[0][i] = ops[0]; 
-      d[1][i] = 1; 
-      forr(j,1,SZ(ops)) d[1][i] *= ops[j]; 
-      assert(__gcd(d[0][i] + d[1][i], a[i]) == 1); 
-    } 
+  ll i = 0, tot = 0; 
+  while (i < n) {
+    ll acc = 0, j = i; 
+    while (j < n and j < i + k) acc += s[j++] == '1'; 
+    tot += acc == k; 
+    i = j; 
   } 
-
-  for (auto &v : d) {
-    for (auto &x : v) cout << x << ' '; 
-    cout << '\n'; 
-  } 
+  cout << tot << '\n'; 
 }
 
 
 int main(){
   NaN;
   int t = 1; 
-  vi prims = criba(MAXN); 
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
   return 0;
 }
