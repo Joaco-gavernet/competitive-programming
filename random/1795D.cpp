@@ -24,53 +24,57 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
-const ll INF = 1LL<<60; 
+const ll MOD = 998'244'353; 
+const ll MAXN = 3e5+6; 
+
+vector<ll> fact, ifact;
+
+ll be(ll b, ll e, ll m) {
+  ll r=1; b%=m;
+  while(e){if(e&1LL)r=r*b%m;b=b*b%m;e/=2;}
+  return r;
+}
+ll inv_mod(ll x, ll m){ return be(x,m-2,m); }
+
+void init_fact(int maxn){
+  fact.resize(maxn), ifact.resize(maxn);
+  fact[0] = 1; forr(i, 1, maxn) fact[i] = (fact[i-1]*i)%MOD;
+  ifact[maxn-1] = inv_mod(fact[maxn-1], MOD);
+  for(int i = maxn-2; i >= 0; i--) ifact[i] = (ifact[i+1]*(i+1))%MOD;
+}
 
 void solve() {
   ll n; cin >> n; 
-  vi b(n); forn(i,n) cin >> b[i]; 
+  vi c(n); forn(i,n) cin >> c[i]; 
 
-  vi h(n); 
-  forn(i,n) if (b[i] > 0) {
-    h[max(0ll, i - b[i] + 1)]++; 
-    if (i + b[i] < n) h[i + b[i]]--; 
+  ll tot = 1; 
+  for (int i = 0; i < n; i += 3) {
+    vi u; 
+    forn(j,3) u.pb(c[i + j]); 
+    sort(all(u)); 
+    ll cnt = 1; 
+    if (u[0] == u[1] and u[1] == u[2]) cnt = 3; 
+    if (u[0] == u[1] and u[1] != u[2]) cnt = 2; 
+    tot *= cnt; 
+    tot %= MOD; 
   } 
+  n /= 3; 
+  tot *= fact[n]; 
+  tot %= MOD; 
+  tot *= inv_mod(fact[n / 2], MOD); 
+  tot %= MOD; 
+  tot *= inv_mod(fact[n / 2], MOD); 
+  tot %= MOD; 
 
-  ll on = 0; 
-  forn(i,n) {
-    on += h[i]; 
-    if (b[i] == -1 and on == 0) b[i] = 0; 
-  } 
-
-  // check if construction works 
-  vi dp(n, INF); 
-  ll prev = -1; 
-  forn(i,n) {
-    if (b[i] == 0) prev = i; 
-    if (prev == -1) continue; 
-    dp[i] = min(dp[i], i - prev);
-  } 
-  prev = -1; 
-  forn(j,n) {
-    int i = n - 1 - j; 
-    if (b[i] == 0) prev = i; 
-    if (prev == -1) continue; 
-    dp[i] = min(dp[i], prev - i);
-  } 
-  forn(i,n) {
-    if (b[i] == -1) b[i] = dp[i]; 
-    else if (b[i] != dp[i]) return void(cout << -1 << '\n'); 
-  } 
-
-  for (auto x : b) cout << (x == 0 ? '1' : '0'); 
-  cout << '\n'; 
+  cout << tot << '\n'; 
 }
 
 
 int main(){
   NaN;
   int t = 1; 
-  cin >> t;
+  // cin >> t;
+  init_fact(MAXN); 
   while (t--) solve();
   return 0;
 }

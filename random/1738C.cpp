@@ -25,28 +25,17 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  string a; cin >> a;
-  string b; cin >> b; 
+  ll n; cin >> n; 
+  ll a = 0, b = 0; 
+  vi v(n); forn(i,n) cin >> v[i], b += (v[i]&1), a += !(v[i]&1); 
 
-  const ll n = SZ(a);
-  const ll m = SZ(b);
-
-  vi pa(n + 1); forn(i,n) pa[i + 1] = (pa[i] + (a[i] - '0')) % 10; 
-  vi pb(m + 1); forn(i,m) pb[i + 1] = (pb[i] + (b[i] - '0')) % 10; 
-
-  if (pa.back() != pb.back()) return void(cout << -1 << '\n'); 
-
-  // find LCS 
-  vector<vi> dp(n + 1, vi(m + 1)); 
-  forr(i, 1, n + 1) {
-    forr(j, 1, m + 1) {
-      if (pa[i] == pb[j]) dp[i][j] = dp[i - 1][j - 1] + 1; 
-      dp[i][j] = max(dp[i][j], dp[i - 1][j]); 
-      dp[i][j] = max(dp[i][j], dp[i][j - 1]); 
-    } 
+  if (b % 4 == 2) cout << "Bob\n";
+  else if (b % 4 == 3) cout << "Alice\n"; 
+  else if (b % 4 == 0) cout << "Alice\n"; 
+  else {
+    if (a % 2 == 0) cout << "Bob\n";
+    else cout << "Alice\n"; 
   } 
-
-  cout << dp[n][m] << '\n'; 
 }
 
 

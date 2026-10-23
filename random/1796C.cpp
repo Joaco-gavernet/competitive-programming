@@ -26,50 +26,21 @@ typedef vector<ll> vi;
 
 
 void solve() {
-  ll n; cin >> n; 
+  ll l, r; cin >> l >> r; 
 
-  vector<vi> g(n); 
-  forn(i,n-1) {
-    ll a, b; cin >> a >> b; 
-    a--, b--;  
-    g[a].pb(b); 
-    g[b].pb(a); 
-  } 
-
-  vi rep; 
-  vi comp(n, -1); 
-  vector<ii> rem; 
-  function<void(ll, ll, ll)> dfs = [&](ll x, ll prev, ll id) -> void {
-    comp[x] = id; 
-    for (auto y : g[x]) {
-      if (y == prev) continue; 
-      if (comp[y] == -1) dfs(y, x, id); 
-      else rem.pb({min(x, y), max(x, y)}); 
-    } 
-  };  
-
-  forn(x,n) if (comp[x] == -1) {
-    dfs(x, -1, SZ(rep)); 
-    rep.pb(x); 
-  } 
-
-  sort(all(rem)); 
-  rem.erase(unique(all(rem)), rem.end()); 
-
-  ll i = 1; 
-  cout << SZ(rem) << '\n'; 
-  for (auto [x, y] : rem) {
-    cout << x + 1 << ' ' << y + 1 << ' '; 
-    cout << rep[0] + 1 << ' ' << rep[i++] + 1; 
-    cout << '\n'; 
-  } 
+  ll m = 0, cnt = 0;
+  ll a = l; 
+  while (a <= r) m++, a *= 2; 
+  cnt += r / (1LL<<(m - 1)) - l + 1; // only considering d = 2 
+  if (m > 1) cnt += (m - 1) * max(0ll, (r / (1LL<<(m - 2))) / 3 - l + 1); // consider some d = 3
+  cout << m << ' ' << cnt << '\n'; 
 }
 
 
 int main(){
   NaN;
   int t = 1; 
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
   return 0;
 }

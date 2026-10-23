@@ -24,37 +24,29 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
-bool check(vi a, ll mx) {
-  deque<ll> ops; 
-  while (SZ(a) and a.back() >= mx) ops.pb(a.back()), a.pop_back(); 
-
-  reverse(all(ops)); 
-
-  ll x = mx - 1; 
-  while (x >= 0 and (SZ(a) or SZ(ops))) {
-    if (SZ(a) and a.back() == x) x--, a.pop_back(); 
-    else {
-      if (SZ(ops) and x * 2 < ops.back()) x--, ops.pop_back(); 
-      else break; 
-    } 
-    while (SZ(a) and a.back() > x) ops.push_front(a.back()), a.pop_back(); 
-  } 
-
-  return x == -1; 
-} 
-
 void solve() {
   ll n; cin >> n; 
   vi a(n); forn(i,n) cin >> a[i]; 
-  sort(all(a)); 
 
-  ll l = 0, r = n + 1; 
-  while (l + 1 < r) {
-    ll mid = (l + r) / 2; 
-    if (check(a, mid)) l = mid;
-    else r = mid; 
+  vi b = a; 
+  sort(all(b)); 
+  ll med = b[n / 2]; 
+  forn(i,n) a[i] = (a[i] != med) * (a[i] < med ? -1 : 1); 
+
+  vi dp(n + 1); 
+  for (int i = 1; i <= n; i += 1) {
+    ll z = 0, s = 0; 
+    for (int j = i - 1; j >= 0; j -= 1) {
+      if (a[j] == 0) z++; 
+      else s += a[j]; 
+
+      if ((i - j) % 2 == 0) continue; 
+      if (abs(s) < z and (j == 0 or dp[j] > 0)) 
+        dp[i] = max(dp[i], dp[j] + 1); 
+    } 
   } 
-  cout << l << '\n'; 
+
+  cout << dp[n] << '\n'; 
 }
 
 

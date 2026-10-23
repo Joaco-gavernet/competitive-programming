@@ -24,41 +24,35 @@ typedef vector<ll> vi;
 #define RAYA cerr << "===============================" << endl
 
 
-const ll INF = 1LL<<60; 
-const ll MAXN = 1e6+5; 
-
-vi prims; 
-vi min_prime; 
-vi criba(ll n) {
-  vb prime(n+1,true);
-  min_prime.resize(n+1,INF);
-  vi primos;
-  for(ll p=2; p*p<=n; p++){
-    if(!prime[p]) continue;
-    for(ll i=p*p; i<=n; i += p) {
-      prime[i] = false;
-      min_prime[i] = min(min_prime[i],p);
-    }
-  }
-  forr(i, 2, n+1) if(prime[i]) primos.pb(i), min_prime[i] = i;
-  return primos;
-}
-
 void solve() {
-  ll x; cin >> x; 
-  ll n = x; 
+  ll n; cin >> n;
+  deque<ll> a(n); forn(i,n) cin >> a[i]; 
+  sort(all(a)); 
 
-  map<ll,ll> divs; 
-  while (n > 1 and min_prime[n] != n) {
-    divs[min_prime[n]]++; 
-    n /= min_prime[n]; 
+  ll D = a.back() - a.front(); 
+  if (a.back() <= 0 or a.front() >= 0) return void(cout << "No\n"); 
+  else {
+    vi ans; 
+    ll pref = 0, mn = 0, mx = 0; 
+    while (SZ(a)) {
+      while (SZ(a) and pref + a.back() - mn < D) {
+        ans.pb(a.back()); 
+        a.pop_back(); 
+        pref += ans.back();
+        mx = max(mx, pref);
+      } 
+      while (SZ(a) and abs(pref + a.front() - mx) < D) {
+        ans.pb(a.front()); 
+        a.pop_front(); 
+        pref += ans.back();
+        mn = min(mn, pref);
+      } 
+    } 
+
+    cout << "Yes\n"; 
+    for (auto x : ans) cout << x << ' '; 
+    cout << '\n'; 
   } 
-  if (n > 1) divs[n]++; 
-
-  ll tot = SZ(divs); 
-  for (auto [k, x] : divs) tot += x; 
-  tot--; 
-  cout << tot << '\n'; 
 }
 
 
@@ -66,7 +60,6 @@ int main(){
   NaN;
   int t = 1; 
   cin >> t;
-  prims = criba(MAXN); 
   while (t--) solve();
   return 0;
 }

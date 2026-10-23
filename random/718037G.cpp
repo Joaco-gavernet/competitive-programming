@@ -9,29 +9,28 @@ void dbg_out() { cerr << endl; }
 template<typename Head, typename... Tail> void dbg_out(Head H, Tail... T) { cerr << ' ' << H; dbg_out(T...); }
 #define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
 
-typedef long long ll;
-typedef pair<ll,ll> ii;
-typedef vector<bool> vb;
-typedef vector<ll> vi;
+using ll = long long; 
+using vi = vector<ll>; 
+using vb = vector<bool>; 
+using ii = pair<ll,ll>; 
 #define NaN ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define forr(i, a, b) for(ll i = (a); i < (ll) (b); i++)
 #define forn(i, n) forr(i, 0, n)
+#define SZ(x) int((x).size())
 #define pb push_back
 #define all(c) (c).begin(),(c).end()
-#define ff first
-#define ss second
-#define SZ(x) int((x).size()) 
-#define RAYA cerr << "===============================" << endl
 
 
-void solve() {
-}
 
-
-int main(){
+int main(){  
   NaN;
-  int t = 1; 
-  cin >> t;
-  while (t--) solve();
+  
+  ll n; cin >> n; 
+  vi x(n), y(n), c(n), k(n); 
+  forn(i,n) cin >> x[i] >> y[i]; 
+  forn(i,n) cin >> c[i]; 
+  forn(i,n) cin >> k[i]; 
+  
+  
   return 0;
 }
