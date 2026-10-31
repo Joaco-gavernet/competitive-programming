@@ -27,38 +27,66 @@ typedef vector<ll> vi;
 
 // Idea: use centroid decomposition carrying "how many nodes at depth x" and add posible combinations 
 
-const int MAXN = 2e5+5; 
 
-vector<int> g[MAXN]; int n;
+const ll MAXN = 2e5+5; 
+
+ll n, k, tot = 0, cont = 0, mx = 0; 
+vector<int> g[MAXN]; 
 bool tk[MAXN];
 int fat[MAXN]; // father in centroid decomposition
 int szt[MAXN]; // size of subtree
-int calcsz(int x, int f){
-  szt[x]=1;
-  for(auto y:g[x])if(y!=f&&!tk[y])szt[x]+=calcsz(y,x);
+int h[MAXN]; 
+
+void solve(ll x, ll prev, ll len, bool upd) {
+  if (len > k) return; 
+  mx = max(len, mx); 
+  if (upd) h[len]++; 
+  else tot += h[k - len]; 
+  for (auto y : g[x]) if (!tk[y] and y != prev) solve(y, x, len + 1, upd); 
+} 
+
+int calcsz(int x, int f) {
+  szt[x] = 1;
+  for (auto y : g[x]) if (y != f and !tk[y]) szt[x] += calcsz(y,x);
   return szt[x];
 }
-void cdfs(int x=0, int f=-1, int sz=-1){ // O(nlogn)
-  if(sz<0)sz=calcsz(x,-1);
-  for(auto y:g[x])if(!tk[y]&&szt[y]*2>=sz){
-    szt[x]=0;cdfs(y,f,sz);return;
+
+void cdfs(int x = 0, int f = -1, int sz = -1) { // O(nlogn)
+  if (sz < 0) sz = calcsz(x, -1);
+  for(auto y : g[x]) if (!tk[y] and szt[y] * 2 >= sz) {
+    szt[x] = 0;
+    cdfs(y, f, sz);
+    return;
   }
-  tk[x]=true;fat[x]=f;
-  for(auto y:g[x])if(!tk[y])cdfs(y,x);
+  // count paths through current centroid 
+  mx = 0; 
+  h[0] = 1;
+  for (auto y : g[x]) if (!tk[y]) {
+    solve(y, x, 1, false); 
+    solve(y, x, 1, true); 
+  } 
+  fill(h + 1, h + mx + 1, 0); 
+
+  tk[x] = true; 
+  fat[x] = f;
+  for (auto y : g[x]) if (!tk[y]) cdfs(y,x);
 }
+
 void centroid(){memset(tk,false,sizeof(tk));cdfs();}
 
 int main(){
   FIN;
 
-  int k; cin >> n >> k; 
+  cin >> n >> k; 
   forn(_,n-1) {
     int a, b; cin >> a >> b; 
-    g[--a].pb(--b); 
+    --a, --b; 
+    g[a].pb(b); 
     g[b].pb(a); 
   } 
 
   centroid(); 
+  cout << tot << '\n'; 
 
 
   return 0;
